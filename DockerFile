@@ -1,6 +1,6 @@
 FROM golang:alpine3.9
 
-WORKDIR /app
+WORKDIR /groupie-tracker
 
 COPY go.mod go.sum ./
 
