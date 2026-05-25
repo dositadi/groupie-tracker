@@ -1,11 +1,13 @@
 package jsonlog
 
 import (
-	"encoding/json"
+	"fmt"
 	"io"
 	"runtime/debug"
 	"sync"
 	"time"
+
+	"github.com/dositadi/groupie-tracker.git/internal/helper"
 )
 
 type Level int8
@@ -54,35 +56,47 @@ func (l *Logger) print(level Level, message string, properties map[string]string
 		return 0, nil
 	}
 
+	levelColor := ""
+	reset := l.color.Get("reset")
+
+	switch level {
+	case LevelError:
+		levelColor = l.color.Get("orange")
+		message = l.color.Get("orange") + message + reset
+	case LevelFatal:
+		levelColor = l.color.Get("red")
+		message = l.color.Get("red") + message + reset
+	case LevelInfo:
+		levelColor = l.color.Get("green")
+		message = l.color.Get("green") + message + reset
+	}
+
+	prop := helper.Marshal(properties)
+
 	aux := struct {
-		Level      string            `json:"level"`
-		Time       string            `json:"time"`
-		Message    string            `json:"message"`
-		Properties map[string]string `json:"properties,omitempty"`
-		Trace      string            `json:"trace,omitempty"`
+		Level      string `json:"level"`
+		Time       string `json:"time"`
+		Message    string `json:"message"`
+		Properties string `json:"properties,omitempty"`
+		Trace      string `json:"trace,omitempty"`
 	}{
-		Level:      level.String(),
-		Time:       time.Now().Format(time.RFC1123),
-		Message:    message,
-		Properties: properties,
+		Level:      levelColor + level.String() + reset,
+		Time:       l.color.Get("cyan") + time.Now().Format(time.RFC1123) + reset,
+		Message:    l.color.Get("yellow") + message + reset,
+		Properties: string(prop),
 	}
 
 	if level >= LevelError {
-		aux.Trace = string(debug.Stack())
+		aux.Trace = l.color.Get("blue") + string(debug.Stack()) + reset
 	}
 
-	var line []byte
-
-	line, err := json.Marshal(aux)
-	if err != nil {
-		line = []byte(level.String() + l.color.Get("red") + ": unable to marshal the json" + l.color.Get("reset"))
-	}
+	line := fmt.Sprintf(`{"Level":"%s","Time":"%s","Message":"%s","Properties":"%+v","Trace":"%s"}`, aux.Level, aux.Time, aux.Message, aux.Properties, aux.Trace)
 
 	// Lock before wirting to the io.writer and unlock after writing is done
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
-	return l.out.Write(append(line, '\n'))
+	return l.out.Write(append([]byte(line), '\n'))
 }
 
 // Implementing the writer function of the io interface to write log with no additional properties
