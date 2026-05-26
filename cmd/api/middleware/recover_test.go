@@ -40,7 +40,7 @@ func TestRecover(t *testing.T) {
 			recorder := httptest.NewRecorder()
 			request := httptest.NewRequest(http.MethodGet, "/", nil)
 
-			mid := New(handlers.Handler{})
+			mid := Middleware{handler: handlers.Handler{}}
 
 			mid.Recover(tt.handler).ServeHTTP(recorder, request)
 

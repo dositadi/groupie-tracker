@@ -83,7 +83,7 @@ func (l *Logger) print(level Level, message string, properties map[string]string
 		Level:      levelColor + level.String() + reset,
 		Time:       l.color.Get("cyan") + time.Now().Format(time.RFC1123) + reset,
 		Message:    l.color.Get("yellow") + message + reset,
-		Properties: string(prop),
+		Properties: levelColor + string(prop) + reset,
 	}
 
 	if level >= LevelError {
