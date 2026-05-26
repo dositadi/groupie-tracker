@@ -2,7 +2,7 @@ services:
   app:
     build: .
     environment:
-      - POSTGRES_DB_DSN=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}
+      - POSTGRES_DB_DSN=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}?sslmode=disable
     ports:
       - 8080:8080
     volumes:
