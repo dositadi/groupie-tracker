@@ -18,11 +18,11 @@ type App struct {
 }
 
 func (a *App) init() {
-	a.db = a.initDB()
 	a.config = newConfig()
 	a.logger = jsonlog.New(os.Stdout, jsonlog.LevelInfo)
 	a.handler = handlers.New(*a.logger)
 	a.midleware = middleware.New(*a.handler, *a.logger)
+	a.initDB()
 }
 
 func (a *App) Run() {

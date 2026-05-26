@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func (a *App) initDB() *pgx.Conn {
+func (a *App) initDB() {
 	db, err := a.connectToDB()
 	if err != nil {
 		a.logger.PrintFatal(err.Error(), map[string]string{
@@ -33,7 +33,8 @@ func (a *App) initDB() *pgx.Conn {
 	a.logger.PrintInfo("Database Initialized successfully", map[string]string{
 		"Source": "Initialize db function",
 	})
-	return db
+
+	a.db = db
 }
 
 func (a *App) connectToDB() (*pgx.Conn, error) {
@@ -48,10 +49,10 @@ func (a *App) connectToDB() (*pgx.Conn, error) {
 			})
 			return nil, e
 		}
-		time.Sleep(10 * time.Second)
+		time.Sleep(5 * time.Second)
 	}
 	a.logger.PrintInfo("Database connected successfully", map[string]string{
-		"Source": "Initialize db function",
+		"Source": "Connect to db function",
 	})
 	return db, nil
 }

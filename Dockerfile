@@ -1,11 +1,11 @@
-FROM golang:alpine3.9
+FROM golang:alpine3.22
 
 WORKDIR /groupie-tracker
+
+RUN go install github.com/air-verse/air@latest
 
 COPY go.mod go.sum ./
 
 RUN go mod download
-
-RUN go mod init
 
 CMD [ "air" ]
