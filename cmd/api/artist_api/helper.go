@@ -10,42 +10,42 @@ import (
 )
 
 type InfoTypes interface {
-	Artist | Location | ConcertDate | Relations
+	artist | location | concertDate | relations
 }
 
 // Writing an interace type to populate the Artist struct with all it's data.
 func populateArtistInfo[T InfoTypes](info T, artistInfo *ArtistInfo) *ArtistInfo {
 	switch v := any(info).(type) {
-	case Artist:
-		artistInfo.Id = v.Id
-		artistInfo.Image = v.Image
-		artistInfo.Name = v.Name
-		artistInfo.Members = v.Members
-		artistInfo.CreationDate = v.CreationDate
-		artistInfo.FirstAlbum = v.FirstAlbum
+	case artist:
+		artistInfo.id = v.Id
+		artistInfo.image = v.Image
+		artistInfo.name = v.Name
+		artistInfo.members = v.Members
+		artistInfo.creationDate = v.CreationDate
+		artistInfo.firstAlbum = v.FirstAlbum
 
-	case Location:
+	case location:
 		if artistInfo != nil {
-			if artistInfo.Id == v.Id {
-				artistInfo.Locations = v.Locations
+			if artistInfo.id == v.Id {
+				artistInfo.locations = v.Locations
 			}
 		} else {
 			return nil
 		}
 
-	case ConcertDate:
+	case concertDate:
 		if artistInfo != nil {
-			if artistInfo.Id == v.Id {
-				artistInfo.ConcertDates = v.Dates
+			if artistInfo.id == v.Id {
+				artistInfo.concertDates = v.Dates
 			}
 		} else {
 			return nil
 		}
 
-	case Relations:
+	case relations:
 		if artistInfo != nil {
-			if artistInfo.Id == v.Id {
-				artistInfo.DatesLocations = v.DatesLocations
+			if artistInfo.id == v.Id {
+				artistInfo.datesLocations = v.DatesLocations
 			}
 		} else {
 			return nil

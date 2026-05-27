@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-func (a *ArtistInfo) fillArtistsInfoFromArtists(artists map[int]Artist) chan ArtistInfo {
+func (a *ArtistInfo) fillArtistsInfoFromArtists(artists map[int]artist) chan ArtistInfo {
 	temp := make(chan ArtistInfo, len(artists))
 
 	if artists == nil {
@@ -18,18 +18,18 @@ func (a *ArtistInfo) fillArtistsInfoFromArtists(artists map[int]Artist) chan Art
 
 	var wg *sync.WaitGroup = &sync.WaitGroup{}
 
-	for _, artist := range artists {
+	for _, art := range artists {
 		wg.Add(1)
 
-		go func(a Artist) {
+		go func(a artist) {
 			defer wg.Done()
 
-			var artistInfo *ArtistInfo = new(ArtistInfo)
+			var artInfo *ArtistInfo = new(ArtistInfo)
 
-			artistInfo = populateArtistInfo[Artist](a, artistInfo)
+			artInfo = populateArtistInfo[artist](a, artInfo)
 
-			temp <- *artistInfo
-		}(artist)
+			temp <- *artInfo
+		}(art)
 	}
 
 	go func() {

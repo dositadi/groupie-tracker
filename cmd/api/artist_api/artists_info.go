@@ -1,31 +1,31 @@
 package artistapi
 
-import (
-	"context"
-	"os"
-)
+var byIdKey, byCreationDateKey = make(map[int]ArtistInfo), make(map[int]ArtistInfo)
+var byName, byFirstAlbum = make(map[string]ArtistInfo), make(map[string]ArtistInfo)
 
-func (a *ArtistInfo) InitArtistsInfo() (map[int]ArtistInfo, map[int]ArtistInfo, map[string]ArtistInfo, map[string]ArtistInfo) {
-	// Using the pipeline routine pattern to generate the artist's info
-	artists, err := a.fetchArtists()
-	if err != nil {
-		os.Exit(1)
-	}
+func New() *ArtistInfo {
+	return &ArtistInfo{}
+}
 
-	ctx, cancel := context.WithCancel(context.Background())
-	chError := make(chan error)
+func (a *ArtistInfo) Init() {
+	byIdKey, byCreationDateKey, byName, byFirstAlbum = a.mapArtistsInfo()
+	logger.PrintInfo("Artists Info initialized successfully", map[string]string{
+		"Source": "Init f(n) in artistapi pkg",
+	})
+}
 
-	filledArtists := a.fillArtistsInfoFromArtists(artists)
-	filledLocations := a.fillArtistInfoFromLocation(ctx, filledArtists, chError, artists)
-	filledDates := a.fillArtistInfoFromDate(ctx, filledLocations, chError, artists)
-	filledRelations := a.fillArtistInfoFromRelations(ctx, filledDates, chError, artists)
+func (a *ArtistInfo) GetByIdKey() map[int]ArtistInfo {
+	return byIdKey
+}
 
-	select {
-	case <-chError:
-		cancel()
-		os.Exit(1)
-	default:
-		return a.assembleArtistInfoAsMap(filledRelations)
-	}
-	return a.assembleArtistInfoAsMap(filledRelations)
+func (a *ArtistInfo) GetByCreationDate() map[int]ArtistInfo {
+	return byCreationDateKey
+}
+
+func (a *ArtistInfo) GetByName() map[string]ArtistInfo {
+	return byName
+}
+
+func (a *ArtistInfo) GetByFirstAlbum() map[string]ArtistInfo {
+	return byFirstAlbum
 }

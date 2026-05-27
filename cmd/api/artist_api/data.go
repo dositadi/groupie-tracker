@@ -1,6 +1,6 @@
 package artistapi
 
-type Artist struct {
+type artist struct {
 	Id           int      `json:"id"`
 	Image        string   `json:"image"`
 	Name         string   `json:"name"`
@@ -12,31 +12,31 @@ type Artist struct {
 	Relations    string   `json:"relations"`    // Further get request
 }
 
-type Location struct {
+type location struct {
 	Id        int      `json:"id"`
 	Locations []string `json:"locations"`
 	Dates     string   `json:"dates"` // Further get request
 }
 
-type ConcertDate struct {
+type concertDate struct {
 	Id    int      `json:"id"`
 	Dates []string `json:"dates"`
 }
 
-type Relations struct {
+type relations struct {
 	Id             int                 `json:"id"`
 	DatesLocations map[string][]string `json:"datesLocations"`
 }
 
 // Flattened structure
 type ArtistInfo struct {
-	Id             int
-	Image          string
-	Name           string
-	Members        []string
-	CreationDate   int
-	FirstAlbum     string
-	Locations      []string
-	ConcertDates   []string
-	DatesLocations map[string][]string
+	id             int
+	image          string
+	name           string
+	members        []string
+	creationDate   int
+	firstAlbum     string
+	locations      []string
+	concertDates   []string
+	datesLocations map[string][]string
 }

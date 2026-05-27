@@ -9,7 +9,7 @@ import (
 	"github.com/dositadi/groupie-tracker/internal/helper"
 )
 
-func (a *ArtistInfo) fillArtistInfoFromLocation(ctx context.Context, chArtistInfo chan ArtistInfo, chError chan error, artists map[int]Artist) chan *ArtistInfo {
+func (a *ArtistInfo) fillArtistInfoFromLocation(ctx context.Context, chArtistInfo chan ArtistInfo, chError chan error, artists map[int]artist) chan *ArtistInfo {
 	temp := make(chan *ArtistInfo, len(artists))
 	wg := new(sync.WaitGroup)
 
@@ -21,15 +21,15 @@ func (a *ArtistInfo) fillArtistInfoFromLocation(ctx context.Context, chArtistInf
 		return nil
 	}
 
-	for artistInfo := range chArtistInfo {
-		artist := artists[artistInfo.Id]
+	for artInfo := range chArtistInfo {
+		art := artists[artInfo.id]
 
 		wg.Add(1)
 
-		go func(aInfo ArtistInfo, a Artist) {
+		go func(aInfo ArtistInfo, a artist) {
 			defer wg.Done()
 
-			locations, err := fetchInfo[Location](a.Locations)
+			locations, err := fetchInfo[location](a.Locations)
 			if err != nil {
 				e := helper.WrapError("Fetch info error", err)
 
@@ -50,11 +50,11 @@ func (a *ArtistInfo) fillArtistInfoFromLocation(ctx context.Context, chArtistInf
 				return
 			}
 
-			artInfo := populateArtistInfo[Location](locations, &aInfo)
+			artInfo := populateArtistInfo[location](locations, &aInfo)
 
 			temp <- artInfo
 
-		}(artistInfo, artist)
+		}(artInfo, art)
 	}
 
 	go func() {
