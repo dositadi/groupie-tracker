@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"github.com/dositadi/groupie-tracker/cmd/api/handlers"
+	"github.com/dositadi/groupie-tracker/internal/handlers"
 	jsonlog "github.com/dositadi/groupie-tracker/internal/json_log"
 )
 

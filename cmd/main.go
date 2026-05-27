@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	artistapi "github.com/dositadi/groupie-tracker/cmd/api/artist_api"
+	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
 )
 
 type Test struct{ Name string }

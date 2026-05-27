@@ -11,7 +11,8 @@ func (m *Middleware) Recover(next http.Handler) http.HandlerFunc {
 					e = "A panic occurred within the program handlers."
 				}
 				m.logger.PrintError(e, map[string]string{
-					"Source": "Recover middleware",
+					"Source":     "Recover middleware",
+					"PanicRoute": r.URL.Path,
 				})
 				m.handler.ServerErrorHandler(w, r)
 			}

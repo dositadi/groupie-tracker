@@ -3,10 +3,12 @@ package middleware
 import (
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
-	"github.com/dositadi/groupie-tracker/cmd/api/handlers"
+	"github.com/dositadi/groupie-tracker/internal/handlers"
+	jsonlog "github.com/dositadi/groupie-tracker/internal/json_log"
 )
 
 func TestRecover(t *testing.T) {
@@ -40,7 +42,7 @@ func TestRecover(t *testing.T) {
 			recorder := httptest.NewRecorder()
 			request := httptest.NewRequest(http.MethodGet, "/", nil)
 
-			mid := Middleware{handler: handlers.Handler{}}
+			mid := New(*handlers.New(*jsonlog.New(os.Stdout, jsonlog.LevelInfo)), *jsonlog.New(os.Stdout, jsonlog.LevelInfo))
 
 			mid.Recover(tt.handler).ServeHTTP(recorder, request)
 

@@ -3,9 +3,9 @@ package app
 import (
 	"os"
 
-	"github.com/dositadi/groupie-tracker/cmd/api/handlers"
-	"github.com/dositadi/groupie-tracker/cmd/api/middleware"
+	"github.com/dositadi/groupie-tracker/internal/handlers"
 	jsonlog "github.com/dositadi/groupie-tracker/internal/json_log"
+	"github.com/dositadi/groupie-tracker/internal/middleware"
 	"github.com/jackc/pgx/v5"
 )
 
