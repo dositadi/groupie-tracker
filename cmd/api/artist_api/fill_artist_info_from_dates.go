@@ -3,6 +3,7 @@ package artistapi
 import (
 	"context"
 	"fmt"
+	"os"
 	"sync"
 
 	"github.com/dositadi/groupie-tracker/internal/helper"
@@ -11,6 +12,14 @@ import (
 func (a *ArtistInfo) FillArtistInfoFromDate(ctx context.Context, chArtistInfo chan *ArtistInfo, chError chan error, artists map[int]Artist) chan *ArtistInfo {
 	temp := make(chan *ArtistInfo, len(artists))
 	wg := new(sync.WaitGroup)
+
+	if chArtistInfo == nil || artists == nil {
+		logger.PrintFatal("Recieved a nil paramter [chArtist | artists]", map[string]string{
+			"Source": "Fill artist info from dates f(n) under artistapi pkg",
+		})
+		os.Exit(1)
+		return nil
+	}
 
 	for artistInfo := range chArtistInfo {
 		artist := artists[artistInfo.Id]
@@ -33,7 +42,7 @@ func (a *ArtistInfo) FillArtistInfoFromDate(ctx context.Context, chArtistInfo ch
 			if err = ctx.Err(); err != nil {
 				e := helper.WrapError("Stopping concert dates fetch worker routine", err)
 
-				logger.PrintError(e.Error(), map[string]string{
+				logger.PrintFatal(e.Error(), map[string]string{
 					"Source": "Fill artist info from dates f(n) under artistapi pkg",
 					"Worker": fmt.Sprintf("Date filler for %v with %v", aInfo, a),
 				})
@@ -52,6 +61,10 @@ func (a *ArtistInfo) FillArtistInfoFromDate(ctx context.Context, chArtistInfo ch
 		wg.Wait()
 		close(temp)
 	}()
+
+	logger.PrintInfo("Filled in dates into artist's info successfully", map[string]string{
+		"Source": "Fill artist info from dates f(n) under artistapi pkg",
+	})
 
 	return temp
 }

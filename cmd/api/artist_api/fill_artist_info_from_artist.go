@@ -1,11 +1,20 @@
 package artistapi
 
 import (
+	"os"
 	"sync"
 )
 
-func (a *ArtistInfo) FillArtistsInfoFromArtists(ch chan ArtistInfo, artists map[int]Artist) chan ArtistInfo {
-	temp := make(chan ArtistInfo, 5)
+func (a *ArtistInfo) FillArtistsInfoFromArtists(artists map[int]Artist) chan ArtistInfo {
+	temp := make(chan ArtistInfo, len(artists))
+
+	if artists == nil {
+		logger.PrintFatal("Recieved a nil paramter [artists]", map[string]string{
+			"Source": "Fill artists info from artists f(n) in artistapi pkg",
+		})
+		os.Exit(1)
+		return nil
+	}
 
 	var wg *sync.WaitGroup = &sync.WaitGroup{}
 
@@ -17,7 +26,7 @@ func (a *ArtistInfo) FillArtistsInfoFromArtists(ch chan ArtistInfo, artists map[
 
 			var artistInfo *ArtistInfo = new(ArtistInfo)
 
-			artistInfo = populateArtistInfo(a, artistInfo)
+			artistInfo = populateArtistInfo[Artist](a, artistInfo)
 
 			temp <- *artistInfo
 		}(artist)
@@ -28,15 +37,9 @@ func (a *ArtistInfo) FillArtistsInfoFromArtists(ch chan ArtistInfo, artists map[
 		close(temp)
 	}()
 
-	for artistInfo := range temp {
-		ch <- artistInfo
-	}
-
-	close(ch)
-
-	logger.PrintInfo("Filled in artists in artist's info successfully", map[string]string{
+	logger.PrintInfo("Filled in artists into artist's info successfully", map[string]string{
 		"Source": "Fill artists info from artists f(n) in artistapi pkg",
 	})
 
-	return ch
+	return temp
 }

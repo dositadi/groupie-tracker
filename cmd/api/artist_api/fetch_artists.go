@@ -20,10 +20,10 @@ func (a *ArtistInfo) FetchArtists() (map[int]Artist, error) {
 	response, err := http.Get(artist)
 	if err != nil {
 		e := helper.WrapError("Get error", err)
-		logger.PrintError(e.Error(), map[string]string{
-			"Source": "Fetch resource f(n) under artistapi package.",
+		logger.PrintFatal(e.Error(), map[string]string{
+			"Source": "Fetch artists f(n) under artistapi package.",
 		})
-		return nil, e
+		os.Exit(1)
 	}
 
 	defer response.Body.Close()
@@ -33,10 +33,10 @@ func (a *ArtistInfo) FetchArtists() (map[int]Artist, error) {
 	err = json.NewDecoder(response.Body).Decode(&artists)
 	if err != nil {
 		e := helper.WrapError("Read error", err)
-		logger.PrintError(e.Error(), map[string]string{
-			"Source": "Fetch resource f(n) under artistapi package.",
+		logger.PrintFatal(e.Error(), map[string]string{
+			"Source": "Fetch artists f(n) under artistapi package.",
 		})
-		return nil, e
+		os.Exit(1)
 	}
 
 	artistsMap := make(map[int]Artist)
@@ -46,7 +46,7 @@ func (a *ArtistInfo) FetchArtists() (map[int]Artist, error) {
 	}
 
 	logger.PrintInfo("Artists fetch successful", map[string]string{
-		"Source": "Fetch resource f(n) under artistapi package.",
+		"Source": "Fetch artists f(n) under artistapi package.",
 	})
 
 	return artistsMap, nil
