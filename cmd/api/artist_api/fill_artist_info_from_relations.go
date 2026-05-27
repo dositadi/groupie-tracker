@@ -7,7 +7,7 @@ import (
 	"github.com/dositadi/groupie-tracker/internal/helper"
 )
 
-func (a *ArtistInfo) FillArtistInfoFromRelations(ctx context.Context, chArtistInfo chan *ArtistInfo, chError chan error, artists map[int]Artist) chan *ArtistInfo {
+func (a *ArtistInfo) fillArtistInfoFromRelations(ctx context.Context, chArtistInfo chan *ArtistInfo, chError chan error, artists map[int]Artist) chan *ArtistInfo {
 	temp := make(chan *ArtistInfo, len(artists))
 	wg := new(sync.WaitGroup)
 

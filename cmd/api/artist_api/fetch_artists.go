@@ -16,14 +16,13 @@ const (
 var logger *jsonlog.Logger = jsonlog.New(os.Stdout, jsonlog.LevelInfo)
 
 // A generic function that fetches all the artist resource.
-func (a *ArtistInfo) FetchArtists() (map[int]Artist, error) {
+func (a *ArtistInfo) fetchArtists() (map[int]Artist, error) {
 	response, err := http.Get(artist)
 	if err != nil {
 		e := helper.WrapError("Get error", err)
 		logger.PrintFatal(e.Error(), map[string]string{
 			"Source": "Fetch artists f(n) under artistapi package.",
 		})
-		os.Exit(1)
 	}
 
 	defer response.Body.Close()
@@ -32,11 +31,10 @@ func (a *ArtistInfo) FetchArtists() (map[int]Artist, error) {
 
 	err = json.NewDecoder(response.Body).Decode(&artists)
 	if err != nil {
-		e := helper.WrapError("Read error", err)
+		e := helper.WrapError("JSON decode error", err)
 		logger.PrintFatal(e.Error(), map[string]string{
 			"Source": "Fetch artists f(n) under artistapi package.",
 		})
-		os.Exit(1)
 	}
 
 	artistsMap := make(map[int]Artist)
