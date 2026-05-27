@@ -1,16 +1,13 @@
 package artistapi
 
-type ArtistInfo struct {
-	Id             int
-	Image          string
-	Name           string
-	Members        []string
-	CreationDate   int
-	FirstAlbum     string
-	Locations      []string
-	ConcertDates   []string
-	DatesLocations map[string][]string
-}
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"os"
+
+	jsonlog "github.com/dositadi/groupie-tracker/internal/json_log"
+)
 
 type InfoTypes interface {
 	Artist | Location | ConcertDate | Relations
@@ -18,7 +15,6 @@ type InfoTypes interface {
 
 // Writing an interace type to populate the Artist struct with all it's data.
 func PopulateArtistInfo[T InfoTypes](info T, artistInfo *ArtistInfo) *ArtistInfo {
-
 	switch v := any(info).(type) {
 	case Artist:
 		artistInfo.Id = v.Id
@@ -68,4 +64,31 @@ func PopulateArtistInfo[T InfoTypes](info T, artistInfo *ArtistInfo) *ArtistInfo
 		return nil
 	}
 	return artistInfo
+}
+
+func fetchInfo[T InfoTypes](url string) (T, error) {
+	var locations T
+	logger := jsonlog.New(os.Stdout, jsonlog.LevelInfo)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		e := fmt.Errorf("Get error: %w", err)
+
+		logger.PrintError(e.Error(), map[string]string{
+			"Source": "Fetch info f(n)",
+		})
+	}
+
+	defer resp.Body.Close()
+
+	err = json.NewDecoder(resp.Body).Decode(&locations)
+	if err != nil {
+		e := fmt.Errorf("Json Decode error: %w", err)
+
+		logger.PrintError(e.Error(), map[string]string{
+			"Source": "Fetch info f(n)",
+		})
+	}
+
+	return locations, nil
 }

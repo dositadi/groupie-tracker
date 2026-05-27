@@ -27,3 +27,16 @@ type Relations struct {
 	Id             int                 `json:"id"`
 	DatesLocations map[string][]string `json:"datesLocations"`
 }
+
+// Flattened structure
+type ArtistInfo struct {
+	Id             int
+	Image          string
+	Name           string
+	Members        []string
+	CreationDate   int
+	FirstAlbum     string
+	Locations      []string
+	ConcertDates   []string
+	DatesLocations map[string][]string
+}
