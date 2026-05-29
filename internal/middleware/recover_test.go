@@ -42,7 +42,8 @@ func TestRecover(t *testing.T) {
 			recorder := httptest.NewRecorder()
 			request := httptest.NewRequest(http.MethodGet, "/", nil)
 
-			mid := New(*handlers.New(*jsonlog.New(os.Stdout, jsonlog.LevelInfo)), *jsonlog.New(os.Stdout, jsonlog.LevelInfo))
+			// Replace the nil for interface here with a demo data for testing
+			mid := New(*handlers.New(*jsonlog.New(os.Stdout, jsonlog.LevelInfo), nil), *jsonlog.New(os.Stdout, jsonlog.LevelInfo))
 
 			mid.Recover(tt.handler).ServeHTTP(recorder, request)
 
