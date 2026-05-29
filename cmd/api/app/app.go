@@ -1,0 +1,35 @@
+package app
+
+import (
+	"os"
+
+	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
+	"github.com/dositadi/groupie-tracker/internal/handlers"
+	jsonlog "github.com/dositadi/groupie-tracker/internal/json_log"
+	"github.com/dositadi/groupie-tracker/internal/middleware"
+	"github.com/dositadi/groupie-tracker/internal/models"
+	"github.com/jackc/pgx/v5"
+)
+
+type App struct {
+	db        *pgx.Conn
+	config    config
+	logger    *jsonlog.Logger
+	handler   *handlers.Handler
+	midleware *middleware.Middleware
+	client    *artistapi.ArtistInfo
+}
+
+func (a *App) init() {
+	a.client.Init()
+	a.config = newConfig()
+	a.logger = jsonlog.New(os.Stdout, jsonlog.LevelInfo)
+	a.initDB()
+	models := models.New(a.db, a.logger)
+	a.handler = handlers.New(*a.logger, &models.UserModel)
+	a.midleware = middleware.New(*a.handler, *a.logger)
+}
+
+func (a *App) Run() {
+	a.init()
+}
