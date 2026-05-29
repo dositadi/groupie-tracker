@@ -1,6 +1,10 @@
 package posthandler
 
-import "github.com/dositadi/groupie-tracker/internal/data"
+import (
+	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
+	"github.com/dositadi/groupie-tracker/internal/data"
+	jsonlog "github.com/dositadi/groupie-tracker/internal/json_log"
+)
 
 type UserModel interface {
 	Delete(id string) error
@@ -13,11 +17,15 @@ type UserModel interface {
 }
 
 type Post struct {
+	logger    jsonlog.Logger
 	userModel UserModel
+	client    artistapi.ArtistInfo
 }
 
-func New(userModel UserModel) *Post {
+func New(userModel UserModel, client artistapi.ArtistInfo, logger jsonlog.Logger) *Post {
 	return &Post{
 		userModel: userModel,
+		logger:    logger,
+		client:    client,
 	}
 }

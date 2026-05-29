@@ -12,7 +12,7 @@ func (a *ArtistInfo) fillArtistInfoFromRelations(ctx context.Context, chArtistIn
 	wg := new(sync.WaitGroup)
 
 	for artInfo := range chArtistInfo {
-		art := artists[artInfo.id]
+		art := artists[artInfo.Id]
 		wg.Add(1)
 
 		go func(aInfo *ArtistInfo, a artist) {

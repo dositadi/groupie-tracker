@@ -22,7 +22,7 @@ func (a *ArtistInfo) fillArtistInfoFromLocation(ctx context.Context, chArtistInf
 	}
 
 	for artInfo := range chArtistInfo {
-		art := artists[artInfo.id]
+		art := artists[artInfo.Id]
 
 		wg.Add(1)
 

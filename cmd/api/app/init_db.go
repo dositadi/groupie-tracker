@@ -62,7 +62,7 @@ func (a *App) connectToDB() (*pgx.Conn, error) {
 			})
 			return nil, e
 		}
-		time.Sleep(5 * time.Second)
+		time.Sleep(2 * time.Second)
 	}
 
 	a.logger.PrintInfo("Database connected successfully", map[string]string{

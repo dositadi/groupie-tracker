@@ -24,6 +24,7 @@ type App struct {
 
 func (a *App) init() {
 	a.router = chi.NewRouter()
+	a.client = artistapi.New()
 	a.client.Init()
 	a.config = newConfig()
 	a.logger = jsonlog.New(os.Stdout, jsonlog.LevelInfo)
@@ -31,6 +32,7 @@ func (a *App) init() {
 	models := models.New(a.db, a.logger)
 	a.handler = handlers.New(*a.logger, &models.UserModel, *a.client)
 	a.midleware = middleware.New(*a.handler, *a.logger)
+	a.initHandlers()
 }
 
 func (a *App) Run() {

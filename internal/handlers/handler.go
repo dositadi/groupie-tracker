@@ -34,9 +34,9 @@ func New(logger jsonlog.Logger, userModel UserModel, client artistapi.ArtistInfo
 	return &Handler{
 		logger:    logger,
 		userModel: userModel,
-		Get:       *gethandler.New(userModel),
-		Post:      *posthandler.New(userModel),
-		Delete:    *deletehandler.New(userModel),
+		Get:       *gethandler.New(userModel, client, logger),
+		Post:      *posthandler.New(userModel, client, logger),
+		Delete:    *deletehandler.New(userModel, client, logger),
 	}
 }
 

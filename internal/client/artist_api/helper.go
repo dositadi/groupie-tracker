@@ -17,17 +17,17 @@ type InfoTypes interface {
 func populateArtistInfo[T InfoTypes](info T, artistInfo *ArtistInfo) *ArtistInfo {
 	switch v := any(info).(type) {
 	case artist:
-		artistInfo.id = v.Id
-		artistInfo.image = v.Image
-		artistInfo.name = v.Name
-		artistInfo.members = v.Members
-		artistInfo.creationDate = v.CreationDate
-		artistInfo.firstAlbum = v.FirstAlbum
+		artistInfo.Id = v.Id
+		artistInfo.Image = v.Image
+		artistInfo.Name = v.Name
+		artistInfo.Members = v.Members
+		artistInfo.CreationDate = v.CreationDate
+		artistInfo.FirstAlbum = v.FirstAlbum
 
 	case location:
 		if artistInfo != nil {
-			if artistInfo.id == v.Id {
-				artistInfo.locations = v.Locations
+			if artistInfo.Id == v.Id {
+				artistInfo.Locations = v.Locations
 			}
 		} else {
 			return nil
@@ -35,8 +35,8 @@ func populateArtistInfo[T InfoTypes](info T, artistInfo *ArtistInfo) *ArtistInfo
 
 	case concertDate:
 		if artistInfo != nil {
-			if artistInfo.id == v.Id {
-				artistInfo.concertDates = v.Dates
+			if artistInfo.Id == v.Id {
+				artistInfo.ConcertDates = v.Dates
 			}
 		} else {
 			return nil
@@ -44,8 +44,8 @@ func populateArtistInfo[T InfoTypes](info T, artistInfo *ArtistInfo) *ArtistInfo
 
 	case relations:
 		if artistInfo != nil {
-			if artistInfo.id == v.Id {
-				artistInfo.datesLocations = v.DatesLocations
+			if artistInfo.Id == v.Id {
+				artistInfo.DatesLocations = v.DatesLocations
 			}
 		} else {
 			return nil

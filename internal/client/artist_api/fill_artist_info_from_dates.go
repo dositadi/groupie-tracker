@@ -22,7 +22,7 @@ func (a *ArtistInfo) fillArtistInfoFromDate(ctx context.Context, chArtistInfo ch
 	}
 
 	for artInfo := range chArtistInfo {
-		art := artists[artInfo.id]
+		art := artists[artInfo.Id]
 		wg.Add(1)
 
 		go func(aInfo *ArtistInfo, a artist) {

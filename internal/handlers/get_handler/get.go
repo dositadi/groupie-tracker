@@ -1,7 +1,9 @@
 package gethandler
 
 import (
+	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
 	"github.com/dositadi/groupie-tracker/internal/data"
+	jsonlog "github.com/dositadi/groupie-tracker/internal/json_log"
 )
 
 type UserModel interface {
@@ -15,11 +17,15 @@ type UserModel interface {
 }
 
 type Get struct {
+	logger    jsonlog.Logger
 	usermodel UserModel
+	client    artistapi.ArtistInfo
 }
 
-func New(usermodel UserModel) *Get {
+func New(usermodel UserModel, client artistapi.ArtistInfo, logger jsonlog.Logger) *Get {
 	return &Get{
 		usermodel: usermodel,
+		client:    client,
+		logger:    logger,
 	}
 }

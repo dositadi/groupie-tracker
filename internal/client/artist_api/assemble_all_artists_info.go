@@ -13,10 +13,10 @@ func (a *ArtistInfo) assembleArtistInfoAsMap(chArtistsInfo chan *ArtistInfo) (ma
 	byFirstAlbum := make(map[string]ArtistInfo)
 
 	for artistInfo := range chArtistsInfo {
-		byId[artistInfo.id] = *artistInfo
-		byCreationDate[artistInfo.creationDate] = *artistInfo
-		byName[artistInfo.name] = *artistInfo
-		byFirstAlbum[artistInfo.firstAlbum] = *artistInfo
+		byId[artistInfo.Id] = *artistInfo
+		byCreationDate[artistInfo.CreationDate] = *artistInfo
+		byName[artistInfo.Name] = *artistInfo
+		byFirstAlbum[artistInfo.FirstAlbum] = *artistInfo
 	}
 	return byId, byCreationDate, byName, byFirstAlbum
 }
