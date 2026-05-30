@@ -1,22 +1,18 @@
-package usermodel
+package searchmodel
 
 import (
 	jsonlog "github.com/dositadi/groupie-tracker/internal/json_log"
 	"github.com/jackc/pgx/v5"
 )
 
-type UserModel struct {
+type SearchModel struct {
 	db     *pgx.Conn
 	logger jsonlog.Logger
 }
 
-const (
-	timeOut = 5
-)
-
-func New(db *pgx.Conn, logger jsonlog.Logger) *UserModel {
-	return &UserModel{
-		db:     db,
+func New(db *pgx.Conn, logger jsonlog.Logger) *SearchModel {
+	return &SearchModel{
 		logger: logger,
+		db:     db,
 	}
 }

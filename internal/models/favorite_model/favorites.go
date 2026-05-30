@@ -6,11 +6,11 @@ import (
 )
 
 type FavoriteModel struct {
-	logger jsonlog.Logger
 	db     *pgx.Conn
+	logger jsonlog.Logger
 }
 
-func New(logger jsonlog.Logger, db *pgx.Conn) *FavoriteModel {
+func New(db *pgx.Conn, logger jsonlog.Logger) *FavoriteModel {
 	return &FavoriteModel{
 		logger: logger,
 		db:     db,
