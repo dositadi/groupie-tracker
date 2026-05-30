@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"os"
 	"time"
 
 	"github.com/dositadi/groupie-tracker/internal/data"
@@ -17,8 +18,11 @@ func (a *Auth) GenerateJWT(claim data.ActiveUser) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodES256, claim)
+	jwtKey := os.Getenv("JWTKEY")
 
-	token, err := jwt.ParseWithClaims("",claim,func(t *jwt.Token) (any, error) {
+	signedToken, err := token.SignedString([]byte(jwtKey))
+	if err != nil {
 		
-	})
+	}
+
 }

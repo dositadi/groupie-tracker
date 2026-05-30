@@ -78,7 +78,7 @@ func (f *FakeUserModel) Update(id string, info data.UpdateUser) error {
 	}
 
 	if info.HashedPassword != nil {
-		user.HashedPassword = *info.HashedPassword
+		user.HashedPassword = info.HashedPassword
 	}
 
 	if info.Username != nil {

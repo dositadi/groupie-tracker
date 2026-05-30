@@ -26,7 +26,7 @@ type Handler struct {
 	userModel UserModel
 	client    artistapi.ArtistInfo
 	Get       gethandler.Get
-	Post      posthandler.
+	Post      posthandler.Post
 	Delete    deletehandler.Delete
 }
 
@@ -35,7 +35,7 @@ func New(logger jsonlog.Logger, userModel UserModel, client artistapi.ArtistInfo
 		logger:    logger,
 		userModel: userModel,
 		Get:       *gethandler.New(userModel, client, logger),
-		Post:      *posthandler.New(logger, userModel, client),
+		Post:      *posthandler.New(userModel, client, logger),
 		Delete:    *deletehandler.New(userModel, client, logger),
 	}
 }

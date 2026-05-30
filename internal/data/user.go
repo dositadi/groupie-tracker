@@ -3,7 +3,6 @@ package data
 import (
 	"time"
 
-	"github.com/golang-jwt/jwt"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -20,7 +19,7 @@ type User struct {
 type UpdateUser struct {
 	Username       *string
 	Email          *string
-	HashedPassword *string
+	HashedPassword []byte
 }
 
 type ActiveUser struct {
