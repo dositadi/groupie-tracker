@@ -1,9 +1,9 @@
 BEGIN;
 
-CREATE TABLE IF NOT EXISTS favorites (
+CREATE TABLE IF NOT EXISTS searches (
     id uuid NOT NULL PRIMARY KEY,
+    search text NOT NULL,
     userId uuid NOT NULL,
-    artistId integer NOT NULL,
     version integer NOT NULL DEFAULT 1,
     created_at TIMESTAMP NOT NULL DEFAULT now(),
     updated_at TIMESTAMP NOT NULL DEFAULT now(),
@@ -12,3 +12,4 @@ CREATE TABLE IF NOT EXISTS favorites (
 );
 
 COMMIT;
+
