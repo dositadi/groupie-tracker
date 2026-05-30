@@ -1,0 +1,11 @@
+BEGIN;
+
+CREATE TABLE IF NOT EXISTS favorites (
+    id uuid NOT NULL PRIMARY KEY,
+    userId uuid NOT NULL,
+    artistId uuid NOT NULL,
+
+    CONSTRAINT fk_user FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+COMMIT;

@@ -10,6 +10,6 @@ CREATE TABLE IF NOT EXISTS users (
     version integer NOT NULL DEFAULT 1,
     created_at TIMESTAMP NOT NULL DEFAULT now(),
     updated_at TIMESTAMP NOT NULL DEFAULT now()
-)
+);
 
 COMMIT;
