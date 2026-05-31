@@ -33,13 +33,12 @@ func (a *Auth) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue(utils.PASSWORD_KEY)
 	email := r.FormValue(utils.EMAIL_KEY)
 
-	valid, errStr := validator.ValidFormValues(username, email, password)
-	if !valid {
-		e := fmt.Errorf(errStr)
-		a.logger.PrintError(e.Error(), map[string]string{
+	err := validator.ValidRegFormValues(username, email, password)
+	if err != nil {
+		a.logger.PrintError(err.Error(), map[string]string{
 			"Source": sourceReg,
 		})
-		http.Error(w, e.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
 	hashedPassword, err := a.hashPassword([]byte(password))

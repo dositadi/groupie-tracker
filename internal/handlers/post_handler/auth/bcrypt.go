@@ -22,14 +22,14 @@ func (a *Auth) hashPassword(password []byte) ([]byte, error) {
 	return hashedPassword, nil
 }
 
-func (a *Auth) compareHashedPassword(hashedPassword, password []byte) bool {
+func (a *Auth) compareHashedPassword(hashedPassword, password []byte) error {
 	err := bcrypt.CompareHashAndPassword(hashedPassword, password)
 	if err != nil {
 		e := helper.WrapError("Compare hash and password error", err)
 		a.logger.PrintError(e.Error(), map[string]string{
 			"Source": sourceHashpassword,
 		})
-		return false
+		return e
 	}
-	return true
+	return nil
 }

@@ -1,25 +1,46 @@
 package validator
 
-import "regexp"
+import (
+	"errors"
+	"regexp"
+)
 
-func ValidFormValues(username, email, password string) (bool, string) {
+func ValidRegFormValues(username, email, password string) error {
 	switch {
 	case username == "":
-		return false, "Username field cannot be empty"
+		return errors.New("Username field cannot be empty")
 	case email == "":
-		return false, "Email field cannot be empty"
+		return errors.New("Email field cannot be empty")
 	case password == "":
-		return false, "Password field cannot be empty"
+		return errors.New("Password field cannot be empty")
 	case email != "":
 		if !validateEmail(email) {
-			return false, "Invalid email address format. Example: example@gmail.com"
+			return errors.New("Invalid email address format. Example: example@gmail.com")
 		}
 	case password != "":
 		if len(password) < 8 {
-			return false, "Password should be at least 8 characters long"
+			return errors.New("Password should be at least 8 characters long")
 		}
 	}
-	return true, ""
+	return nil
+}
+
+func ValidateLoginFormValues(email, password string) error {
+	switch {
+	case email == "":
+		return errors.New("Email field cannot be empty")
+	case password == "":
+		return errors.New("Password field cannot be empty")
+	case email != "":
+		if !validateEmail(email) {
+			return errors.New("Invalid email address format. Example: example@gmail.com")
+		}
+	case password != "":
+		if len(password) < 8 {
+			return errors.New("Password should be at least 8 characters long")
+		}
+	}
+	return nil
 }
 
 func validateEmail(email string) bool {
