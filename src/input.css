@@ -1,0 +1,368 @@
+@import "tailwindcss";
+
+/* ─── Page-specific component CSS ────────────────────────────────────────── */
+/* @import "./common.css";
+@import "./login.css";
+@import "./register.css";
+@import "./reset_password.css";
+@import "./index.css"; */
+
+/* ─── Tell Tailwind v4 where to scan for classes ─────────────────────────── */
+@source "../internal/web/templates/**/*.html";
+@source "../internal/**/*.go";
+
+/* ─── Design tokens — Crescendo colour & type palette ────────────────────── */
+@theme {
+  /* ── Colours ─────────────────────────────────────────────────────────── */
+
+  /* Brand / accent */
+  --color-brand:          #4F46E5;
+  --color-brand-hover:    #4338CA;
+  --color-brand-active:   #3730A3;
+  --color-brand-light:    #EEF2FF;
+
+  /* Ink (text) scale */
+  --color-ink:            #111827;
+  --color-ink-secondary:  #4B5563;
+  --color-ink-muted:      #6B7280;
+  --color-ink-disabled:   #9CA3AF;
+
+  /* Surface scale */
+  --color-surface:        #FAF9F7;
+  --color-surface-white:  #FFFFFF;
+  --color-surface-alt:    #F5F6F8;
+
+  /* Border scale */
+  --color-border:         #E5E7EB;
+  --color-border-soft:    #EEF1F4;
+  --color-border-focus:   #C7D2FE;
+
+  /* ── Typography ──────────────────────────────────────────────────────── */
+  --font-display: "DM Serif Display", Georgia, serif;
+  --font-sans:    "DM Sans", system-ui, sans-serif;
+
+  /* ── Box shadows ─────────────────────────────────────────────────────── */
+  --shadow-sm:       0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md:       0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-lg:       0 10px 30px rgba(0, 0, 0, 0.08);
+  --shadow-brand-sm: 0 4px 14px rgba(79, 70, 229, 0.18);
+
+  /* ── Keyframes ───────────────────────────────────────────────────────── */
+
+  /* Shared: waveform bar bounce (signup uses bar-bounce, login uses bar-dance —
+     they are identical; a single definition covers both) */
+  --animate-bar-bounce: bar-bounce 1.1s ease-in-out infinite;
+
+  /* Signup-specific animations */
+  --animate-bar1:        bar-bounce 1.1s ease-in-out infinite 0s;
+  --animate-bar2:        bar-bounce 1.1s ease-in-out infinite 0.18s;
+  --animate-bar3:        bar-bounce 1.1s ease-in-out infinite 0.36s;
+  --animate-bar4:        bar-bounce 1.1s ease-in-out infinite 0.54s;
+  --animate-bar5:        bar-bounce 1.1s ease-in-out infinite 0.72s;
+
+  --animate-fade-up:     fade-up 0.7s ease-out forwards;
+  --animate-fade-up-d1:  fade-up 0.7s ease-out 0.1s forwards;
+  --animate-fade-up-d2:  fade-up 0.7s ease-out 0.2s forwards;
+  --animate-fade-up-d3:  fade-up 0.7s ease-out 0.3s forwards;
+  --animate-fade-up-d4:  fade-up 0.7s ease-out 0.4s forwards;
+  --animate-fade-up-d5:  fade-up 0.7s ease-out 0.5s forwards;
+  --animate-fade-up-d6:  fade-up 0.7s ease-out 0.6s forwards;
+
+  --animate-note1:       note-float 3.2s ease-out infinite 0s;
+  --animate-note2:       note-float 3.2s ease-out infinite 1.1s;
+  --animate-note3:       note-float 3.2s ease-out infinite 2.2s;
+
+  --animate-spin-slow:   spin-slow 18s linear infinite;
+  --animate-pulse-ring:  pulse-ring 2.4s ease-out infinite;
+
+  /* Login-specific animations */
+  --animate-fu-d1:       fade-up 0.65s ease-out 0.08s both;
+  --animate-fu-d2:       fade-up 0.65s ease-out 0.16s both;
+  --animate-fu-d3:       fade-up 0.65s ease-out 0.24s both;
+  --animate-fu-d4:       fade-up 0.65s ease-out 0.32s both;
+  --animate-fu-d5:       fade-up 0.65s ease-out 0.40s both;
+  --animate-fu-d6:       fade-up 0.65s ease-out 0.48s both;
+
+  --animate-slide-left:  slide-in-left 0.7s ease-out both;
+  --animate-sl-d1:       slide-in-left 0.7s ease-out 0.10s both;
+  --animate-sl-d2:       slide-in-left 0.7s ease-out 0.25s both;
+  --animate-sl-d3:       slide-in-left 0.7s ease-out 0.40s both;
+  --animate-sl-d4:       slide-in-left 0.7s ease-out 0.55s both;
+
+  /* Login bar-dance (same timing as bar-bounce but with login delays) */
+  --animate-bar6:        bar-bounce 1.0s ease-in-out 0.70s infinite;
+
+  --animate-needle:      needle-sway 2.8s ease-in-out infinite;
+  --animate-platter:     platter-spin 4s linear infinite;
+  --animate-ring:        ring-pulse 2.6s ease-out infinite;
+  --animate-ring-d:      ring-pulse 2.6s ease-out 0.9s infinite;
+  --animate-track-scroll: track-scroll 28s linear infinite;
+}
+
+/* ─── Keyframe definitions ────────────────────────────────────────────────── */
+
+/* Waveform bar bounce (used by both pages; login calls it bar-dance but the
+   definition is identical so one @keyframes block covers both) */
+@keyframes bar-bounce {
+  0%, 100% { transform: scaleY(0.3); }
+  50%       { transform: scaleY(1);   }
+}
+
+/* Signup — fade up (forwards fill) */
+@keyframes fade-up {
+  0%   { opacity: 0; transform: translateY(18px); }
+  100% { opacity: 1; transform: translateY(0);    }
+}
+
+/* Login — fade up uses the same name; the login version uses a 16 px offset
+   and "both" fill mode. The difference is handled via animation shorthand
+   tokens above, not a separate keyframe name. */
+
+/* Floating music note */
+@keyframes note-float {
+  0%   { opacity: 0;   transform: translateY(0px)   rotate(-8deg);  }
+  30%  { opacity: 0.7;                                               }
+  100% { opacity: 0;   transform: translateY(-52px)  rotate(10deg); }
+}
+
+/* Login variant: note-rise (slightly different Y travel) */
+@keyframes note-rise {
+  0%   { opacity: 0; transform: translateY(4px)   rotate(-6deg);  }
+  30%  { opacity: 1;                                               }
+  100% { opacity: 0; transform: translateY(-56px)  rotate(12deg); }
+}
+
+/* Vinyl / platter spin */
+@keyframes spin-slow {
+  0%   { transform: rotate(0deg);   }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes platter-spin {
+  0%   { transform: rotate(0deg);   }
+  100% { transform: rotate(360deg); }
+}
+
+/* Pulse ring */
+@keyframes pulse-ring {
+  0%   { transform: scale(0.95); opacity: 0.6; }
+  70%  { transform: scale(1.08); opacity: 0;   }
+  100% { transform: scale(0.95); opacity: 0;   }
+}
+
+/* Login ring-pulse variant */
+@keyframes ring-pulse {
+  0%   { transform: scale(1);    opacity: 0.5; }
+  70%  { transform: scale(1.12); opacity: 0;   }
+  100% { transform: scale(1);    opacity: 0;   }
+}
+
+/* Login slide-in from left */
+@keyframes slide-in-left {
+  0%   { opacity: 0; transform: translateX(-24px); }
+  100% { opacity: 1; transform: translateX(0);      }
+}
+
+/* Login tonearm needle sway */
+@keyframes needle-sway {
+  0%, 100% { transform: rotate(-24deg); }
+  50%       { transform: rotate(-10deg); }
+}
+
+/* Login scrolling track strip */
+@keyframes track-scroll {
+  0%   { transform: translateX(0);    }
+  100% { transform: translateX(-50%); }
+}
+
+/* ─── Base styles ─────────────────────────────────────────────────────────── */
+body {
+  background-color: theme(--color-surface);   /* #FAF9F7 */
+}
+
+/* ─── Shared component: field-input ──────────────────────────────────────── */
+/*
+  Used on all text / email / password inputs across both pages.
+  Focus ring and validation states are defined here so they don't need to
+  live in per-page <style> blocks.
+*/
+.field-input {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: theme(--color-border-focus);          /* #C7D2FE */
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.09);
+  background: #fff;
+}
+
+/* CSS-only inline validation (login page) */
+.field-error { display: none; }
+
+.field-input:not(:placeholder-shown):invalid + .field-error,
+.field-input:not(:placeholder-shown):invalid ~ .field-error {
+  display: block;
+}
+
+.field-input:not(:placeholder-shown):invalid {
+  border-color: #FCA5A5;
+  background-color: #FFF5F5;
+}
+
+.field-input:not(:placeholder-shown):invalid:focus {
+  border-color: #FCA5A5;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
+}
+
+.field-input:not(:placeholder-shown):valid {
+  border-color: #86EFAC;
+}
+
+/* ─── Shared component: waveform bar ─────────────────────────────────────── */
+/*
+  .waveform-bar  — signup page class name
+  .wbar          — login  page class name
+  Both share the same base geometry; colours / opacity are applied inline
+  or via Tailwind utilities in the templates.
+*/
+.waveform-bar,
+.wbar {
+  display: inline-block;
+  width: 3px;
+  border-radius: 9999px;
+  transform-origin: bottom center;
+}
+
+/* Signup decorative bars get a default colour + subdued opacity */
+.waveform-bar {
+  background: theme(--color-brand);   /* #4F46E5 */
+  opacity: 0.15;
+}
+
+/* ─── Shared component: floating music note ──────────────────────────────── */
+/*
+  .music-note — signup page
+  .mnote      — login  page
+*/
+.music-note,
+.mnote {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  color: theme(--color-brand);   /* overridden inline where needed */
+}
+
+.music-note { font-size: 1.1rem; }
+
+/* ─── Shared component: noise overlay ───────────────────────────────────── */
+/*
+  .noise-overlay — signup page
+  .noise         — login  page
+*/
+.noise-overlay,
+.noise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  background-size: 180px;
+  opacity: 0.45;
+}
+
+/* ─── Signup page: left brand panel ─────────────────────────────────────── */
+.left-panel {
+  background-color: #1e1b4b;
+  background-image:
+    radial-gradient(ellipse at 20% 20%, rgba(99, 91, 255, 0.28) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(79, 70, 229, 0.18) 0%, transparent 55%);
+}
+
+/* ─── Signup page: password strength bar segment ────────────────────────── */
+.strength-segment {
+  height: 3px;
+  border-radius: 9999px;
+  background: theme(--color-border);   /* #E5E7EB */
+  flex: 1;
+}
+
+/* ─── Signup page: vinyl groove (SVG stroke helper) ─────────────────────── */
+.vinyl-groove {
+  stroke-dasharray: 3 6;
+}
+
+/* ─── Signup page: CSS-only password visibility toggle ───────────────────── */
+#pw-toggle-check { display: none; }
+
+/* Default (unchecked): show password input, hide text input */
+#pw-toggle-check:not(:checked) ~ .pw-wrap input[type="password"] { display: block; }
+#pw-toggle-check:not(:checked) ~ .pw-wrap input[type="text"]     { display: none;  }
+
+/* Checked: show text input, hide password input */
+#pw-toggle-check:checked ~ .pw-wrap input[type="password"] { display: none;  }
+#pw-toggle-check:checked ~ .pw-wrap input[type="text"]     { display: block; }
+
+/* Eye icon swap — signup */
+#pw-toggle-check:not(:checked) ~ .pw-wrap .eye-open  { display: block; }
+#pw-toggle-check:not(:checked) ~ .pw-wrap .eye-closed { display: none; }
+#pw-toggle-check:checked ~ .pw-wrap .eye-open        { display: none;  }
+#pw-toggle-check:checked ~ .pw-wrap .eye-closed      { display: block; }
+
+/* ─── Login page: brand panel ────────────────────────────────────────────── */
+.brand-panel {
+  background-color: #0f0d23;
+  background-image:
+    radial-gradient(ellipse at 15%  15%, rgba(79,  70, 229, 0.32) 0%, transparent 55%),
+    radial-gradient(ellipse at 85%  75%, rgba(99,  91, 255, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 100%, rgba(55,  48, 163, 0.22) 0%, transparent 60%);
+}
+
+/* ─── Login page: scrolling track strip ──────────────────────────────────── */
+.track-strip {
+  display: flex;
+  white-space: nowrap;
+  width: max-content;
+}
+
+.track-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  margin-right: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  flex-shrink: 0;
+}
+
+.track-item svg {
+  color: #818cf8;
+  flex-shrink: 0;
+}
+
+/* ─── Login page: turntable needle pivot ─────────────────────────────────── */
+.needle-wrap {
+  transform-origin: 228px 62px;
+}
+
+/* ─── Login page: CSS-only password visibility toggle ────────────────────── */
+#pw-toggle { display: none; }
+
+/* Default: show masked input, hide plain text input */
+#pw-toggle:not(:checked) ~ .pw-field-wrap #password-masked { display: block; }
+#pw-toggle:not(:checked) ~ .pw-field-wrap #password-plain  { display: none;  }
+
+/* Checked: hide masked input, show plain text input */
+#pw-toggle:checked ~ .pw-field-wrap #password-masked { display: none;  }
+#pw-toggle:checked ~ .pw-field-wrap #password-plain  { display: block; }
+
+/* Eye icon swap — login */
+.eye-open  { display: block; }
+.eye-closed { display: none;  }
+
+#pw-toggle:checked ~ .pw-toggle-label .eye-open  { display: none;  }
+#pw-toggle:checked ~ .pw-toggle-label .eye-closed { display: block; }
