@@ -13,9 +13,6 @@ import (
 
 const (
 	sourceReg      = "Register handler f(n) under auth pkg"
-	usernameEmpty  = "Username field cannot be empty"
-	passwordEmpty  = "Password field cannot be empty/Password less than 8 characters"
-	emailEmpty     = "Email field cannot be empty/Invalid Email"
 	termsUnchecked = "Kindly check the terms."
 )
 
@@ -44,17 +41,17 @@ func (a *Auth) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		check = false
 		switch errType {
 		case authservice.EMAIL_ERROR:
-			authService.RenderAuthError(errType, emailEmpty)
+			_ = authService.RenderAuthError(errType, err.Error())
 			a.logger.PrintError(err.Error(), map[string]string{
 				"Source": sourceReg,
 			})
 		case authservice.NAME_ERROR:
-			authService.RenderAuthError(errType, usernameEmpty)
+			_ = authService.RenderAuthError(errType, err.Error())
 			a.logger.PrintError(err.Error(), map[string]string{
 				"Source": sourceReg,
 			})
 		case authservice.PASSWORD_ERROR:
-			authService.RenderAuthError(errType, passwordEmpty)
+			_ = authService.RenderAuthError(errType, err.Error())
 			a.logger.PrintError(err.Error(), map[string]string{
 				"Source": sourceReg,
 			})
@@ -62,9 +59,9 @@ func (a *Auth) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !(terms == "true" || terms == "yes") {
+	if !(terms == "true") {
 		check = false
-		authService.RenderAuthError(errType, termsUnchecked)
+		_ = authService.RenderAuthError(errType, termsUnchecked)
 		a.logger.PrintError("Terms not checked", map[string]string{
 			"Source": sourceReg,
 		})

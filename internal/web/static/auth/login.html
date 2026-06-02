@@ -183,7 +183,9 @@
       <!-- Card -->
       <div class="bg-white rounded-2xl border border-border-soft px-7 py-8 sm:px-8 shadow-lg animate-fu-d1">
 
-        <form method="POST" action="" novalidate>
+        <div id="nil"></div>
+
+        <form hx-post="{{.LoginUrl}}" hx-swap="outerHTML" hx-target="#body" hx-target-400="#nil" novalidate>
 
           <!-- Email field -->
           <div class="mb-5 animate-fu-d2">
@@ -198,7 +200,7 @@
               </span>
               <input
                 id="email"
-                name="{{.EMAIL_KEY}}"
+                name="{{.EmailKey}}"
                 type="email"
                 placeholder="you@example.com"
                 autocomplete="email"
@@ -206,13 +208,11 @@
                 class="field-input w-full pl-10 pr-4 py-2.5 rounded-xl border border-border bg-surface-alt text-ink text-sm"
               />
             </div>
-            <p class="field-error mt-1.5 text-xs text-red-600">
-              Please enter a valid email address.
-            </p>
+            <p class="hidden mt-1.5 text-xs text-red-500" id="email-error"></p>
           </div>
 
-          <!-- Password field with CSS-only visibility toggle -->
-          <div class="mb-5 animate-fu-d3">
+          <!-- Password field -->
+          <div class="mb-5 animate-fu-d2">
             <div class="flex items-center justify-between mb-1.5">
               <label for="password-masked" class="block text-sm font-medium text-ink-secondary">
                 Password
@@ -221,31 +221,22 @@
                 Forgot password?
               </a>
             </div>
-
             <div class="relative">
-              <input type="checkbox" id="pw-toggle" />
-
-              <div class="pw-field-wrap relative">
-                <span class="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-ink-disabled z-10">
+              <span class="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-ink-disabled z-10">
                   <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/>
                   </svg>
                 </span>
-
-                <input
+              <input
                   id="password-plain"
-                  name="{{.PASSWORD_KEY}}"
+                  name="{{.PasswordKey}}"
                   type="password"
                   placeholder="Your password"
                   autocomplete="current-password"
                   class="field-input w-full pl-10 pr-11 py-2.5 rounded-xl border border-border bg-surface-alt text-ink text-sm"
                 />
-              </div>
             </div>
-
-            <p class="field-error mt-1.5 text-xs text-red-600">
-              Please enter your password.
-            </p>
+            <p class="hidden mt-1.5 text-xs text-red-500" id="password-error"></p>
           </div>
 
           <!-- Remember me -->
@@ -309,7 +300,7 @@
       <!-- Sign up link -->
       <p class="text-center text-sm mt-6 text-ink-muted animate-fu-d6">
         Don't have an account?
-        <a href="/signup" class="font-medium text-brand hover:text-brand-hover underline underline-offset-2 ml-1 transition-colors">
+        <a hx-get="{{.SignupUrl}}" hx-swap="outerHTML" hx-target="#body" hx-push-url="true" class="font-medium text-brand hover:text-brand-hover underline underline-offset-2 ml-1 transition-colors">
           Create one free
         </a>
       </p>

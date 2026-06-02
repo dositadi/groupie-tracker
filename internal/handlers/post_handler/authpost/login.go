@@ -43,12 +43,12 @@ func (a *Auth) LoginHandler(w http.ResponseWriter, r *http.Request) {
 		check = false
 		switch errType {
 		case authservice.EMAIL_ERROR:
-			_ = authService.RenderAuthError(errType, emailEmpty)
+			_ = authService.RenderAuthError(errType, err.Error())
 			a.logger.PrintError(err.Error(), map[string]string{
 				"Source": sourceLogin,
 			})
 		case authservice.PASSWORD_ERROR:
-			_ = authService.RenderAuthError(errType, emailEmpty)
+			_ = authService.RenderAuthError(errType, err.Error())
 			a.logger.PrintError(err.Error(), map[string]string{
 				"Source": sourceLogin,
 			})

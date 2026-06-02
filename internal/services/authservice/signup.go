@@ -26,15 +26,16 @@ func (a *AuthService) RenderSignupPage() error {
 	}
 
 	data := struct {
-		SignupUrl, LoginUrl                string
-		PrivacyUrl, TermUrl                string
-		UsernameKey, EmailKey, PasswordKey,TermsKey string
+		SignupUrl, LoginUrl                          string
+		PrivacyUrl, TermUrl                          string
+		UsernameKey, EmailKey, PasswordKey, TermsKey string
 	}{
 		SignupUrl:   utils.REGISTER.String(),
 		LoginUrl:    utils.LOGIN.String(),
 		UsernameKey: utils.USERNAME_KEY,
 		EmailKey:    utils.EMAIL_KEY,
 		PasswordKey: utils.PASSWORD_KEY,
+		TermsKey:    utils.TERMS_KEY,
 	}
 
 	if err = temp.Execute(a.responseWriter, data); err != nil {

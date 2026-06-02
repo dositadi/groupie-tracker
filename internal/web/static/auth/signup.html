@@ -140,7 +140,9 @@
         <!-- Form card -->
         <div class="bg-surface-white rounded-2xl shadow-lg border border-border-soft p-7 sm:p-8 opacity-0 animate-fade-up-d1">
 
-          <form id="signup-form" hx-post="{{.SignupUrl}}" hx-swap="outerHTML" hx-target="#body" hx-target-400="#name-error" novalidate>
+          <div id="nil"></div>
+
+          <form id="signup-form" hx-post="{{.SignupUrl}}" hx-swap="outerHTML" hx-target="#body" hx-target-400="#nil" hx-push-url="true" novalidate>
 
             <!-- Name -->
             <div class="mb-5 opacity-0 animate-fade-up-d2">

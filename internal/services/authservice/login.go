@@ -27,10 +27,13 @@ func (a *AuthService) RenderLoginPage() error {
 
 	data := struct {
 		UsernameKey, EmailKey, PasswordKey string
+		SignupUrl, LoginUrl string
 	}{
 		UsernameKey: utils.USERNAME_KEY,
 		EmailKey:    utils.EMAIL_KEY,
 		PasswordKey: utils.PASSWORD_KEY,
+		SignupUrl: utils.REGISTER.String(),
+		LoginUrl: utils.LOGIN.String(),
 	}
 
 	if err = temp.Execute(a.responseWriter, data); err != nil {
