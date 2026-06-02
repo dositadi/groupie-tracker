@@ -5,16 +5,17 @@ import (
 
 	"github.com/dositadi/groupie-tracker/internal/data"
 	"github.com/dositadi/groupie-tracker/internal/helper"
+	"github.com/dositadi/groupie-tracker/internal/services/authservice"
 	"github.com/dositadi/groupie-tracker/internal/utils"
 	"github.com/dositadi/groupie-tracker/internal/validator"
 	"github.com/google/uuid"
 )
 
 const (
-	sourceReg = "Register handler f(n) under auth pkg"
+	sourceReg     = "Register handler f(n) under auth pkg"
 	usernameEmpty = "Username field cannot be empty"
-	passwordEmpty = "Password field cannot be empty"
-	emailEmpty    = "Email field cannot be empty"
+	passwordEmpty = "Password field cannot be empty/Password less than 8 characters"
+	emailEmpty    = "Email field cannot be empty/Invalid Email"
 )
 
 func (a *Auth) RegisterHandler(w http.ResponseWriter, r *http.Request) {
@@ -31,17 +32,35 @@ func (a *Auth) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue(utils.USERNAME_KEY)
 	password := r.FormValue(utils.PASSWORD_KEY)
 	email := r.FormValue(utils.EMAIL_KEY)
+	check := true
 
-	err := validator.ValidRegFormValues(username, email, password)
+	authService := authservice.New(w, a.embedded, a.logger)
+
+	errType, err := validator.ValidRegFormValues(username, email, password)
 	if err != nil {
-		a.logger.PrintError(err.Error(), map[string]string{
-			"Source": sourceReg,
-		})
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		check = false
+		switch errType {
+		case authservice.EMAIL_ERROR:
+			authService.RenderAuthError(errType, emailEmpty)
+			a.logger.PrintError(err.Error(), map[string]string{
+				"Source": sourceReg,
+			})
+		case authservice.NAME_ERROR:
+			authService.RenderAuthError(errType, usernameEmpty)
+			a.logger.PrintError(err.Error(), map[string]string{
+				"Source": sourceReg,
+			})
+		case authservice.PASSWORD_ERROR:
+			authService.RenderAuthError(errType, passwordEmpty)
+			a.logger.PrintError(err.Error(), map[string]string{
+				"Source": sourceReg,
+			})
+		}
 	}
 
 	hashedPassword, err := a.hashPassword([]byte(password))
 	if err != nil {
+		check = false
 		a.logger.PrintError(err.Error(), map[string]string{
 			"Source": sourceReg,
 		})
@@ -57,6 +76,7 @@ func (a *Auth) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = a.usermodel.Insert(user)
 	if err != nil {
+		check = false
 		e := helper.WrapError("User insert error", err)
 		a.logger.PrintError(e.Error(), map[string]string{
 			"Source": sourceReg,
@@ -64,5 +84,7 @@ func (a *Auth) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, e.Error(), http.StatusBadRequest)
 	}
 
-	http.Redirect(w, r, utils.LOGIN.String(), http.StatusSeeOther)
+	if check {
+		http.Redirect(w, r, utils.LOGIN.String(), http.StatusSeeOther)
+	}
 }

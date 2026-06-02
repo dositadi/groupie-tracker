@@ -3,44 +3,46 @@ package validator
 import (
 	"errors"
 	"regexp"
+
+	"github.com/dositadi/groupie-tracker/internal/services/authservice"
 )
 
-func ValidRegFormValues(username, email, password string) error {
+func ValidRegFormValues(username, email, password string) (authservice.Error, error) {
 	switch {
 	case username == "":
-		return errors.New("Username field cannot be empty")
+		return authservice.NAME_ERROR, errors.New("Username field cannot be empty")
 	case email == "":
-		return errors.New("Email field cannot be empty")
+		return authservice.EMAIL_ERROR, errors.New("Email field cannot be empty")
 	case password == "":
-		return errors.New("Password field cannot be empty")
+		return authservice.PASSWORD_ERROR, errors.New("Password field cannot be empty")
 	case email != "":
 		if !validateEmail(email) {
-			return errors.New("Invalid email address format. Example: example@gmail.com")
+			return authservice.EMAIL_ERROR, errors.New("Invalid email address format. Example: example@gmail.com")
 		}
 	case password != "":
 		if len(password) < 8 {
-			return errors.New("Password should be at least 8 characters long")
+			return authservice.PASSWORD_ERROR, errors.New("Password should be at least 8 characters long")
 		}
 	}
-	return nil
+	return authservice.Error(""), nil
 }
 
-func ValidateLoginFormValues(email, password string) error {
+func ValidateLoginFormValues(email, password string) (authservice.Error, error) {
 	switch {
 	case email == "":
-		return errors.New("Email field cannot be empty")
+		return authservice.EMAIL_ERROR, errors.New("Email field cannot be empty")
 	case password == "":
-		return errors.New("Password field cannot be empty")
+		return authservice.PASSWORD_ERROR, errors.New("Password field cannot be empty")
 	case email != "":
 		if !validateEmail(email) {
-			return errors.New("Invalid email address format. Example: example@gmail.com")
+			return authservice.EMAIL_ERROR, errors.New("Invalid email address format. Example: you@example.com")
 		}
 	case password != "":
 		if len(password) < 8 {
-			return errors.New("Password should be at least 8 characters long")
+			return authservice.PASSWORD_ERROR, errors.New("Password should be at least 8 characters long")
 		}
 	}
-	return nil
+	return authservice.Error(""), nil
 }
 
 func validateEmail(email string) bool {

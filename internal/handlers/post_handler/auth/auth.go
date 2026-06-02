@@ -1,6 +1,7 @@
 package auth
 
 import (
+	groupietracker "github.com/dositadi/groupie-tracker"
 	"github.com/dositadi/groupie-tracker/internal/data"
 	jsonlog "github.com/dositadi/groupie-tracker/internal/json_log"
 )
@@ -18,11 +19,13 @@ type UserModel interface {
 type Auth struct {
 	logger    jsonlog.Logger
 	usermodel UserModel
+	embedded  groupietracker.Embedded
 }
 
-func New(logger jsonlog.Logger, userModel UserModel) *Auth {
+func New(logger jsonlog.Logger, userModel UserModel, embedded groupietracker.Embedded) *Auth {
 	return &Auth{
 		logger:    logger,
 		usermodel: userModel,
+		embedded:  embedded,
 	}
 }

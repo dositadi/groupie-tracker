@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
     email citext NOT NULL UNIQUE,
     hashed_password bytea NOT NULL,
     version integer NOT NULL DEFAULT 1,
+    agreed boolean NOT NULL DEFAULT false,
     created_at TIMESTAMP NOT NULL DEFAULT now(),
     updated_at TIMESTAMP NOT NULL DEFAULT now()
 );
