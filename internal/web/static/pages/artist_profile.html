@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Artist Profile — Crescendo</title>
+  <link rel="stylesheet" href="/src/output.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js" integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/htmx-ext-response-targets@2.0.4" integrity="sha384-T41oglUPvXLGBVyRdZsVRxNWnOOqCynaPubjUVjxhsjFTKrFJGEMm3/0KGmNQ+Pg" crossorigin="anonymous"></script>
+</head>
+<body class="bg-surface font-sans text-ink">
+
+  <!-- ─── HEADER ────────────────────────────────────────────────────────────── -->
+  <header class="bg-[#1e1b4b] sticky top-0 z-50">
+    <!-- Noise overlay -->
+    <div class="noise-overlay" style="border-radius:0;"></div>
+    <!-- Subtle radial accent -->
+    <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse at 20% 50%, rgba(99,91,255,0.18) 0%, transparent 60%);"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+
+      <!-- Back button -->
+      <a href="#" class="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors duration-200 text-sm font-medium group animate-slide-left">
+        <svg class="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+        <span>Back</span>
+      </a>
+
+      <!-- Logo -->
+      <div class="absolute left-1/2 -translate-x-1/2 animate-slide-left">
+        <a href="#" class="inline-flex items-center gap-2.5">
+          <div class="flex items-end gap-0.5" style="height:26px">
+            <div class="wbar bg-white animate-bar1" style="height:38%;opacity:.75"></div>
+            <div class="wbar bg-white animate-bar2" style="height:68%;opacity:.8"></div>
+            <div class="wbar bg-white animate-bar3" style="height:100%;opacity:.9"></div>
+            <div class="wbar bg-white animate-bar4" style="height:62%;opacity:.8"></div>
+            <div class="wbar bg-white animate-bar5" style="height:34%;opacity:.7"></div>
+          </div>
+          <span class="font-display text-white text-[1.6rem] tracking-tight">Crescendo</span>
+        </a>
+      </div>
+
+      <!-- Right spacer (balanced layout) -->
+      <div class="w-16"></div>
+    </div>
+  </header>
+
+
+  <!-- ─── HERO BAND ─────────────────────────────────────────────────────────── -->
+  <!-- Subtle editorial band — artist name, genre, years active -->
+  <div class="bg-surface-white border-b border-border-soft">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
+      <div class="flex flex-col lg:flex-row lg:items-start gap-10 lg:gap-16">
+
+        <!-- LEFT: Avatar + Follow -->
+        <div class="flex flex-col items-center lg:items-start gap-5 opacity-start animate-fade-up" style="min-width:200px">
+          <!-- Avatar with pulse rings -->
+          <div class="relative flex items-center justify-center" style="width:176px;height:176px;">
+            <div class="vinyl-ring-2"></div>
+            <div class="vinyl-ring"></div>
+            <!-- Floating music notes around avatar -->
+            <span class="music-note animate-note1 text-brand/40" style="left:-8px;top:10px;">♩</span>
+            <span class="music-note animate-note2 text-brand/40" style="right:-4px;top:24px;">♪</span>
+            <span class="music-note animate-note3 text-brand/40" style="left:10px;bottom:4px;">♫</span>
+
+            <img
+              src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop&q=80"
+              alt="Coldplay"
+              class="w-40 h-40 rounded-full object-cover border-2 border-border relative z-10"
+              style="box-shadow: 0 10px 30px rgba(0,0,0,.08);"
+            />
+          </div>
+
+          <!-- Followers stat -->
+          <div class="text-center lg:text-left">
+            <p class="text-2xl font-semibold text-ink tracking-tight">2.4M</p>
+            <p class="text-sm text-ink-muted mt-0.5">Followers</p>
+          </div>
+
+          <!-- Follow button -->
+          <button class="btn-follow w-full lg:w-auto inline-flex items-center justify-center gap-2 px-8 py-2.5 rounded-lg bg-brand text-white text-sm font-medium hover:bg-brand-hover active:bg-brand-active" style="box-shadow:0 4px 14px rgba(79,70,229,.18);">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+            </svg>
+            Follow
+          </button>
+
+          <!-- Share link -->
+          <button class="inline-flex items-center gap-1.5 text-sm text-ink-muted hover:text-brand transition-colors duration-200">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+            </svg>
+            Share profile
+          </button>
+        </div>
+
+        <!-- RIGHT: Artist details -->
+        <div class="flex-1 min-w-0">
+
+          <!-- Name + verified badge -->
+          <div class="opacity-start animate-fade-up-d1 mb-1">
+            <div class="flex items-center gap-2.5 flex-wrap">
+              <h1 class="font-display text-4xl lg:text-5xl text-ink tracking-tight leading-tight">Coldplay</h1>
+              <!-- Verified -->
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-brand-light text-brand border border-brand/20 mt-1">
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                Verified Artist
+              </span>
+            </div>
+          </div>
+
+          <!-- Genre + year tags -->
+          <div class="flex flex-wrap gap-2 mb-5 opacity-start animate-fade-up-d2">
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-ink-secondary border border-border">Alternative Rock</span>
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-ink-secondary border border-border">Pop Rock</span>
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-ink-secondary border border-border">Post-Britpop</span>
+          </div>
+
+          <!-- Quick stats row -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-7 opacity-start animate-fade-up-d3">
+            <div class="bg-amber-50 rounded-xl px-4 py-3.5 border border-border-soft">
+              <p class="text-xs text-ink-muted mb-0.5">Formed</p>
+              <p class="text-base font-semibold text-ink">1996</p>
+            </div>
+            <div class="bg-amber-50 rounded-xl px-4 py-3.5 border border-border-soft">
+              <p class="text-xs text-ink-muted mb-0.5">First Album</p>
+              <p class="text-base font-semibold text-ink">Parachutes</p>
+            </div>
+            <div class="bg-amber-50 rounded-xl px-4 py-3.5 border border-border-soft">
+              <p class="text-xs text-ink-muted mb-0.5">Band Members</p>
+              <p class="text-base font-semibold text-ink">4</p>
+            </div>
+            <div class="bg-amber-50 rounded-xl px-4 py-3.5 border border-border-soft">
+              <p class="text-xs text-ink-muted mb-0.5">Upcoming Shows</p>
+              <p class="text-base font-semibold text-brand">12</p>
+            </div>
+          </div>
+
+          <!-- Members -->
+          <div class="opacity-start animate-fade-up-d4 mb-2">
+            <p class="text-xs font-medium text-ink-muted uppercase tracking-widest mb-3">Band Members</p>
+            <div class="flex flex-wrap gap-2.5">
+              <!-- Member pill with initials avatar -->
+              <div class="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-surface-white border border-border hover:border-brand/30 hover:bg-brand-light/40 transition-all duration-200 cursor-default">
+                <div class="w-6 h-6 rounded-full bg-brand-light flex items-center justify-center text-[10px] font-semibold text-brand shrink-0">CM</div>
+                <span class="text-sm text-ink-secondary font-medium">Chris Martin</span>
+              </div>
+              <div class="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-surface-white border border-border hover:border-brand/30 hover:bg-brand-light/40 transition-all duration-200 cursor-default">
+                <div class="w-6 h-6 rounded-full bg-amber-50 flex items-center justify-center text-[10px] font-semibold text-ink-secondary shrink-0">JB</div>
+                <span class="text-sm text-ink-secondary font-medium">Jonny Buckland</span>
+              </div>
+              <div class="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-surface-white border border-border hover:border-brand/30 hover:bg-brand-light/40 transition-all duration-200 cursor-default">
+                <div class="w-6 h-6 rounded-full bg-amber-50 flex items-center justify-center text-[10px] font-semibold text-ink-secondary shrink-0">GB</div>
+                <span class="text-sm text-ink-secondary font-medium">Guy Berryman</span>
+              </div>
+              <div class="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-surface-white border border-border hover:border-brand/30 hover:bg-brand-light/40 transition-all duration-200 cursor-default">
+                <div class="w-6 h-6 rounded-full bg-amber-50 flex items-center justify-center text-[10px] font-semibold text-ink-secondary shrink-0">WC</div>
+                <span class="text-sm text-ink-secondary font-medium">Will Champion</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─── MAIN CONTENT ───────────────────────────────────────────────────────── -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex flex-col xl:flex-row gap-10">
+
+      <!-- ─── LEFT / MAIN COLUMN ───────────────────────────────────────────── -->
+      <div class="flex-1 min-w-0 space-y-10">
+
+        <!-- ── CONCERT SCHEDULE ───────────────────────────────────────────── -->
+        <section class="opacity-start animate-fade-up-d2">
+          <div class="flex items-center justify-between mb-5">
+            <div>
+              <h2 class="font-display text-2xl text-ink">Concert Schedule</h2>
+              <p class="text-sm text-ink-muted mt-0.5">Upcoming tour dates and locations</p>
+            </div>
+            <!-- Filter pills -->
+            <div class="hidden sm:flex items-center gap-2">
+              <button class="px-3.5 py-1.5 rounded-full text-xs font-medium bg-brand text-white">All</button>
+              <button class="px-3.5 py-1.5 rounded-full text-xs font-medium bg-amber-50 text-ink-secondary border border-border hover:bg-brand-light hover:text-brand hover:border-brand/20 transition-all duration-200">Europe</button>
+              <button class="px-3.5 py-1.5 rounded-full text-xs font-medium bg-amber-50 text-ink-secondary border border-border hover:bg-brand-light hover:text-brand hover:border-brand/20 transition-all duration-200">Americas</button>
+            </div>
+          </div>
+
+          <!-- Events list -->
+          <div class="space-y-3">
+
+            <!-- Event card 1 — Featured / Next show -->
+            <div class="event-card relative bg-surface-white rounded-2xl border border-border overflow-hidden" style="box-shadow:0 1px 2px rgba(0,0,0,.04);">
+              <!-- Featured strip -->
+              <div class="absolute top-0 left-0 right-0 h-0.5 bg-brand"></div>
+              <div class="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+                <!-- Date block -->
+                <div class="shrink-0 w-16 text-center bg-brand-light rounded-xl py-3 border border-brand/20">
+                  <p class="text-xs font-semibold text-brand uppercase tracking-wider">Jun</p>
+                  <p class="text-2xl font-bold text-brand leading-tight">14</p>
+                  <p class="text-xs text-brand/70">2025</p>
+                </div>
+
+                <!-- Event details -->
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-[10px] font-semibold text-brand uppercase tracking-widest bg-brand-light px-2 py-0.5 rounded-full">Next Show</span>
+                    <span class="text-[10px] font-semibold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">On Sale</span>
+                  </div>
+                  <h3 class="font-semibold text-ink text-base leading-snug">Music of the Spheres World Tour</h3>
+                  <div class="flex items-center gap-1.5 mt-1.5">
+                    <svg class="w-3.5 h-3.5 text-ink-muted shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span class="text-sm text-ink-secondary truncate">Wembley Stadium · London, UK</span>
+                  </div>
+                </div>
+
+                <!-- Action -->
+                <div class="shrink-0">
+                  <button class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-brand text-white text-sm font-medium hover:bg-brand-hover active:bg-brand-active transition-colors duration-200" style="box-shadow:0 4px 14px rgba(79,70,229,.18);">
+                    Get Tickets
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Event card 2 -->
+            <div class="event-card bg-surface-white rounded-2xl border border-border p-5 flex flex-col sm:flex-row sm:items-center gap-4" style="box-shadow:0 1px 2px rgba(0,0,0,.04);">
+              <div class="shrink-0 w-16 text-center bg-amber-50 rounded-xl py-3 border border-border-soft">
+                <p class="text-xs font-semibold text-ink-muted uppercase tracking-wider">Jul</p>
+                <p class="text-2xl font-bold text-ink leading-tight">02</p>
+                <p class="text-xs text-ink-muted">2025</p>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-[10px] font-semibold text-ink-muted uppercase tracking-widest bg-amber-50 px-2 py-0.5 rounded-full border border-border">Selling Fast</span>
+                <h3 class="font-semibold text-ink text-base leading-snug mt-1">Music of the Spheres World Tour</h3>
+                <div class="flex items-center gap-1.5 mt-1.5">
+                  <svg class="w-3.5 h-3.5 text-ink-muted shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  </svg>
+                  <span class="text-sm text-ink-secondary truncate">Stade de France · Paris, FR</span>
+                </div>
+              </div>
+              <div class="shrink-0">
+                <button class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-amber-50 text-ink-secondary text-sm font-medium border border-border hover:border-brand/30 hover:bg-brand-light hover:text-brand transition-all duration-200">
+                  Get Tickets
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Event card 3 -->
+            <div class="event-card bg-surface-white rounded-2xl border border-border p-5 flex flex-col sm:flex-row sm:items-center gap-4" style="box-shadow:0 1px 2px rgba(0,0,0,.04);">
+              <div class="shrink-0 w-16 text-center bg-amber-50 rounded-xl py-3 border border-border-soft">
+                <p class="text-xs font-semibold text-ink-muted uppercase tracking-wider">Aug</p>
+                <p class="text-2xl font-bold text-ink leading-tight">19</p>
+                <p class="text-xs text-ink-muted">2025</p>
+              </div>
+              <div class="flex-1 min-w-0">
+                <h3 class="font-semibold text-ink text-base leading-snug">Music of the Spheres World Tour</h3>
+                <div class="flex items-center gap-1.5 mt-1.5">
+                  <svg class="w-3.5 h-3.5 text-ink-muted shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  </svg>
+                  <span class="text-sm text-ink-secondary truncate">Madison Square Garden · New York, US</span>
+                </div>
+              </div>
+              <div class="shrink-0">
+                <button class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-amber-50 text-ink-secondary text-sm font-medium border border-border hover:border-brand/30 hover:bg-brand-light hover:text-brand transition-all duration-200">
+                  Get Tickets
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Event card 4 -->
+            <div class="event-card bg-surface-white rounded-2xl border border-border p-5 flex flex-col sm:flex-row sm:items-center gap-4" style="box-shadow:0 1px 2px rgba(0,0,0,.04);">
+              <div class="shrink-0 w-16 text-center bg-amber-50 rounded-xl py-3 border border-border-soft">
+                <p class="text-xs font-semibold text-ink-muted uppercase tracking-wider">Sep</p>
+                <p class="text-2xl font-bold text-ink leading-tight">07</p>
+                <p class="text-xs text-ink-muted">2025</p>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-[10px] font-semibold text-amber-700 uppercase tracking-widest bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100">Few Tickets Left</span>
+                <h3 class="font-semibold text-ink text-base leading-snug mt-1">Music of the Spheres World Tour</h3>
+                <div class="flex items-center gap-1.5 mt-1.5">
+                  <svg class="w-3.5 h-3.5 text-ink-muted shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  </svg>
+                  <span class="text-sm text-ink-secondary truncate">Optus Stadium · Perth, AU</span>
+                </div>
+              </div>
+              <div class="shrink-0">
+                <button class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-amber-50 text-sm font-medium border border-amber-20 hover:bg-amber-100 text-amber-800 transition-all duration-200">
+                  Get Tickets
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Event card 5 — Sold out -->
+            <div class="event-card bg-surface-white rounded-2xl border border-border p-5 flex flex-col sm:flex-row sm:items-center gap-4 opacity-60" style="box-shadow:0 1px 2px rgba(0,0,0,.04);">
+              <div class="shrink-0 w-16 text-center bg-amber-50 rounded-xl py-3 border border-border-soft">
+                <p class="text-xs font-semibold text-ink-muted uppercase tracking-wider">Oct</p>
+                <p class="text-2xl font-bold text-ink-muted leading-tight">22</p>
+                <p class="text-xs text-ink-muted">2025</p>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-[10px] font-semibold text-red-700 uppercase tracking-widest bg-red-50 px-2 py-0.5 rounded-full border border-red-100">Sold Out</span>
+                <h3 class="font-semibold text-ink-secondary text-base leading-snug mt-1">Music of the Spheres World Tour</h3>
+                <div class="flex items-center gap-1.5 mt-1.5">
+                  <svg class="w-3.5 h-3.5 text-ink-muted shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  </svg>
+                  <span class="text-sm text-ink-muted truncate">Allianz Arena · Munich, DE</span>
+                </div>
+              </div>
+              <div class="shrink-0">
+                <button disabled class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-amber-50 text-ink-disabled text-sm font-medium border border-border cursor-not-allowed">
+                  Sold Out
+                </button>
+              </div>
+            </div>
+
+            <!-- View all link -->
+            <div class="pt-1 text-center">
+              <button class="inline-flex items-center gap-1.5 text-sm text-brand font-medium hover:text-brand-hover transition-colors duration-200">
+                View all 12 concert dates
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ── DATES × LOCATIONS TABLE ─────────────────────────────────────── -->
+        <section class="opacity-start animate-fade-up-d3">
+          <div class="mb-5">
+            <h2 class="font-display text-2xl text-ink">Tour Schedule</h2>
+            <p class="text-sm text-ink-muted mt-0.5">Dates mapped to their venues and cities</p>
+          </div>
+
+          <div class="bg-surface-white rounded-2xl border border-border overflow-hidden" style="box-shadow:0 1px 2px rgba(0,0,0,.04);">
+            <!-- Table header -->
+            <div class="grid grid-cols-12 px-5 py-3 border-b border-border-soft bg-amber-50/60">
+              <div class="col-span-3 text-xs font-semibold text-ink-muted uppercase tracking-widest">Date</div>
+              <div class="col-span-9 text-xs font-semibold text-ink-muted uppercase tracking-widest">Locations</div>
+            </div>
+
+            <!-- Rows -->
+            <div class="divide-y divide-border-soft">
+
+              <div class="grid grid-cols-12 px-5 py-4 hover:bg-amber-50/50 transition-colors duration-150">
+                <div class="col-span-3 flex items-start gap-2.5">
+                  <div class="w-1.5 h-1.5 rounded-full bg-brand mt-1.5 shrink-0"></div>
+                  <div>
+                    <p class="text-sm font-semibold text-ink">14 Jun 2025</p>
+                    <p class="text-xs text-ink-muted">Saturday</p>
+                  </div>
+                </div>
+                <div class="col-span-9 flex flex-wrap gap-1.5">
+                  <span class="loc-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 border border-border text-xs text-ink-secondary cursor-pointer">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    Wembley Stadium, London
+                  </span>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-12 px-5 py-4 hover:bg-amber-50/50 transition-colors duration-150">
+                <div class="col-span-3 flex items-start gap-2.5">
+                  <div class="w-1.5 h-1.5 rounded-full bg-brand mt-1.5 shrink-0"></div>
+                  <div>
+                    <p class="text-sm font-semibold text-ink">02 Jul 2025</p>
+                    <p class="text-xs text-ink-muted">Wednesday</p>
+                  </div>
+                </div>
+                <div class="col-span-9 flex flex-wrap gap-1.5">
+                  <span class="loc-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 border border-border text-xs text-ink-secondary cursor-pointer">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    Stade de France, Paris
+                  </span>
+                  <span class="loc-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 border border-border text-xs text-ink-secondary cursor-pointer">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    AccorHotels Arena, Paris
+                  </span>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-12 px-5 py-4 hover:bg-amber-50/50 transition-colors duration-150">
+                <div class="col-span-3 flex items-start gap-2.5">
+                  <div class="w-1.5 h-1.5 rounded-full bg-brand mt-1.5 shrink-0"></div>
+                  <div>
+                    <p class="text-sm font-semibold text-ink">19 Aug 2025</p>
+                    <p class="text-xs text-ink-muted">Tuesday</p>
+                  </div>
+                </div>
+                <div class="col-span-9 flex flex-wrap gap-1.5">
+                  <span class="loc-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 border border-border text-xs text-ink-secondary cursor-pointer">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    Madison Square Garden, New York
+                  </span>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-12 px-5 py-4 hover:bg-amber-50/50 transition-colors duration-150">
+                <div class="col-span-3 flex items-start gap-2.5">
+                  <div class="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 shrink-0"></div>
+                  <div>
+                    <p class="text-sm font-semibold text-ink">07 Sep 2025</p>
+                    <p class="text-xs text-ink-muted">Sunday</p>
+                  </div>
+                </div>
+                <div class="col-span-9 flex flex-wrap gap-1.5">
+                  <span class="loc-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 border border-border text-xs text-ink-secondary cursor-pointer">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    Optus Stadium, Perth
+                  </span>
+                  <span class="loc-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 border border-border text-xs text-ink-secondary cursor-pointer">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    Marvel Stadium, Melbourne
+                  </span>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-12 px-5 py-4 opacity-60">
+                <div class="col-span-3 flex items-start gap-2.5">
+                  <div class="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5 shrink-0"></div>
+                  <div>
+                    <p class="text-sm font-semibold text-ink-secondary">22 Oct 2025</p>
+                    <p class="text-xs text-ink-muted">Thursday</p>
+                  </div>
+                </div>
+                <div class="col-span-9 flex flex-wrap gap-1.5">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 border border-red-100 text-xs text-red-700 cursor-default line-through">
+                    Allianz Arena, Munich
+                  </span>
+                  <span class="inline-flex items-center px-2 py-1 rounded-lg bg-red-50 border border-red-100 text-xs text-red-600 font-medium cursor-default">Sold Out</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ── VENUE MAP PLACEHOLDER ──────────────────────────────────────── -->
+        <section class="opacity-start animate-fade-up-d4">
+          <div class="mb-5">
+            <h2 class="font-display text-2xl text-ink">Tour Map</h2>
+            <p class="text-sm text-ink-muted mt-0.5">Geographic overview of all tour locations</p>
+          </div>
+
+          <div class="relative bg-surface-white rounded-2xl border border-border overflow-hidden" style="height:340px; box-shadow:0 1px 2px rgba(0,0,0,.04);">
+            <!-- Placeholder grid -->
+            <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(#4F46E5 1px, transparent 1px), linear-gradient(90deg, #4F46E5 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+            <!-- Center content -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center gap-3">
+              <!-- Subtle map pin icon -->
+              <div class="w-14 h-14 rounded-2xl bg-brand-light border border-brand/20 flex items-center justify-center">
+                <svg class="w-7 h-7 text-brand" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+                </svg>
+              </div>
+              <div class="text-center">
+                <p class="text-sm font-semibold text-ink">Interactive Map</p>
+                <p class="text-xs text-ink-muted mt-0.5">Map integration coming soon — tour locations will be pinned here</p>
+              </div>
+              <!-- Decorative location dots scattered -->
+              <div class="absolute inset-6 pointer-events-none">
+                <div class="absolute top-[20%] left-[22%] w-2.5 h-2.5 rounded-full bg-brand/40 border border-brand/60" style="box-shadow:0 0 0 4px rgba(79,70,229,.08)"></div>
+                <div class="absolute top-[35%] left-[40%] w-3 h-3 rounded-full bg-brand border border-brand/60" style="box-shadow:0 0 0 6px rgba(79,70,229,.1)"></div>
+                <div class="absolute top-[25%] right-[20%] w-2 h-2 rounded-full bg-brand/50 border border-brand/40"></div>
+                <div class="absolute bottom-[30%] left-[15%] w-2 h-2 rounded-full bg-brand/30 border border-brand/30"></div>
+                <div class="absolute bottom-[20%] right-[30%] w-2.5 h-2.5 rounded-full bg-amber-400/60 border border-amber-400/50"></div>
+                <div class="absolute top-[55%] left-[58%] w-2 h-2 rounded-full bg-brand/40 border border-brand/30"></div>
+              </div>
+            </div>
+
+            <!-- Bottom bar -->
+            <div class="absolute bottom-0 left-0 right-0 px-5 py-3.5 bg-amber-50/80 border-t border-border-soft flex items-center justify-between backdrop-blur-sm">
+              <div class="flex items-center gap-4">
+                <div class="flex items-center gap-1.5">
+                  <div class="w-2 h-2 rounded-full bg-brand"></div>
+                  <span class="text-xs text-ink-muted">Available</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+                  <span class="text-xs text-ink-muted">Limited</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <div class="w-2 h-2 rounded-full bg-red-400"></div>
+                  <span class="text-xs text-ink-muted">Sold Out</span>
+                </div>
+              </div>
+              <span class="text-xs text-ink-muted">12 locations worldwide</span>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- ─── RIGHT / SIDEBAR ───────────────────────────────────────────────── -->
+      <aside class="xl:w-80 space-y-6">
+
+        <!-- ── ARTIST BIO CARD ─────────────────────────────────────────────── -->
+        <div class="bg-surface-white rounded-2xl border border-border p-6 opacity-start animate-fade-up-d1" style="box-shadow:0 1px 2px rgba(0,0,0,.04);">
+          <h3 class="text-xs font-semibold text-ink-muted uppercase tracking-widest mb-3">About</h3>
+          <p class="text-sm text-ink-secondary leading-relaxed">
+            Coldplay are a British rock band formed in London, 1996. Consisting of vocalist Chris Martin, guitarist Jonny Buckland, bassist Guy Berryman, and drummer Will Champion — they rose to fame with their debut album <em class="text-ink not-italic font-medium">Parachutes</em> in 2000.
+          </p>
+          <div class="mt-4 pt-4 border-t border-border-soft flex items-center justify-between">
+            <div>
+              <p class="text-xs text-ink-muted">Origin</p>
+              <p class="text-sm font-medium text-ink mt-0.5">London, UK</p>
+            </div>
+            <div>
+              <p class="text-xs text-ink-muted">Active since</p>
+              <p class="text-sm font-medium text-ink mt-0.5">1996</p>
+            </div>
+            <div>
+              <p class="text-xs text-ink-muted">Albums</p>
+              <p class="text-sm font-medium text-ink mt-0.5">10</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── DISCOGRAPHY HIGHLIGHT ─────────────────────────────────────── -->
+        <div class="bg-surface-white rounded-2xl border border-border p-6 opacity-start animate-fade-up-d2" style="box-shadow:0 1px 2px rgba(0,0,0,.04);">
+          <h3 class="text-xs font-semibold text-ink-muted uppercase tracking-widest mb-4">Discography</h3>
+          <div class="space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-[#1e1b4b] flex items-center justify-center shrink-0 relative overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="w-4 h-4 rounded-full border border-white/20"></div>
+                  <div class="absolute w-1.5 h-1.5 rounded-full bg-white/40"></div>
+                </div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-ink truncate">Music of the Spheres</p>
+                <p class="text-xs text-ink-muted">2021 · Latest album</p>
+              </div>
+              <span class="text-xs text-brand font-medium">2021</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-amber-50 border border-border flex items-center justify-center shrink-0 relative overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="w-4 h-4 rounded-full border border-ink-muted/30"></div>
+                  <div class="absolute w-1.5 h-1.5 rounded-full bg-ink-muted/40"></div>
+                </div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-ink truncate">Everyday Life</p>
+                <p class="text-xs text-ink-muted">2019</p>
+              </div>
+              <span class="text-xs text-ink-muted">2019</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-amber-50 border border-border flex items-center justify-center shrink-0 relative overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="w-4 h-4 rounded-full border border-ink-muted/30"></div>
+                  <div class="absolute w-1.5 h-1.5 rounded-full bg-ink-muted/40"></div>
+                </div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-ink truncate">Parachutes</p>
+                <p class="text-xs text-ink-muted">2000 · Debut album</p>
+              </div>
+              <span class="text-xs text-ink-muted">2000</span>
+            </div>
+          </div>
+          <button class="mt-4 w-full text-center text-xs text-brand font-medium hover:text-brand-hover transition-colors duration-200">View full discography →</button>
+        </div>
+
+        <!-- ── TOUR LOCATIONS ──────────────────────────────────────────────── -->
+        <div class="bg-surface-white rounded-2xl border border-border p-6 opacity-start animate-fade-up-d3" style="box-shadow:0 1px 2px rgba(0,0,0,.04);">
+          <h3 class="text-xs font-semibold text-ink-muted uppercase tracking-widest mb-4">Tour Locations</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="loc-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 border border-border text-xs text-ink-secondary cursor-pointer">
+              <svg class="w-3 h-3 text-brand" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+              London, UK
+            </span>
+            <span class="loc-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 border border-border text-xs text-ink-secondary cursor-pointer">
+              <svg class="w-3 h-3 text-brand" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+              Paris, FR
+            </span>
+            <span class="loc-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 border border-border text-xs text-ink-secondary cursor-pointer">
+              <svg class="w-3 h-3 text-brand" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+              New York, US
+            </span>
+            <span class="loc-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 border border-border text-xs text-ink-secondary cursor-pointer">
+              <svg class="w-3 h-3 text-brand" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+              Perth, AU
+            </span>
+            <span class="loc-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 border border-border text-xs text-ink-secondary cursor-pointer">
+              <svg class="w-3 h-3 text-brand" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+              Melbourne, AU
+            </span>
+            <span class="loc-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 border border-border text-xs text-ink-secondary cursor-pointer">
+              <svg class="w-3 h-3 text-brand" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+              Munich, DE
+            </span>
+            <span class="loc-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 border border-border text-xs text-ink-secondary cursor-pointer">
+              <svg class="w-3 h-3 text-ink-muted" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+              +6 more
+            </span>
+          </div>
+        </div>
+
+        <!-- ── RELATED ARTISTS ────────────────────────────────────────────── -->
+        <div class="bg-surface-white rounded-2xl border border-border p-6 opacity-start animate-fade-up-d4" style="box-shadow:0 1px 2px rgba(0,0,0,.04);">
+          <h3 class="text-xs font-semibold text-ink-muted uppercase tracking-widest mb-4">Similar Artists</h3>
+          <div class="space-y-3">
+            <a href="#" class="flex items-center gap-3 group">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&q=80" alt="U2" class="w-10 h-10 rounded-full object-cover border border-border shrink-0" />
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-ink group-hover:text-brand transition-colors duration-200 truncate">U2</p>
+                <p class="text-xs text-ink-muted">Alternative Rock</p>
+              </div>
+              <svg class="w-4 h-4 text-ink-disabled group-hover:text-brand transition-colors duration-200 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+            <a href="#" class="flex items-center gap-3 group">
+              <img src="https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=80&h=80&fit=crop&q=80" alt="Radiohead" class="w-10 h-10 rounded-full object-cover border border-border shrink-0" />
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-ink group-hover:text-brand transition-colors duration-200 truncate">Radiohead</p>
+                <p class="text-xs text-ink-muted">Art Rock</p>
+              </div>
+              <svg class="w-4 h-4 text-ink-disabled group-hover:text-brand transition-colors duration-200 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+            <a href="#" class="flex items-center gap-3 group">
+              <img src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?w=80&h=80&fit=crop&q=80" alt="Muse" class="w-10 h-10 rounded-full object-cover border border-border shrink-0" />
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-ink group-hover:text-brand transition-colors duration-200 truncate">Muse</p>
+                <p class="text-xs text-ink-muted">Alternative Rock</p>
+              </div>
+              <svg class="w-4 h-4 text-ink-disabled group-hover:text-brand transition-colors duration-200 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- ── SOCIAL LINKS ───────────────────────────────────────────────── -->
+        <div class="bg-surface-white rounded-2xl border border-border p-6 opacity-start animate-fade-up-d5" style="box-shadow:0 1px 2px rgba(0,0,0,.04);">
+          <h3 class="text-xs font-semibold text-ink-muted uppercase tracking-widest mb-4">Connect</h3>
+          <div class="grid grid-cols-2 gap-2.5">
+            <a href="#" class="inline-flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-amber-50 border border-border text-sm text-ink-secondary font-medium hover:border-brand/30 hover:bg-brand-light hover:text-brand transition-all duration-200">
+              <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"/></svg>
+              Twitter
+            </a>
+            <a href="#" class="inline-flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-amber-50 border border-border text-sm text-ink-secondary font-medium hover:border-brand/30 hover:bg-brand-light hover:text-brand transition-all duration-200">
+              <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z"/></svg>
+              Pinterest
+            </a>
+            <a href="#" class="inline-flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-amber-50 border border-border text-sm text-ink-secondary font-medium hover:border-brand/30 hover:bg-brand-light hover:text-brand transition-all duration-200">
+              <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+              Google
+            </a>
+            <a href="#" class="inline-flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-amber-50 border border-border text-sm text-ink-secondary font-medium hover:border-brand/30 hover:bg-brand-light hover:text-brand transition-all duration-200">
+              <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              Instagram
+            </a>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+  </main>
+
+
+  <!-- ─── FOOTER ────────────────────────────────────────────────────────────── -->
+  <footer class="mt-16 border-t border-border bg-surface-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <!-- Logo -->
+      <a href="#" class="inline-flex items-center gap-2">
+        <div class="flex items-end gap-0.5" style="height:20px">
+          <div class="wbar bg-brand animate-bar1" style="height:38%;opacity:.7"></div>
+          <div class="wbar bg-brand animate-bar2" style="height:68%;opacity:.8"></div>
+          <div class="wbar bg-brand animate-bar3" style="height:100%;opacity:.9"></div>
+          <div class="wbar bg-brand animate-bar4" style="height:62%;opacity:.8"></div>
+          <div class="wbar bg-brand animate-bar5" style="height:34%;opacity:.7"></div>
+        </div>
+        <span class="font-display text-ink text-xl tracking-tight">Crescendo</span>
+      </a>
+      <p class="text-xs text-ink-muted text-center">© 2025 Crescendo. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <a href="#" class="text-xs text-ink-muted hover:text-ink transition-colors duration-200">Privacy</a>
+        <a href="#" class="text-xs text-ink-muted hover:text-ink transition-colors duration-200">Terms</a>
+        <a href="#" class="text-xs text-ink-muted hover:text-ink transition-colors duration-200">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

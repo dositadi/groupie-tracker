@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crescendo — Discover Artists</title>
+
+  <!-- Tailwind v4 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- Fonts: DM Serif Display + DM Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="/src/output.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js" integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/htmx-ext-response-targets@2.0.4" integrity="sha384-T41oglUPvXLGBVyRdZsVRxNWnOOqCynaPubjUVjxhsjFTKrFJGEMm3/0KGmNQ+Pg" crossorigin="anonymous"></script>
+</head>
+
+<body class="min-h-screen" style="font-family: var(--font-sans);">
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- NAVIGATION                                                     -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <header class="nav-glass sticky top-0 z-50 border-b border-white/[0.07]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav class="flex items-center justify-between h-16 gap-4">
+
+        <!-- Logo -->
+        <div class="animate-slide-left relative z-10 shrink-0">
+          <a href="#" class="inline-flex items-center gap-2.5">
+            <div class="flex items-end gap-0.75" style="height:26px">
+              <div class="wbar bg-white animate-bar1" style="height:38%;opacity:.75"></div>
+              <div class="wbar bg-white animate-bar2" style="height:68%;opacity:.8"></div>
+              <div class="wbar bg-white animate-bar3" style="height:100%;opacity:.9"></div>
+              <div class="wbar bg-white animate-bar4" style="height:62%;opacity:.8"></div>
+              <div class="wbar bg-white animate-bar5" style="height:34%;opacity:.7"></div>
+            </div>
+            <span class="font-display text-white text-[1.55rem] tracking-tight leading-none">Crescendo</span>
+          </a>
+        </div>
+
+        <!-- Center nav links (desktop) -->
+        <nav class="hidden md:flex items-center gap-6">
+          <a href="#" class="nav-link active">Artists</a>
+          <a href="#" class="nav-link">Events</a>
+          <a href="#" class="nav-link">Venues</a>
+          <a href="#" class="nav-link">Charts</a>
+        </nav>
+
+        <!-- Right side -->
+        <div class="flex items-center gap-3">
+          <!-- Now playing pill -->
+          <div class="hidden lg:flex items-center gap-2 bg-white/[0.07] border border-white/10 rounded-full px-3 py-1.5">
+            <span class="live-dot shrink-0"></span>
+            <span class="text-white/60 text-xs font-medium truncate max-w-32.5">Kendrick Lamar · Not Like Us</span>
+          </div>
+
+          <!-- Notifications -->
+          <button class="relative w-9 h-9 rounded-full flex items-center justify-center bg-white/[0.07] border border-white/10 text-white/70 hover:bg-white/12 hover:text-white transition-all duration-200" aria-label="Notifications">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <!-- unread dot -->
+            <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-brand border-2 border-[#1e1b4b]"></span>
+          </button>
+
+          <!-- Events CTA -->
+          <a href="#" class="hidden sm:inline-flex items-center gap-1.5 bg-brand hover:bg-brand-hover text-white text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 shadow-sm hover:shadow-md">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            Events
+          </a>
+
+          <!-- Avatar -->
+          <button class="w-9 h-9 rounded-full overflow-hidden border-2 border-white/20 hover:border-white/40 transition-all duration-200 shrink-0" aria-label="Profile">
+            <img src="https://i.pravatar.cc/40?img=11" alt="User avatar" class="w-full h-full object-cover" />
+          </button>
+
+          <!-- Mobile menu toggle -->
+          <button class="md:hidden w-9 h-9 rounded-full flex items-center justify-center bg-white/[0.07] border border-white/10 text-white/70" aria-label="Menu">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+      </nav>
+    </div>
+  </header>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- HERO STRIP                                                     -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section class="hero-strip relative overflow-hidden">
+    <div class="noise"></div>
+
+    <!-- floating music notes -->
+    <span class="mnote animate-note1" style="left:8%; bottom:18px; font-size:1.2rem;">♩</span>
+    <span class="mnote animate-note2" style="left:22%; bottom:14px; font-size:0.9rem;">♪</span>
+    <span class="mnote animate-note3" style="right:15%; bottom:20px; font-size:1rem;">♫</span>
+    <span class="mnote" style="right:30%; bottom:16px; font-size:0.85rem; animation: note-float 3.2s ease-out infinite 1.6s; opacity:0;">♬</span>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 relative z-10">
+      <div class="max-w-2xl">
+        <!-- Eyebrow -->
+        <div class="inline-flex items-center gap-2 mb-4 animate-fade-up" style="opacity:0;">
+          <span class="w-5 h-px bg-indigo-400/60"></span>
+          <span class="text-indigo-300/80 text-xs font-medium tracking-widest uppercase">Discover</span>
+        </div>
+
+        <h1 class="font-display text-white text-3xl sm:text-4xl lg:text-5xl leading-tight mb-3 animate-fade-up-d1" style="opacity:0;">
+          The World's Greatest<br class="hidden sm:block" />
+          <em class="not-italic text-indigo-300">Artists</em>, One Stage.
+        </h1>
+
+        <p class="text-white/55 text-sm sm:text-base leading-relaxed mb-6 animate-fade-up-d2 max-w-lg" style="opacity:0;">
+          Explore thousands of artists, follow your favourites, and never miss a live moment. Your personal music universe starts here.
+        </p>
+
+        <!-- Stats row -->
+        <div class="flex items-center gap-5 sm:gap-8 animate-fade-up-d3" style="opacity:0;">
+          <div>
+            <p class="text-white text-xl font-semibold leading-none">12,400+</p>
+            <p class="text-white/45 text-xs mt-1">Artists</p>
+          </div>
+          <div class="w-px h-8 bg-white/10"></div>
+          <div>
+            <p class="text-white text-xl font-semibold leading-none">840</p>
+            <p class="text-white/45 text-xs mt-1">Events this month</p>
+          </div>
+          <div class="w-px h-8 bg-white/10"></div>
+          <div>
+            <p class="text-white text-xl font-semibold leading-none">190+</p>
+            <p class="text-white/45 text-xs mt-1">Countries</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- SEARCH + FILTER BAR                                            -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <div class="bg-surface-white border-b border-border sticky top-16 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+
+        <!-- Search -->
+        <div class="relative flex-1 min-w-0">
+          <span class="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-ink-muted">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </span>
+          <input
+            type="search"
+            placeholder="Search artists, genres, countries…"
+            class="search-input w-full bg-surface-alt border border-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-ink placeholder:text-ink-disabled transition-all duration-200"
+          />
+        </div>
+
+        <!-- Filter dropdown -->
+        <div class="dropdown-wrap relative shrink-0" tabindex="0">
+          <button class="inline-flex items-center gap-2 bg-surface-alt border border-border rounded-xl px-4 py-2.5 text-sm font-medium text-ink-secondary hover:bg-brand-light hover:border-border-focus hover:text-brand transition-all duration-200 w-full sm:w-auto justify-center">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+            </svg>
+            Filter
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="dropdown-menu">
+            <div class="px-4 py-2.5 border-b border-border-soft">
+              <p class="text-xs font-semibold text-ink-muted uppercase tracking-wider">Genre</p>
+            </div>
+            <div class="dropdown-item active">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+              All Genres
+            </div>
+            <div class="dropdown-item">Pop</div>
+            <div class="dropdown-item">Hip-Hop / Rap</div>
+            <div class="dropdown-item">Afrobeats</div>
+            <div class="dropdown-item">R&amp;B / Soul</div>
+            <div class="dropdown-item">Rock</div>
+            <div class="dropdown-item">Electronic</div>
+            <div class="dropdown-item">Jazz</div>
+            <div class="dropdown-item">Classical</div>
+            <div class="px-4 py-2.5 border-t border-b border-border-soft mt-1">
+              <p class="text-xs font-semibold text-ink-muted uppercase tracking-wider">Region</p>
+            </div>
+            <div class="dropdown-item">Global</div>
+            <div class="dropdown-item">Nigeria</div>
+            <div class="dropdown-item">United States</div>
+            <div class="dropdown-item">United Kingdom</div>
+            <div class="dropdown-item">Ghana</div>
+          </div>
+        </div>
+
+        <!-- Sort dropdown -->
+        <div class="sort-wrap shrink-0">
+          <button class="inline-flex items-center gap-2 bg-surface-alt border border-border rounded-xl px-4 py-2.5 text-sm font-medium text-ink-secondary hover:bg-brand-light hover:border-border-focus hover:text-brand transition-all duration-200 w-full sm:w-auto justify-center">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+              <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+            </svg>
+            Sort
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="sort-menu">
+            <div class="px-4 py-2.5 border-b border-border-soft">
+              <p class="text-xs font-semibold text-ink-muted uppercase tracking-wider">Sort by</p>
+            </div>
+            <div class="dropdown-item active">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+              Most Popular
+            </div>
+            <div class="dropdown-item">A → Z</div>
+            <div class="dropdown-item">Z → A</div>
+            <div class="dropdown-item">Recently Added</div>
+            <div class="dropdown-item">Upcoming Events</div>
+            <div class="dropdown-item">Most Followed</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- GENRE FILTER PILLS                                             -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <div class="bg-surface-white border-b border-border-soft">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-2.5 py-3 overflow-x-auto pill-scroll">
+        <button class="filter-pill active shrink-0 border border-brand bg-brand text-white text-xs font-medium px-3.5 py-1.5 rounded-full transition-all duration-200">All</button>
+        <button class="filter-pill shrink-0 border border-border bg-surface-alt text-ink-secondary text-xs font-medium px-3.5 py-1.5 rounded-full">Pop</button>
+        <button class="filter-pill shrink-0 border border-border bg-surface-alt text-ink-secondary text-xs font-medium px-3.5 py-1.5 rounded-full">Hip-Hop</button>
+        <button class="filter-pill shrink-0 border border-border bg-surface-alt text-ink-secondary text-xs font-medium px-3.5 py-1.5 rounded-full">Afrobeats</button>
+        <button class="filter-pill shrink-0 border border-border bg-surface-alt text-ink-secondary text-xs font-medium px-3.5 py-1.5 rounded-full">R&amp;B</button>
+        <button class="filter-pill shrink-0 border border-border bg-surface-alt text-ink-secondary text-xs font-medium px-3.5 py-1.5 rounded-full">Rock</button>
+        <button class="filter-pill shrink-0 border border-border bg-surface-alt text-ink-secondary text-xs font-medium px-3.5 py-1.5 rounded-full">Electronic</button>
+        <button class="filter-pill shrink-0 border border-border bg-surface-alt text-ink-secondary text-xs font-medium px-3.5 py-1.5 rounded-full">Jazz</button>
+        <button class="filter-pill shrink-0 border border-border bg-surface-alt text-ink-secondary text-xs font-medium px-3.5 py-1.5 rounded-full">Classical</button>
+        <button class="filter-pill shrink-0 border border-border bg-surface-alt text-ink-secondary text-xs font-medium px-3.5 py-1.5 rounded-full">Latin</button>
+        <button class="filter-pill shrink-0 border border-border bg-surface-alt text-ink-secondary text-xs font-medium px-3.5 py-1.5 rounded-full">Gospel</button>
+        <button class="filter-pill shrink-0 border border-border bg-surface-alt text-ink-secondary text-xs font-medium px-3.5 py-1.5 rounded-full">Reggae</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- MAIN CONTENT                                                   -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+
+    <!-- ── Section header ── -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="text-ink text-xl font-semibold" style="font-family: var(--font-sans);">All Artists</h2>
+        <p class="text-ink-muted text-sm mt-0.5">Showing 12,400 artists</p>
+      </div>
+      <!-- View toggle -->
+      <div class="flex items-center gap-1 bg-surface-alt border border-border rounded-lg p-1">
+        <button class="w-8 h-7 rounded-md bg-white shadow-sm flex items-center justify-center text-ink-secondary" aria-label="Grid view">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+        </button>
+        <button class="w-8 h-7 rounded-md flex items-center justify-center text-ink-disabled hover:text-ink-secondary transition-colors" aria-label="List view">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────── -->
+    <!-- ARTIST CARDS GRID                                           -->
+    <!-- ─────────────────────────────────────────────────────────── -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-5">
+
+
+      <!-- ── CARD 1 — NOT favourited ── -->
+      <article class="artist-card visible card-d1 group relative flex flex-col">
+
+        <!-- Image container -->
+        <div class="relative overflow-hidden" style="border-radius: 16px 16px 0 0;">
+          <img
+            src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400&q=80"
+            alt="Solange Brixton"
+            class="artist-card-img"
+          />
+          <!-- Favourite button (OUTLINE — not favourited) -->
+          <button
+            class="fav-btn absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center bg-black/25 backdrop-blur-sm border border-white/20 text-white hover:bg-white hover:text-rose-500 transition-all duration-200"
+            aria-label="Add to favourites"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+          <!-- Upcoming events badge -->
+          <div class="absolute bottom-3 left-3">
+            <span class="inline-flex items-center gap-1 bg-black/40 backdrop-blur-sm border border-white/15 text-white text-[10px] font-medium px-2 py-1 rounded-full">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+              3 upcoming
+            </span>
+          </div>
+        </div>
+
+        <!-- Card body -->
+        <div class="flex flex-col flex-1 p-3.5">
+          <!-- Genre -->
+          <span class="genre-badge mb-2 self-start">Afrobeats</span>
+          <!-- Name -->
+          <h3 class="font-semibold text-ink text-sm leading-snug mb-1">Solange Brixton</h3>
+          <!-- Location -->
+          <p class="text-ink-muted text-xs flex items-center gap-1 mb-3">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            Lagos, Nigeria
+          </p>
+          <!-- Stats row -->
+          <div class="flex items-center gap-3 mb-3.5">
+            <div class="stat-pill">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              2.4M
+            </div>
+            <div class="stat-pill">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              128 tracks
+            </div>
+          </div>
+          <!-- CTA -->
+          <a href="#" class="mt-auto flex items-center justify-center gap-1.5 w-full bg-brand-light text-brand border border-indigo-100 hover:bg-brand hover:text-white hover:border-brand text-xs font-medium py-2 rounded-lg transition-all duration-200">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            View Profile
+          </a>
+        </div>
+      </article>
+
+
+      <!-- ── CARD 2 — FAVOURITED ── -->
+      <article class="artist-card visible card-d2 group relative flex flex-col">
+
+        <div class="relative overflow-hidden" style="border-radius: 16px 16px 0 0;">
+          <img
+            src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&q=80"
+            alt="Marcus Veil"
+            class="artist-card-img"
+          />
+          <!-- Favourite button (FILLED — favourited) -->
+          <button
+            class="fav-btn absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center bg-rose-500 border border-rose-400 text-white hover:bg-rose-600 transition-all duration-200"
+            aria-label="Remove from favourites"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+          <!-- Trending badge -->
+          <div class="absolute bottom-3 left-3">
+            <span class="inline-flex items-center gap-1 bg-brand/80 backdrop-blur-sm border border-indigo-300/30 text-white text-[10px] font-medium px-2 py-1 rounded-full">
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Trending
+            </span>
+          </div>
+        </div>
+
+        <div class="flex flex-col flex-1 p-3.5">
+          <span class="genre-badge mb-2 self-start">Hip-Hop</span>
+          <h3 class="font-semibold text-ink text-sm leading-snug mb-1">Marcus Veil</h3>
+          <p class="text-ink-muted text-xs flex items-center gap-1 mb-3">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            Atlanta, USA
+          </p>
+          <div class="flex items-center gap-3 mb-3.5">
+            <div class="stat-pill">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              8.1M
+            </div>
+            <div class="stat-pill">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              312 tracks
+            </div>
+          </div>
+          <a href="#" class="mt-auto flex items-center justify-center gap-1.5 w-full bg-brand-light text-brand border border-indigo-100 hover:bg-brand hover:text-white hover:border-brand text-xs font-medium py-2 rounded-lg transition-all duration-200">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            View Profile
+          </a>
+        </div>
+      </article>
+
+
+      <!-- ── CARD 3 — not favourited ── -->
+      <article class="artist-card visible card-d3 group relative flex flex-col">
+        <div class="relative overflow-hidden" style="border-radius: 16px 16px 0 0;">
+          <img
+            src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&q=80"
+            alt="Yemi Osei"
+            class="artist-card-img"
+          />
+          <button class="fav-btn absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center bg-black/25 backdrop-blur-sm border border-white/20 text-white hover:bg-white hover:text-rose-500 transition-all duration-200" aria-label="Add to favourites">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+          <div class="absolute bottom-3 left-3">
+            <span class="inline-flex items-center gap-1 bg-black/40 backdrop-blur-sm border border-white/15 text-white text-[10px] font-medium px-2 py-1 rounded-full">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+              1 upcoming
+            </span>
+          </div>
+        </div>
+        <div class="flex flex-col flex-1 p-3.5">
+          <span class="genre-badge mb-2 self-start">Afrobeats</span>
+          <h3 class="font-semibold text-ink text-sm leading-snug mb-1">Yemi Osei</h3>
+          <p class="text-ink-muted text-xs flex items-center gap-1 mb-3">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            Accra, Ghana
+          </p>
+          <div class="flex items-center gap-3 mb-3.5">
+            <div class="stat-pill">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              1.1M
+            </div>
+            <div class="stat-pill">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              74 tracks
+            </div>
+          </div>
+          <a href="#" class="mt-auto flex items-center justify-center gap-1.5 w-full bg-brand-light text-brand border border-indigo-100 hover:bg-brand hover:text-white hover:border-brand text-xs font-medium py-2 rounded-lg transition-all duration-200">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            View Profile
+          </a>
+        </div>
+      </article>
+
+
+      <!-- ── CARD 4 — favourited ── -->
+      <article class="artist-card visible card-d4 group relative flex flex-col">
+        <div class="relative overflow-hidden" style="border-radius: 16px 16px 0 0;">
+          <img
+            src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&q=80"
+            alt="Ade Clarke"
+            class="artist-card-img"
+          />
+          <button class="fav-btn absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center bg-rose-500 border border-rose-400 text-white hover:bg-rose-600 transition-all duration-200" aria-label="Remove from favourites">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+          <div class="absolute bottom-3 left-3">
+            <span class="inline-flex items-center gap-1 bg-black/40 backdrop-blur-sm border border-white/15 text-white text-[10px] font-medium px-2 py-1 rounded-full">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+              5 upcoming
+            </span>
+          </div>
+        </div>
+        <div class="flex flex-col flex-1 p-3.5">
+          <span class="genre-badge mb-2 self-start">R&amp;B</span>
+          <h3 class="font-semibold text-ink text-sm leading-snug mb-1">Ade Clarke</h3>
+          <p class="text-ink-muted text-xs flex items-center gap-1 mb-3">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            London, UK
+          </p>
+          <div class="flex items-center gap-3 mb-3.5">
+            <div class="stat-pill">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              4.7M
+            </div>
+            <div class="stat-pill">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              203 tracks
+            </div>
+          </div>
+          <a href="#" class="mt-auto flex items-center justify-center gap-1.5 w-full bg-brand-light text-brand border border-indigo-100 hover:bg-brand hover:text-white hover:border-brand text-xs font-medium py-2 rounded-lg transition-all duration-200">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            View Profile
+          </a>
+        </div>
+      </article>
+
+
+      <!-- ── CARD 5 — not favourited ── -->
+      <article class="artist-card visible card-d5 group relative flex flex-col">
+        <div class="relative overflow-hidden" style="border-radius: 16px 16px 0 0;">
+          <img
+            src="https://images.unsplash.com/photo-1598387846419-8099c2e93da6?w=400&q=80"
+            alt="Nadia Solano"
+            class="artist-card-img"
+          />
+          <button class="fav-btn absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center bg-black/25 backdrop-blur-sm border border-white/20 text-white hover:bg-white hover:text-rose-500 transition-all duration-200" aria-label="Add to favourites">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+          <div class="absolute bottom-3 left-3">
+            <span class="inline-flex items-center gap-1 bg-brand/80 backdrop-blur-sm border border-indigo-300/30 text-white text-[10px] font-medium px-2 py-1 rounded-full">
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Trending
+            </span>
+          </div>
+        </div>
+        <div class="flex flex-col flex-1 p-3.5">
+          <span class="genre-badge mb-2 self-start">Latin</span>
+          <h3 class="font-semibold text-ink text-sm leading-snug mb-1">Nadia Solano</h3>
+          <p class="text-ink-muted text-xs flex items-center gap-1 mb-3">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            Buenos Aires, AR
+          </p>
+          <div class="flex items-center gap-3 mb-3.5">
+            <div class="stat-pill">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              3.2M
+            </div>
+            <div class="stat-pill">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              156 tracks
+            </div>
+          </div>
+          <a href="#" class="mt-auto flex items-center justify-center gap-1.5 w-full bg-brand-light text-brand border border-indigo-100 hover:bg-brand hover:text-white hover:border-brand text-xs font-medium py-2 rounded-lg transition-all duration-200">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            View Profile
+          </a>
+        </div>
+      </article>
+
+
+      <!-- ── CARD 6 — favourited ── -->
+      <article class="artist-card visible card-d6 group relative flex flex-col">
+        <div class="relative overflow-hidden" style="border-radius: 16px 16px 0 0;">
+          <img
+            src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80"
+            alt="Idris Bell"
+            class="artist-card-img"
+          />
+          <button class="fav-btn absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center bg-rose-500 border border-rose-400 text-white hover:bg-rose-600 transition-all duration-200" aria-label="Remove from favourites">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+          <div class="absolute bottom-3 left-3">
+            <span class="inline-flex items-center gap-1 bg-black/40 backdrop-blur-sm border border-white/15 text-white text-[10px] font-medium px-2 py-1 rounded-full">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+              2 upcoming
+            </span>
+          </div>
+        </div>
+        <div class="flex flex-col flex-1 p-3.5">
+          <span class="genre-badge mb-2 self-start">Jazz</span>
+          <h3 class="font-semibold text-ink text-sm leading-snug mb-1">Idris Bell</h3>
+          <p class="text-ink-muted text-xs flex items-center gap-1 mb-3">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            New Orleans, USA
+          </p>
+          <div class="flex items-center gap-3 mb-3.5">
+            <div class="stat-pill">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              890K
+            </div>
+            <div class="stat-pill">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              61 tracks
+            </div>
+          </div>
+          <a href="#" class="mt-auto flex items-center justify-center gap-1.5 w-full bg-brand-light text-brand border border-indigo-100 hover:bg-brand hover:text-white hover:border-brand text-xs font-medium py-2 rounded-lg transition-all duration-200">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            View Profile
+          </a>
+        </div>
+      </article>
+
+
+      <!-- ── CARD 7 ── -->
+      <article class="artist-card visible card-d7 group relative flex flex-col">
+        <div class="relative overflow-hidden" style="border-radius: 16px 16px 0 0;">
+          <img
+            src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=400&q=80"
+            alt="Tiana Blue"
+            class="artist-card-img"
+          />
+          <button class="fav-btn absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center bg-black/25 backdrop-blur-sm border border-white/20 text-white hover:bg-white hover:text-rose-500 transition-all duration-200" aria-label="Add to favourites">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+          <div class="absolute bottom-3 left-3">
+            <span class="inline-flex items-center gap-1 bg-black/40 backdrop-blur-sm border border-white/15 text-white text-[10px] font-medium px-2 py-1 rounded-full">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+              7 upcoming
+            </span>
+          </div>
+        </div>
+        <div class="flex flex-col flex-1 p-3.5">
+          <span class="genre-badge mb-2 self-start">Pop</span>
+          <h3 class="font-semibold text-ink text-sm leading-snug mb-1">Tiana Blue</h3>
+          <p class="text-ink-muted text-xs flex items-center gap-1 mb-3">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            Toronto, Canada
+          </p>
+          <div class="flex items-center gap-3 mb-3.5">
+            <div class="stat-pill">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              6.3M
+            </div>
+            <div class="stat-pill">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              244 tracks
+            </div>
+          </div>
+          <a href="#" class="mt-auto flex items-center justify-center gap-1.5 w-full bg-brand-light text-brand border border-indigo-100 hover:bg-brand hover:text-white hover:border-brand text-xs font-medium py-2 rounded-lg transition-all duration-200">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            View Profile
+          </a>
+        </div>
+      </article>
+
+
+      <!-- ── CARD 8 — favourited ── -->
+      <article class="artist-card visible card-d8 group relative flex flex-col">
+        <div class="relative overflow-hidden" style="border-radius: 16px 16px 0 0;">
+          <img
+            src="https://images.unsplash.com/photo-1504898770365-14faca6a7320?w=400&q=80"
+            alt="Emeka Rhodes"
+            class="artist-card-img"
+          />
+          <button class="fav-btn absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center bg-rose-500 border border-rose-400 text-white hover:bg-rose-600 transition-all duration-200" aria-label="Remove from favourites">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+          <div class="absolute bottom-3 left-3">
+            <span class="inline-flex items-center gap-1 bg-black/40 backdrop-blur-sm border border-white/15 text-white text-[10px] font-medium px-2 py-1 rounded-full">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+              4 upcoming
+            </span>
+          </div>
+        </div>
+        <div class="flex flex-col flex-1 p-3.5">
+          <span class="genre-badge mb-2 self-start">Afrobeats</span>
+          <h3 class="font-semibold text-ink text-sm leading-snug mb-1">Emeka Rhodes</h3>
+          <p class="text-ink-muted text-xs flex items-center gap-1 mb-3">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            Abuja, Nigeria
+          </p>
+          <div class="flex items-center gap-3 mb-3.5">
+            <div class="stat-pill">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              5.0M
+            </div>
+            <div class="stat-pill">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              189 tracks
+            </div>
+          </div>
+          <a href="#" class="mt-auto flex items-center justify-center gap-1.5 w-full bg-brand-light text-brand border border-indigo-100 hover:bg-brand hover:text-white hover:border-brand text-xs font-medium py-2 rounded-lg transition-all duration-200">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            View Profile
+          </a>
+        </div>
+      </article>
+
+
+    </div><!-- /grid -->
+
+
+    <!-- ── Load More ── -->
+    <div class="mt-12 flex flex-col items-center gap-3">
+      <div class="flex items-center gap-3 text-ink-muted text-sm">
+        <span class="w-16 h-px bg-border"></span>
+        Showing 8 of 12,400 artists
+        <span class="w-16 h-px bg-border"></span>
+      </div>
+      <button class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand hover:border-brand hover:text-white transition-all duration-200 shadow-sm">
+        Load more artists
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+    </div>
+
+  </main>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- FOOTER                                                         -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <footer class="border-t border-border bg-surface-white mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+
+        <!-- Logo + tagline -->
+        <div>
+          <a href="#" class="inline-flex items-center gap-2.5 mb-2">
+            <div class="flex items-end gap-0.75" style="height:20px">
+              <div class="wbar animate-bar1" style="height:38%;opacity:.5;background:#4F46E5"></div>
+              <div class="wbar animate-bar2" style="height:68%;opacity:.6;background:#4F46E5"></div>
+              <div class="wbar animate-bar3" style="height:100%;opacity:.75;background:#4F46E5"></div>
+              <div class="wbar animate-bar4" style="height:62%;opacity:.6;background:#4F46E5"></div>
+              <div class="wbar animate-bar5" style="height:34%;opacity:.5;background:#4F46E5"></div>
+            </div>
+            <span class="font-display text-ink text-xl tracking-tight leading-none">Crescendo</span>
+          </a>
+          <p class="text-ink-muted text-xs">Discover artists. Experience live music.</p>
+        </div>
+
+        <!-- Links -->
+        <nav class="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <a href="#" class="text-ink-muted hover:text-ink text-sm transition-colors">About</a>
+          <a href="#" class="text-ink-muted hover:text-ink text-sm transition-colors">Artists</a>
+          <a href="#" class="text-ink-muted hover:text-ink text-sm transition-colors">Events</a>
+          <a href="#" class="text-ink-muted hover:text-ink text-sm transition-colors">Venues</a>
+          <a href="#" class="text-ink-muted hover:text-ink text-sm transition-colors">Privacy</a>
+          <a href="#" class="text-ink-muted hover:text-ink text-sm transition-colors">Terms</a>
+        </nav>
+
+        <!-- Copy -->
+        <p class="text-ink-disabled text-xs">© 2025 Crescendo, Inc.</p>
+
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

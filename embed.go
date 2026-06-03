@@ -4,7 +4,8 @@ import (
 	"embed"
 )
 
-//go:embed migrations src/output.css internal/web/static/auth/* internal/web/static/partials/auth/*
+//go:embed migrations src/output.css internal/web/static/auth/* internal/web/static/partials/auth/* internal/web/static/pages/*
+//go:embed internal/web/static/partials/pages/*
 var embeddedFiles embed.FS
 
 type Embedded struct {
