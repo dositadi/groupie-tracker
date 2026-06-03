@@ -39,4 +39,7 @@ type ArtistInfo struct {
 	Locations      []string            `json:"locations"`
 	ConcertDates   []string            `json:"concert_dates"`
 	DatesLocations map[string][]string `json:"dates_locations"`
+	IsFavorited    bool
+	Followers      int
+	Tracks         int
 }

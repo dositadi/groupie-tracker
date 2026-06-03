@@ -1,0 +1,127 @@
+{{define "artist-card-main"}}
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+
+    <!-- ── Section header ── -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="text-ink text-xl font-semibold" style="font-family: var(--font-sans);">All Artists</h2>
+        <p class="text-ink-muted text-sm mt-0.5">Showing 12,400 artists</p>
+      </div>
+      <!-- View toggle -->
+      <div class="flex items-center gap-1 bg-surface-alt border border-border rounded-lg p-1">
+        <button class="w-8 h-7 rounded-md bg-white shadow-sm flex items-center justify-center text-ink-secondary" aria-label="Grid view">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+        </button>
+        <button class="w-8 h-7 rounded-md flex items-center justify-center text-ink-disabled hover:text-ink-secondary transition-colors" aria-label="List view">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────── -->
+    <!-- ARTIST CARDS GRID                                           -->
+    <!-- ─────────────────────────────────────────────────────────── -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-5">
+
+    <!-- ── CARD ── -->
+     {{range .Artists}}
+        <article class="artist-card visible card-d1 group relative flex flex-col">
+
+        <!-- Image container -->
+        <div class="relative overflow-hidden" style="border-radius: 16px 16px 0 0;">
+            <img
+            src="{{.Image}}"
+            alt="{{.Name}}"
+            class="artist-card-img"
+            />
+            <!-- Favourite button (OUTLINE — not favourited) -->
+            <button {{if .IsFavorited}} hx-post="{{.FavoriteArtistUrl}}?{{.FavKey}}={{.Favorited}}" {{else}} hx-post="{{.FavoriteArtistUrl}}?{{.FavKey}}={{.NotFavorited}}" {{end}} hx-swap="outerHTML" hx-target="#artists" hx-push-url="true"
+            {{if .IsFavorited}}
+            class="fav-btn absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center bg-rose-500 border border-rose-400 text-white hover:bg-rose-600 transition-all duration-200"
+            aria-label="Remove from favourites"
+            {{else}}
+            class="fav-btn absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center bg-black/25 backdrop-blur-sm border border-white/20 text-white hover:bg-white hover:text-rose-500 transition-all duration-200"
+            {{end}}
+            aria-label="Add to favourites"
+            >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            </button>
+            <!-- Upcoming events badge -->
+            <div class="absolute bottom-3 left-3">
+            <span class="inline-flex items-center gap-1 bg-black/40 backdrop-blur-sm border border-white/15 text-white text-[10px] font-medium px-2 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+                <strong>
+                    {{len .DatesLocations}}
+                </strong>
+                upcoming
+            </span>
+            </div>
+        </div>
+
+        <!-- Card body -->
+        <div class="flex flex-col flex-1 p-3.5">
+            <!-- Genre -->
+            <span class="genre-badge mb-2 self-start">HIP-HOP</span>
+            <!-- Name -->
+            <h3 class="font-semibold text-ink text-sm leading-snug mb-1">{{.Name}}</h3>
+            <!-- Location -->
+            <p class="text-ink-muted text-xs flex items-center gap-1 mb-3">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            Lagos, Nigeria <!-- pipe into a func that gives the location in the first index -->
+            </p>
+            <!-- Stats row -->
+            <div class="flex items-center gap-3 mb-3.5">
+            <div class="stat-pill">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+                {{.Followers}}
+            </div>
+            <div class="stat-pill">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                {{.Tracks}}
+            </div>
+            </div>
+            <!-- CTA -->
+            <a href="#" class="mt-auto flex items-center justify-center gap-1.5 w-full bg-brand-light text-brand border border-indigo-100 hover:bg-brand hover:text-white hover:border-brand text-xs font-medium py-2 rounded-lg transition-all duration-200">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            View Profile
+            </a>
+        </div>
+        </article>
+        {{end}}
+    </div> <!-- /grid -->
+
+
+    <!-- ── Load More ── -->
+    <div class="mt-12 flex flex-col items-end gap-3">
+      <div class="flex flex-col items-end gap-3 text-ink-muted text-sm">
+        <span class="w-16 h-px bg-border"></span>
+        Showing 8 of 12,400 artists
+        <span class="w-16 h-px bg-border"></span>
+      </div>
+      <button class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand hover:border-brand hover:text-white transition-all duration-200 shadow-sm">
+        Next
+      </button>
+      <button class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand hover:border-brand hover:text-white transition-all duration-200 shadow-sm">
+        Load more artists
+      </button>
+    </div>
+
+</main>
+
+{{end}}
