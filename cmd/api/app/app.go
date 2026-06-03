@@ -28,7 +28,7 @@ func (a *App) init() {
 	a.embedded = *groupietracker.New()
 	a.router = chi.NewRouter()
 	a.client = artistapi.New()
-	//a.client.Init()
+	a.client.Init()
 	a.config = newConfig()
 	a.logger = jsonlog.New(os.Stdout, jsonlog.LevelInfo)
 	a.initDB()

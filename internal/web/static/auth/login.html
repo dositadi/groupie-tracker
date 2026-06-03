@@ -12,7 +12,7 @@
   <script src="https://cdn.jsdelivr.net/npm/htmx-ext-response-targets@2.0.4" integrity="sha384-T41oglUPvXLGBVyRdZsVRxNWnOOqCynaPubjUVjxhsjFTKrFJGEMm3/0KGmNQ+Pg" crossorigin="anonymous"></script>
 </head>
 
-<body class="min-h-screen font-sans text-ink">
+<body id="body" hx-boost="true" hx-ext="response-targets" class="min-h-screen font-sans text-ink">
 
 <div class="w-full min-h-screen lg:grid lg:grid-cols-[1fr_1.1fr]">
 
@@ -187,7 +187,7 @@
 
         <div id="nil"></div>
 
-        <form hx-post="{{.LoginUrl}}" hx-swap="outerHTML" hx-target="#body" hx-target-400="#nil" novalidate>
+        <form hx-post="{{.LoginUrl}}" hx-swap="outerHTML" hx-target="#body" hx-target-400="#nil" hx-push-url="true" novalidate>
 
           <!-- Email field -->
           <div class="mb-5 animate-fu-d2">

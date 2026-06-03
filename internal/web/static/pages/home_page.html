@@ -9,15 +9,15 @@
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
   <!-- Fonts: DM Serif Display + DM Sans -->
+   <link rel="stylesheet" href="/src/output.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="stylesheet" href="/src/output.css">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js" integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/htmx-ext-response-targets@2.0.4" integrity="sha384-T41oglUPvXLGBVyRdZsVRxNWnOOqCynaPubjUVjxhsjFTKrFJGEMm3/0KGmNQ+Pg" crossorigin="anonymous"></script>
 </head>
 
-<body class="min-h-screen" style="font-family: var(--font-sans);">
+<body id="body" hx-boost="true" hx-ext="response-targets" class="min-h-screen" style="font-family: var(--font-sans);">
 
   <!-- ═══════════════════════════════════════════════════════════════ -->
   <!-- NAVIGATION                                                     -->
@@ -218,8 +218,12 @@
               <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
               Most Popular
             </div>
-            <div hx-get="{{.FilterSortRoute}}?{{.FilterKey}}={{.CurrentFilter}}&{{.SortKey}}={{.SortASC}}"  class="dropdown-item">A → Z</div>
-            <div hx-get="{{.FilterSortRoute}}?{{.FilterKey}}={{.CurrentFilter}}&{{.SortKey}}={{.SortDESC}}" class="dropdown-item">Z → A</div>
+            <a hx-get="{{.FilterSortRoute}}?{{.FilterKey}}={{.CurrentFilter}}&{{.SortKey}}={{.SortASC}}" hx-swap="outerHTML" hx-target="#artists" hx-push-url="true">
+                <div class="dropdown-item">A → Z</div>
+            </a>
+            <a hx-get="{{.FilterSortRoute}}?{{.FilterKey}}={{.CurrentFilter}}&{{.SortKey}}={{.SortDESC}}" hx-swap="outerHTML" hx-target="#artists" hx-push-url="true">
+                <div class="dropdown-item">Z → A</div>
+            </a>
             <!-- <div class="dropdown-item">Recently Added</div>
             <div class="dropdown-item">Upcoming Events</div>
             <div class="dropdown-item">Most Followed</div> -->
@@ -253,8 +257,16 @@
     </div>
   </div>
 
-  {{define "artist-card-main" .}}
 
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- MAIN CONTENT                                                   -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+    {{template "artist-card-main" .}} 
+
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- FOOTER                                                         -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
   <footer class="border-t border-border bg-surface-white mt-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -290,5 +302,7 @@
       </div>
     </div>
   </footer>
+
+
 </body>
 </html>

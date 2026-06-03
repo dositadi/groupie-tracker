@@ -2,6 +2,8 @@ package pages
 
 import (
 	"html/template"
+	"strings"
+	"unicode"
 
 	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
 	"github.com/dositadi/groupie-tracker/internal/helper"
@@ -35,7 +37,27 @@ func (p *Pages) RenderHomePage(filterBy Filter, sortBy Sort) error {
 		"internal/web/static/partials/pages/home_page_partials.html",
 	}
 
-	temp, err := template.New("home_page.html").ParseFS(p.embedded.Get(), fs...)
+	funcMap := template.FuncMap{
+		"GetLocation": func(s []string) string {
+			return s[0]
+		},
+		"CleanText": func(s string) string {
+			s = strings.ReplaceAll(s, "_", " ")
+			s = strings.ReplaceAll(s, "-", " ")
+			s = strings.ToLower(s)
+			sl := strings.Fields(s)
+
+			for i, w := range sl {
+				rn := []rune(w)
+				rn[0] = unicode.ToUpper(rn[0])
+				sl[i] = string(rn)
+			}
+
+			return strings.Join(sl, " ")
+		},
+	}
+
+	temp, err := template.New("home_page.html").Funcs(funcMap).ParseFS(p.embedded.Get(), fs...)
 	if err != nil {
 		e := helper.WrapError("Error creating template", err)
 		p.logger.PrintError(e.Error(), map[string]string{

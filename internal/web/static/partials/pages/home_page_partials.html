@@ -5,7 +5,8 @@
     <div class="flex items-center justify-between mb-6">
       <div>
         <h2 class="text-ink text-xl font-semibold" style="font-family: var(--font-sans);">All Artists</h2>
-        <p class="text-ink-muted text-sm mt-0.5">Showing 12,400 artists</p>
+        <p class="text-ink-muted text-sm mt-0.5">Showing 
+            {{len .Artists}} artists</p>
       </div>
       <!-- View toggle -->
       <div class="flex items-center gap-1 bg-surface-alt border border-border rounded-lg p-1">
@@ -40,7 +41,7 @@
             class="artist-card-img"
             />
             <!-- Favourite button (OUTLINE — not favourited) -->
-            <button {{if .IsFavorited}} hx-post="{{.FavoriteArtistUrl}}?{{.FavKey}}={{.Favorited}}" {{else}} hx-post="{{.FavoriteArtistUrl}}?{{.FavKey}}={{.NotFavorited}}" {{end}} hx-swap="outerHTML" hx-target="#artists" hx-push-url="true"
+            <button {{if .IsFavorited}} hx-post="{{$.FavoriteArtistUrl}}?{{$.FavKey}}={{$.Favorited}}" {{else}} hx-post="{{$.FavoriteArtistUrl}}?{{$.FavKey}}={{$.NotFavorited}}" {{end}} hx-swap="outerHTML" hx-target="#artists" hx-push-url="true"
             {{if .IsFavorited}}
             class="fav-btn absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center bg-rose-500 border border-rose-400 text-white hover:bg-rose-600 transition-all duration-200"
             aria-label="Remove from favourites"
@@ -57,10 +58,7 @@
             <div class="absolute bottom-3 left-3">
             <span class="inline-flex items-center gap-1 bg-black/40 backdrop-blur-sm border border-white/15 text-white text-[10px] font-medium px-2 py-1 rounded-full">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
-                <strong>
-                    {{len .DatesLocations}}
-                </strong>
-                upcoming
+                {{len .DatesLocations}} upcoming
             </span>
             </div>
         </div>
@@ -76,7 +74,7 @@
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
             </svg>
-            Lagos, Nigeria <!-- pipe into a func that gives the location in the first index -->
+            {{.Locations | GetLocation | CleanText}}
             </p>
             <!-- Stats row -->
             <div class="flex items-center gap-3 mb-3.5">
@@ -118,7 +116,7 @@
         Next
       </button>
       <button class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand hover:border-brand hover:text-white transition-all duration-200 shadow-sm">
-        Load more artists
+        Previous
       </button>
     </div>
 
