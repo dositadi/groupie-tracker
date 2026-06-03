@@ -11,5 +11,12 @@ type Favorite struct {
 	Id       string
 	UserId   string
 	ArtistId int
+	Status   bool
 	Version  int
+}
+
+type FavoriteUpdate struct {
+	Id, UserId string
+	ArtistId   int
+	Status     *bool
 }

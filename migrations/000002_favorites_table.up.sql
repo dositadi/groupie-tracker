@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS favorites (
     id uuid NOT NULL PRIMARY KEY,
     userId uuid NOT NULL,
     artistId integer NOT NULL,
+    status boolean NOT NULL DEFAULT false,
     version integer NOT NULL DEFAULT 1,
     created_at TIMESTAMP NOT NULL DEFAULT now(),
     updated_at TIMESTAMP NOT NULL DEFAULT now(),

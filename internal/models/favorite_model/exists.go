@@ -37,7 +37,7 @@ func (f *FavoriteModel) Exists(artistId int) (bool, error) {
 			e = helper.WrapError("Query execution error", err)
 		}
 		f.logger.PrintError(e.Error(), map[string]string{
-			"Source": sourceGetAll,
+			"Source": sourceExists,
 		})
 		return false, e
 	}

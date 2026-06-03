@@ -20,7 +20,38 @@ id uuid NOT NULL PRIMARY KEY,
 const (
 	timeout      = 5
 	sourceGetAll = "Get all f(n) under favoritemodel pkg"
+	sourceGet    = "Get f(n) under favoritemodel pkg"
 )
+
+func (f *FavoriteModel) Get(artistId int, userId string) (data.Favorite, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Second)
+	defer cancel()
+
+	query := "SELECT status, version FROM favorites WHERE userId = $1 AND artistId = $2"
+
+	row := f.db.QueryRow(ctx, query, userId, artistId)
+
+	var fav data.Favorite
+
+	if err := row.Scan(&fav.Status, &fav.Version); err != nil {
+		var e error
+		switch {
+		case errors.Is(err, context.Canceled):
+			e = helper.WrapError("Query execution error: context canceled", err)
+		case errors.Is(err, context.DeadlineExceeded):
+			e = helper.WrapError("Query execution error: deadline exceeded", err)
+		case errors.Is(err, pgx.ErrTxClosed):
+			e = helper.WrapError("Query execution error: transaction closed", err)
+		default:
+			e = helper.WrapError("Query execution error", err)
+		}
+		f.logger.PrintError(e.Error(), map[string]string{
+			"Source": sourceGet,
+		})
+		return data.Favorite{}, e
+	}
+	return fav, nil
+}
 
 func (f *FavoriteModel) GetAll(userId string) ([]data.Favorite, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Second)
