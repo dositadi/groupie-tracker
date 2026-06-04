@@ -44,13 +44,14 @@ func (f *FavoriteModel) Update(fav data.FavoriteUpdate) error {
 		return err
 	}
 
+	var status bool
 	if fav.Status != nil {
-		data.Status = *fav.Status
+		status = *fav.Status
 	}
 
 	query := "UPDATE favorites SET status = $1, version = version + 1, updated_at = now() WHERE userId = $2 AND artistId = $3 AND version = $4"
 
-	_, err = tx.Exec(ctx, query, data.Status, fav.UserId, fav.ArtistId, data.Version)
+	_, err = tx.Exec(ctx, query, status, fav.UserId, fav.ArtistId, data.Version)
 	if err != nil {
 		var e error
 		switch {

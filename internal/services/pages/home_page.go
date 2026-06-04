@@ -107,7 +107,7 @@ func (p *Pages) RenderHomePage(filterBy Filter, sortBy Sort) error {
 		FavoriteArtistUrl:    utils.FAVORITE.String(),
 		FavKey:               utils.FAV_KEY,
 		Favorited:            string(FAVORITED),
-		NotFavorited:         string(FAVORITED),
+		NotFavorited:         string(NOT_FAVORITED),
 		ArtistIDKey:          utils.ARTIST_ID_KEY,
 	}
 

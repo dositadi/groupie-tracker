@@ -2,6 +2,7 @@ package pages
 
 import (
 	groupietracker "github.com/dositadi/groupie-tracker"
+	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
 	"github.com/dositadi/groupie-tracker/internal/data"
 	jsonlog "github.com/dositadi/groupie-tracker/internal/json_log"
 )
@@ -20,7 +21,7 @@ type FavoriteModel interface {
 	DeleteAll(userId string) error
 	Delete(userId string, artistId string) error
 	Exists(artistId int) (bool, error)
-	Get(artistId int, userId string)
+	Get(artistId int, userId string) (data.Favorite, error)
 	GetAll(userId string) ([]data.Favorite, error)
 	Insert(favorite data.Favorite) error
 	Update(fav data.FavoriteUpdate) error
@@ -31,12 +32,15 @@ type Pages struct {
 	usermodel     UserModel
 	favoriteModel FavoriteModel
 	embedded      groupietracker.Embedded
+	client        artistapi.ArtistInfo
 }
 
-func New(logger jsonlog.Logger, userModel UserModel, favoriteModel FavoriteModel, embedded groupietracker.Embedded) *Pages {
+func New(logger jsonlog.Logger, userModel UserModel, favoriteModel FavoriteModel, embedded groupietracker.Embedded, client artistapi.ArtistInfo) *Pages {
 	return &Pages{
-		logger:    logger,
-		usermodel: userModel,
-		embedded:  embedded,
+		logger:        logger,
+		usermodel:     userModel,
+		embedded:      embedded,
+		favoriteModel: favoriteModel,
+		client:        client,
 	}
 }

@@ -31,5 +31,8 @@ func (a *App) initHandlers() {
 		// Auth routes
 		r.With(a.midleware.Recover).Post(utils.REGISTER.String(), a.handler.Post.Auth.RegisterHandler)
 		r.With(a.midleware.Recover).Post(utils.LOGIN.String(), a.handler.Post.Auth.LoginHandler)
+
+		
+		r.With(a.midleware.Recover).With(a.midleware.VerifyAccessToken).Post(utils.FAVORITE.String(), a.handler.Post.Pages.UpdateFavoriteHandler)
 	})
 }

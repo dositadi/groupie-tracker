@@ -33,7 +33,7 @@ func (a *App) init() {
 	a.logger = jsonlog.New(os.Stdout, jsonlog.LevelInfo)
 	a.initDB()
 	models := models.New(a.db, *a.logger)
-	a.handler = handlers.New(*a.logger, &models.UserModel, *a.client, a.embedded)
+	a.handler = handlers.New(*a.logger, &models.UserModel, &models.FavoriteModel, *a.client, a.embedded)
 	a.midleware = middlewares.New(*a.handler, *a.logger)
 	a.initHandlers()
 }

@@ -52,9 +52,9 @@ func (f *FavoriteModel) Insert(favorite data.Favorite) error {
 		return CONFLICT_ERR
 	}
 
-	query := "INSERT INTO favorites (userId, artistId) VALUES ($1, $2)"
+	query := "INSERT INTO favorites (id, userId, artistId, status) VALUES ($1, $2,$3,$4)"
 
-	_, err = tx.Exec(ctx, query, favorite.UserId, favorite.ArtistId)
+	_, err = tx.Exec(ctx, query, favorite.Id, favorite.UserId, favorite.ArtistId, favorite.Status)
 	if err != nil {
 		var e error
 		switch {

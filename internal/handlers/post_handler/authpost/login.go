@@ -81,6 +81,7 @@ func (a *Auth) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var activeUser data.ActiveUser
+	activeUser.Id = user.Id
 	activeUser.Email = user.Email
 	activeUser.Username = user.Username
 

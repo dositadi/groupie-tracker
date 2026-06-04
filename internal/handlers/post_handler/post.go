@@ -5,6 +5,7 @@ import (
 	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
 	"github.com/dositadi/groupie-tracker/internal/data"
 	"github.com/dositadi/groupie-tracker/internal/handlers/post_handler/authpost"
+	"github.com/dositadi/groupie-tracker/internal/handlers/post_handler/pages"
 	jsonlog "github.com/dositadi/groupie-tracker/internal/json_log"
 )
 
@@ -24,13 +25,16 @@ type Post struct {
 	client    artistapi.ArtistInfo
 	embedded  groupietracker.Embedded
 	Auth      authpost.Auth
+	Pages     pages.Pages
 }
 
-func New(userModel UserModel, client artistapi.ArtistInfo, logger jsonlog.Logger, embedded groupietracker.Embedded) *Post {
+func New(userModel UserModel, favoriteModel pages.FavoriteModel, client artistapi.ArtistInfo, logger jsonlog.Logger, embedded groupietracker.Embedded) *Post {
 	return &Post{
 		userModel: userModel,
 		logger:    logger,
 		client:    client,
+		embedded: embedded,
 		Auth:      *authpost.New(logger, userModel, embedded),
+		Pages: *pages.New(logger,userModel,favoriteModel,embedded,client),
 	}
 }

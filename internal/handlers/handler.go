@@ -9,6 +9,7 @@ import (
 	deletehandler "github.com/dositadi/groupie-tracker/internal/handlers/delete_handler"
 	gethandler "github.com/dositadi/groupie-tracker/internal/handlers/get_handler"
 	posthandler "github.com/dositadi/groupie-tracker/internal/handlers/post_handler"
+	"github.com/dositadi/groupie-tracker/internal/handlers/post_handler/pages"
 	jsonlog "github.com/dositadi/groupie-tracker/internal/json_log"
 )
 
@@ -32,12 +33,12 @@ type Handler struct {
 	embedded  groupietracker.Embedded
 }
 
-func New(logger jsonlog.Logger, userModel UserModel, client artistapi.ArtistInfo, embedded groupietracker.Embedded) *Handler {
+func New(logger jsonlog.Logger, userModel UserModel, favoriteModel pages.FavoriteModel, client artistapi.ArtistInfo, embedded groupietracker.Embedded) *Handler {
 	return &Handler{
 		logger:    logger,
 		userModel: userModel,
 		Get:       *gethandler.New(userModel, client, logger, embedded),
-		Post:      *posthandler.New(userModel, client, logger, embedded),
+		Post:      *posthandler.New(userModel, favoriteModel, client, logger, embedded),
 		Delete:    *deletehandler.New(userModel, client, logger),
 	}
 }

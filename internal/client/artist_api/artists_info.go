@@ -29,3 +29,42 @@ func (a *ArtistInfo) GetByName() map[string]ArtistInfo {
 func (a *ArtistInfo) GetByFirstAlbum() map[string]ArtistInfo {
 	return byFirstAlbum
 }
+
+func (a *ArtistInfo) SetIsFavorited(id int, status bool) {
+	if val, ok := byIdKey[id]; ok {
+		if val.IsFavorited && status {
+			val.IsFavorited = !val.IsFavorited
+		}
+		if !val.IsFavorited && !status {
+			val.IsFavorited = !val.IsFavorited
+		}
+	}
+	if val, ok := byCreationDateKey[id]; ok {
+		if val.IsFavorited && status {
+			val.IsFavorited = !val.IsFavorited
+		}
+		if !val.IsFavorited && !status {
+			val.IsFavorited = !val.IsFavorited
+		}
+	}
+	for _, artist := range byFirstAlbum {
+		if artist.Id == id {
+			if artist.IsFavorited && status {
+				artist.IsFavorited = !artist.IsFavorited
+			}
+			if !artist.IsFavorited && !status {
+				artist.IsFavorited = !artist.IsFavorited
+			}
+		}
+	}
+	for _, artist := range byName {
+		if artist.Id == id {
+			if artist.IsFavorited && status {
+				artist.IsFavorited = !artist.IsFavorited
+			}
+			if !artist.IsFavorited && !status {
+				artist.IsFavorited = !artist.IsFavorited
+			}
+		}
+	}
+}

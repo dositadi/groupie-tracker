@@ -53,7 +53,8 @@ func (m *Middleware) VerifyAccessToken(next http.Handler) http.Handler {
 				return
 			}
 
-			cxt := context.WithValue(r.Context(), utils.USER_ID_KEY, active.ID)
+			cxt := context.WithValue(r.Context(), utils.USER_ID_KEY, active.Id)
+			fmt.Println(active.Id)
 			next.ServeHTTP(w, r.WithContext(cxt))
 		},
 	)
