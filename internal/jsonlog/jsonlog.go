@@ -3,7 +3,6 @@ package jsonlog
 import (
 	"io"
 	"runtime/debug"
-	"strconv"
 
 	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/utils"
 )
@@ -11,7 +10,15 @@ import (
 type Level int
 
 func (l Level) String() string {
-	return strconv.Itoa(int(l))
+	switch l {
+	case 0:
+		return "INFO"
+	case 1:
+		return "ERROR"
+	case 2:
+		return "FATAL"
+	}
+	return ""
 }
 
 const (
