@@ -6,22 +6,14 @@ import (
 	"time"
 )
 
-func (a *ArtistInfo) assembleArtistInfoAsMap(chArtistsInfo chan *ArtistInfo) (map[int]ArtistInfo, map[int]ArtistInfo, map[string]ArtistInfo, map[string]ArtistInfo) {
-	byId := make(map[int]ArtistInfo)
-	byCreationDate := make(map[int]ArtistInfo)
-	byName := make(map[string]ArtistInfo)
-	byFirstAlbum := make(map[string]ArtistInfo)
+var (
+	byId           = make(map[int]ArtistInfo)
+	byCreationDate = make(map[int]ArtistInfo)
+	byName         = make(map[string]ArtistInfo)
+	byFirstAlbum   = make(map[string]ArtistInfo)
+)
 
-	for artistInfo := range chArtistsInfo {
-		byId[artistInfo.Id] = *artistInfo
-		byCreationDate[artistInfo.CreationDate] = *artistInfo
-		byName[artistInfo.Name] = *artistInfo
-		byFirstAlbum[artistInfo.FirstAlbum] = *artistInfo
-	}
-	return byId, byCreationDate, byName, byFirstAlbum
-}
-
-func (a *ArtistInfo) mapArtistsInfo() (map[int]ArtistInfo, map[int]ArtistInfo, map[string]ArtistInfo, map[string]ArtistInfo) {
+func (a *ArtistInfo) mapArtistsInfo() {
 	// Using the pipeline routine pattern to generate the artist's info
 	arts, err := a.fetchArtists()
 	if err != nil {
@@ -33,16 +25,20 @@ func (a *ArtistInfo) mapArtistsInfo() (map[int]ArtistInfo, map[int]ArtistInfo, m
 	chError := make(chan error)
 
 	filledArtists := a.fillArtistsInfoFromArtists(arts)
-	filledLocations := a.fillArtistInfoFromLocation(ctx, filledArtists, chError, arts)
-	filledDates := a.fillArtistInfoFromDate(ctx, filledLocations, chError, arts)
-	filledRelations := a.fillArtistInfoFromRelations(ctx, filledDates, chError, arts)
+	chArtistInfo := a.fillArtistInfoFromLocation(ctx, filledArtists, chError, arts)
+	chArtistInfo = a.fillArtistInfoFromDate(ctx, chArtistInfo, chError, arts)
+	chArtistInfo = a.fillArtistInfoFromRelations(ctx, chArtistInfo, chError, arts)
 
 	select {
 	case <-chError:
 		time.Sleep(5 * time.Millisecond)
 		os.Exit(1)
 	default:
-		return a.assembleArtistInfoAsMap(filledRelations)
+		for artistInfo := range chArtistInfo {
+			byId[artistInfo.Id] = *artistInfo
+			byCreationDate[artistInfo.CreationDate] = *artistInfo
+			byName[artistInfo.Name] = *artistInfo
+			byFirstAlbum[artistInfo.FirstAlbum] = *artistInfo
+		}
 	}
-	return a.assembleArtistInfoAsMap(filledRelations)
 }

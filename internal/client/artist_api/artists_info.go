@@ -1,25 +1,19 @@
 package artistapi
 
-var byIdKey, byCreationDateKey = make(map[int]ArtistInfo), make(map[int]ArtistInfo)
-var byName, byFirstAlbum = make(map[string]ArtistInfo), make(map[string]ArtistInfo)
-
 func New() *ArtistInfo {
 	return &ArtistInfo{}
 }
 
 func (a *ArtistInfo) Init() {
-	byIdKey, byCreationDateKey, byName, byFirstAlbum = a.mapArtistsInfo()
-	logger.PrintInfo("Artists Info initialized successfully", map[string]string{
-		"Source": "Init f(n) in artistapi pkg",
-	})
+	a.mapArtistsInfo()
 }
 
 func (a *ArtistInfo) GetByIdKey() map[int]ArtistInfo {
-	return byIdKey
+	return byId
 }
 
 func (a *ArtistInfo) GetByCreationDate() map[int]ArtistInfo {
-	return byCreationDateKey
+	return byCreationDate
 }
 
 func (a *ArtistInfo) GetByName() map[string]ArtistInfo {
@@ -31,39 +25,39 @@ func (a *ArtistInfo) GetByFirstAlbum() map[string]ArtistInfo {
 }
 
 func (a *ArtistInfo) SetIsFavorited(id int, status bool) {
-	if val, ok := byIdKey[id]; ok {
-		if val.IsFavorited && status {
-			val.IsFavorited = !val.IsFavorited
+	if val, ok := byId[id]; ok {
+		if status {
+			val.IsFavorited = true
 		}
-		if !val.IsFavorited && !status {
-			val.IsFavorited = !val.IsFavorited
+		if !status {
+			val.IsFavorited = false
 		}
 	}
-	if val, ok := byCreationDateKey[id]; ok {
-		if val.IsFavorited && status {
-			val.IsFavorited = !val.IsFavorited
+	if val, ok := byCreationDate[id]; ok {
+		if status {
+			val.IsFavorited = true
 		}
-		if !val.IsFavorited && !status {
-			val.IsFavorited = !val.IsFavorited
+		if !status {
+			val.IsFavorited = false
 		}
 	}
 	for _, artist := range byFirstAlbum {
 		if artist.Id == id {
-			if artist.IsFavorited && status {
-				artist.IsFavorited = !artist.IsFavorited
+			if status {
+				artist.IsFavorited = true
 			}
-			if !artist.IsFavorited && !status {
-				artist.IsFavorited = !artist.IsFavorited
+			if !status {
+				artist.IsFavorited = false
 			}
 		}
 	}
 	for _, artist := range byName {
 		if artist.Id == id {
-			if artist.IsFavorited && status {
-				artist.IsFavorited = !artist.IsFavorited
+			if status {
+				artist.IsFavorited = true
 			}
-			if !artist.IsFavorited && !status {
-				artist.IsFavorited = !artist.IsFavorited
+			if !status {
+				artist.IsFavorited = false
 			}
 		}
 	}
