@@ -111,26 +111,17 @@ func (p *Pages) RenderHomePage(filterBy Filter, sortBy Sort) error {
 		ArtistIDKey:          utils.ARTIST_ID_KEY,
 	}
 
-	if p.isHTMXRequest() {
-		if err = temp.ExecuteTemplate(p.responseWriter, "artist-card-main", data); err != nil {
-			e := helper.WrapError("Error executing template", err)
-			p.logger.PrintError(e.Error(), map[string]string{
-				"Source": sourceRHome,
-			})
-			return e
-		}
-	} else {
-		if err = temp.Execute(p.responseWriter, data); err != nil {
-			e := helper.WrapError("Error executing template", err)
-			p.logger.PrintError(e.Error(), map[string]string{
-				"Source": sourceRHome,
-			})
-			return e
-		}
+	if err = temp.Execute(p.responseWriter, data); err != nil {
+		e := helper.WrapError("Error executing template", err)
+		p.logger.PrintError(e.Error(), map[string]string{
+			"Source": sourceRHome,
+		})
+		return e
 	}
+
 	return nil
 }
 
-func (p *Pages) isHTMXRequest() bool {
+/* func (p *Pages) isHTMXRequest() bool {
 	return p.request.Header.Get("HX-Request") == "true"
-}
+} */

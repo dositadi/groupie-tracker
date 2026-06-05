@@ -43,7 +43,7 @@ func (p *Pages) RenderArtistsGrid(filterBy Filter, sortBy Sort) error {
 	if err != nil {
 		e := helper.WrapError("Error creating template", err)
 		p.logger.PrintError(e.Error(), map[string]string{
-			"Source": sourceRHome,
+			"Source": sourceAG,
 		})
 		return e
 	}

@@ -42,3 +42,11 @@ func (a *ArtistInfo) mapArtistsInfo() {
 		}
 	}
 }
+
+func (a *ArtistInfo) SetFavoriteStatus(id int, status bool) {
+	temp := byId[id]
+
+	temp.IsFavorited = status
+
+	byId[id] = temp
+}

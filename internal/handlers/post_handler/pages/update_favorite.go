@@ -22,7 +22,7 @@ func (p *Pages) UpdateFavoriteHandler(w http.ResponseWriter, r *http.Request) {
 	artistId := p.atoi(val)
 	idVal := r.Context().Value(utils.USER_ID_KEY)
 	var userId = ""
-	fmt.Println(favStatus)
+	page := pages.New(p.logger, w, p.embedded, p.client, r)
 
 	if id, ok := idVal.(string); ok {
 		userId = id
@@ -30,7 +30,6 @@ func (p *Pages) UpdateFavoriteHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch favStatus {
 	case string(pages.FAVORITED):
-		fmt.Println("Entered Fav")
 		exists, err := p.favoriteModel.Exists(artistId)
 		if err != nil {
 			e := helper.WrapError("Update favorite error", err)
@@ -74,7 +73,8 @@ func (p *Pages) UpdateFavoriteHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		p.client.SetIsFavorited(artistId, favorite.Status)
+		p.client.SetFavoriteStatus(artistId, false)
+
 	case string(pages.NOT_FAVORITED):
 		exists, err := p.favoriteModel.Exists(artistId)
 		if err != nil {
@@ -117,13 +117,11 @@ func (p *Pages) UpdateFavoriteHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
-		p.client.SetIsFavorited(artistId, favorite.Status)
+
+		p.client.SetFavoriteStatus(artistId, true)
 	}
-
-	page := pages.New(p.logger, w, p.embedded, p.client, r)
-
 	if err := page.RenderArtistsGrid(pages.FILTER_BY_ID, pages.ASCENDING_ORDER); err != nil {
-		e := helper.WrapError("Render artist grid error", err)
+		e := helper.WrapError("Render favorite button error", err)
 		p.logger.PrintError(e.Error(), map[string]string{
 			"Source": sourceUH,
 		})
