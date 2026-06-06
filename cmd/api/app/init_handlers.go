@@ -14,6 +14,7 @@ func (a *App) fileServer() {
 
 func (a *App) initHandlers() {
 	a.router.Use(middleware.CleanPath)
+	a.router.Use(a.midleware.Recover)
 	a.fileServer()
 
 	// Get request routes
@@ -23,16 +24,17 @@ func (a *App) initHandlers() {
 		r.Get(utils.REGISTER.String(), a.handler.Get.Auth.SignupHandler)
 
 		// App pages
-		r.With(a.midleware.Recover).With(a.midleware.VerifyAccessToken).Get(utils.HOME.String(), a.handler.Get.Pages.HomeHandler)
+		r.With(a.midleware.VerifyAccessToken).Get(utils.HOME.String(), a.handler.Get.Pages.HomeHandler)
+		r.With(a.midleware.VerifyAccessToken).Get(utils.FILTER_SORT_ROUTE.String(), a.handler.Get.Pages.FilterSortHandler)
 	})
 
 	// Post request routes
 	a.router.Group(func(r chi.Router) {
 		// Auth routes
-		r.With(a.midleware.Recover).Post(utils.REGISTER.String(), a.handler.Post.Auth.RegisterHandler)
-		r.With(a.midleware.Recover).Post(utils.LOGIN.String(), a.handler.Post.Auth.LoginHandler)
+		r.Post(utils.REGISTER.String(), a.handler.Post.Auth.RegisterHandler)
+		r.Post(utils.LOGIN.String(), a.handler.Post.Auth.LoginHandler)
 
-		
-		r.With(a.midleware.Recover).With(a.midleware.VerifyAccessToken).Post(utils.FAVORITE.String(), a.handler.Post.Pages.UpdateFavoriteHandler)
+		// App post request
+		r.With(a.midleware.VerifyAccessToken).Post(utils.FAVORITE.String(), a.handler.Post.Pages.UpdateFavoriteHandler)
 	})
 }
