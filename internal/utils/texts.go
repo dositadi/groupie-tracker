@@ -11,4 +11,5 @@ const (
 	FAV_KEY          = "favorited"
 	ARTIST_ID_KEY    = "artistId"
 	USER_ID_KEY      = "userId"
+	SEARCH_KEY       = "search"
 )
