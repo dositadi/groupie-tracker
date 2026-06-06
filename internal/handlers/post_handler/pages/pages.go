@@ -1,10 +1,13 @@
 package pages
 
 import (
+	"net/http"
+
 	groupietracker "github.com/dositadi/groupie-tracker"
 	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
 	"github.com/dositadi/groupie-tracker/internal/data"
 	jsonlog "github.com/dositadi/groupie-tracker/internal/json_log"
+	"github.com/dositadi/groupie-tracker/internal/utils"
 )
 
 type UserModel interface {
@@ -43,4 +46,13 @@ func New(logger jsonlog.Logger, userModel UserModel, favoriteModel FavoriteModel
 		favoriteModel: favoriteModel,
 		client:        client,
 	}
+}
+
+func (p *Pages) getUserId(r *http.Request) string {
+	idVal := r.Context().Value(utils.USER_ID_KEY)
+	var userId = ""
+	if id, ok := idVal.(string); ok {
+		userId = id
+	}
+	return userId
 }

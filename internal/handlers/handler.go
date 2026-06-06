@@ -37,7 +37,7 @@ func New(logger jsonlog.Logger, userModel UserModel, favoriteModel pages.Favorit
 	return &Handler{
 		logger:    logger,
 		userModel: userModel,
-		Get:       *gethandler.New(userModel, client, logger, embedded),
+		Get:       *gethandler.New(userModel, favoriteModel, client, logger, embedded),
 		Post:      *posthandler.New(userModel, favoriteModel, client, logger, embedded),
 		Delete:    *deletehandler.New(userModel, client, logger),
 	}

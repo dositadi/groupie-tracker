@@ -17,18 +17,30 @@ type UserModel interface {
 	IDExists(id string) (bool, error)
 }
 
-type Pages struct {
-	logger    jsonlog.Logger
-	usermodel UserModel
-	client    artistapi.ArtistInfo
-	embedded  groupietracker.Embedded
+type FavoriteModel interface {
+	DeleteAll(userId string) error
+	Delete(userId string, artistId string) error
+	Exists(artistId int) (bool, error)
+	Get(artistId int, userId string) (data.Favorite, error)
+	GetAll(userId string) ([]data.Favorite, error)
+	Insert(favorite data.Favorite) error
+	Update(fav data.FavoriteUpdate) error
 }
 
-func New(usermodel UserModel, client artistapi.ArtistInfo, logger jsonlog.Logger, embedded groupietracker.Embedded) *Pages {
+type Pages struct {
+	logger        jsonlog.Logger
+	usermodel     UserModel
+	client        artistapi.ArtistInfo
+	embedded      groupietracker.Embedded
+	favoriteModel FavoriteModel
+}
+
+func New(usermodel UserModel, client artistapi.ArtistInfo, logger jsonlog.Logger, embedded groupietracker.Embedded, favoriteModel FavoriteModel) *Pages {
 	return &Pages{
-		usermodel: usermodel,
-		client:    client,
-		logger:    logger,
-		embedded:  embedded,
+		usermodel:     usermodel,
+		client:        client,
+		logger:        logger,
+		embedded:      embedded,
+		favoriteModel: favoriteModel,
 	}
 }
