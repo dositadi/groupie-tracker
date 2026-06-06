@@ -2,6 +2,7 @@ package pages
 
 import (
 	"html/template"
+	"strings"
 
 	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
 	"github.com/dositadi/groupie-tracker/internal/helper"
@@ -9,47 +10,42 @@ import (
 )
 
 const (
-	sourceRHome = "Render Home page f(n) under pages pkg"
+	sourceRS = "Render search f(n) under pages pkg"
 )
 
-func (p *Pages) RenderHomePage(filterBy Filter, sortBy Sort) error {
+func (p *Pages) RenderSearch() error {
 	fs := []string{
-		"internal/web/static/pages/home_page.html",
 		"internal/web/static/partials/pages/home_page_partials.html",
 	}
 
-	userFavorites, err := p.getUserFavorites()
-	if err != nil {
-		p.logger.PrintError(err.Error(), map[string]string{
-			"Source": sourceRHome,
-		})
-		return err
-	}
+	filterBy := Filter(p.request.FormValue(utils.FILTER_KEY))
+	sortBy := Sort(p.request.FormValue(utils.SORT_KEY))
+	search := p.request.FormValue(utils.SEARCH_KEY)
 
-	temp, err := template.New("home_page.html").Funcs(p.homePageFunc()).ParseFS(p.embedded.Get(), fs...)
+	temp, err := template.New("home_page_partials.html").Funcs(p.homePageFunc()).ParseFS(p.embedded.Get(), fs...)
 	if err != nil {
 		e := helper.WrapError("Error creating template", err)
 		p.logger.PrintError(e.Error(), map[string]string{
-			"Source": sourceRHome,
+			"Source": sourceRS,
 		})
 		return e
 	}
 
 	var artists []artistapi.ArtistInfo
+	search = strings.ToLower(search)
 
-	switch filterBy {
-	case FILTER_BY_ID:
-		artists = sortArtists(p.client.GetByIdKey(), sortBy)
-	case FILTER_BY_NAME:
-		artists = sortArtists(p.client.GetByName(), sortBy)
-	case FILTER_BY_FIRST_ALBUM:
-		artists = sortArtists(p.client.GetByFirstAlbum(), sortBy)
-	case FILTER_BY_CREATION_DATE:
-		artists = sortArtists(p.client.GetByCreationDate(), sortBy)
-	default:
-		filterBy = FILTER_BY_ID
-		sortBy = ASCENDING_ORDER
-		artists = sortArtists(p.client.GetByIdKey(), sortBy)
+	for _, artist := range p.client.GetByIdKey() {
+		if strings.Contains(strings.ToLower(artist.FirstAlbum), search) || strings.Contains(strings.ToLower(artist.Name), search) {
+			artists = append(artists, artist)
+		}
+	}
+
+	userFavorites, err := p.getUserFavorites()
+	if err != nil {
+		p.logger.PrintError(err.Error(), map[string]string{
+			"Source": sourceRS,
+		})
+		return err
 	}
 
 	data := struct {
@@ -82,32 +78,12 @@ func (p *Pages) RenderHomePage(filterBy Filter, sortBy Sort) error {
 		ArtistIDKey:          utils.ARTIST_ID_KEY,
 	}
 
-	if err = temp.Execute(p.responseWriter, data); err != nil {
+	if err = temp.ExecuteTemplate(p.responseWriter, "artist-card-main", data); err != nil {
 		e := helper.WrapError("Error executing template", err)
 		p.logger.PrintError(e.Error(), map[string]string{
-			"Source": sourceRHome,
+			"Source": sourceRS,
 		})
 		return e
 	}
-
 	return nil
 }
-
-func (p *Pages) getUserFavorites() (map[int]bool, error) {
-	favorites, err := p.favoriteModel.GetAll(p.getUserId())
-	if err != nil {
-		e := helper.WrapError("Favorites fetch error", err)
-		return nil, e
-	}
-
-	favMap := make(map[int]bool)
-
-	for _, favorite := range favorites {
-		favMap[favorite.ArtistId] = favorite.Status
-	}
-	return favMap, nil
-}
-
-/* func (p *Pages) isHTMXRequest() bool {
-	return p.request.Header.Get("HX-Request") == "true"
-} */

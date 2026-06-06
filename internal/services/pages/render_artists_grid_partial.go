@@ -2,8 +2,6 @@ package pages
 
 import (
 	"html/template"
-	"strings"
-	"unicode"
 
 	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
 	"github.com/dositadi/groupie-tracker/internal/helper"
@@ -19,33 +17,21 @@ func (p *Pages) RenderArtistsGrid(filterBy Filter, sortBy Sort) error {
 		"internal/web/static/partials/pages/home_page_partials.html",
 	}
 
-	funcMap := template.FuncMap{
-		"GetLocation": func(s []string) string {
-			return s[0]
-		},
-		"CleanText": func(s string) string {
-			s = strings.ReplaceAll(s, "_", " ")
-			s = strings.ReplaceAll(s, "-", " ")
-			s = strings.ToLower(s)
-			sl := strings.Fields(s)
-
-			for i, w := range sl {
-				rn := []rune(w)
-				rn[0] = unicode.ToUpper(rn[0])
-				sl[i] = string(rn)
-			}
-
-			return strings.Join(sl, " ")
-		},
-	}
-
-	temp, err := template.New("home_page_partials.html").Funcs(funcMap).ParseFS(p.embedded.Get(), fs...)
+	temp, err := template.New("home_page_partials.html").Funcs(p.homePageFunc()).ParseFS(p.embedded.Get(), fs...)
 	if err != nil {
 		e := helper.WrapError("Error creating template", err)
 		p.logger.PrintError(e.Error(), map[string]string{
 			"Source": sourceAG,
 		})
 		return e
+	}
+
+	userFavorites, err := p.getUserFavorites()
+	if err != nil {
+		p.logger.PrintError(err.Error(), map[string]string{
+			"Source": sourceAG,
+		})
+		return err
 	}
 
 	var artists []artistapi.ArtistInfo
@@ -66,6 +52,7 @@ func (p *Pages) RenderArtistsGrid(filterBy Filter, sortBy Sort) error {
 	}
 
 	data := struct {
+		UserFavorites                                          map[int]bool
 		Artists                                                []artistapi.ArtistInfo
 		CurrentFilter, CurrentSort                             string
 		FilterSortRoute                                        string
@@ -75,6 +62,7 @@ func (p *Pages) RenderArtistsGrid(filterBy Filter, sortBy Sort) error {
 		SortKey, SortASC, SortDESC                         string
 		FavoriteArtistUrl, FavKey, Favorited, NotFavorited string
 	}{
+		UserFavorites:        userFavorites,
 		Artists:              artists,
 		CurrentFilter:        string(filterBy),
 		CurrentSort:          string(sortBy),
