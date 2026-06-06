@@ -1,7 +1,6 @@
 package pages
 
 import (
-	"fmt"
 	"html/template"
 
 	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
@@ -27,7 +26,6 @@ func (p *Pages) RenderHomePage(filterBy Filter, sortBy Sort) error {
 		})
 		return err
 	}
-	fmt.Println(len(userFavorites), userFavorites)
 
 	temp, err := template.New("home_page.html").Funcs(p.homePageFunc()).ParseFS(p.embedded.Get(), fs...)
 	if err != nil {

@@ -1,6 +1,7 @@
 package pages
 
 import (
+	"fmt"
 	"html/template"
 
 	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
@@ -17,6 +18,8 @@ func (p *Pages) RenderArtistsGrid(filterBy Filter, sortBy Sort) error {
 	fs := []string{
 		"internal/web/static/partials/pages/home_page_partials.html",
 	}
+
+	fmt.Println(filterBy," : ",sortBy)
 
 	temp, err := template.New("home_page_partials.html").Funcs(p.homePageFunc()).ParseFS(p.embedded.Get(), fs...)
 	if err != nil {
