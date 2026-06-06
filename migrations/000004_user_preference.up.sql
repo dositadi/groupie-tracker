@@ -1,0 +1,19 @@
+BEGIN;
+
+CREATE TYPE filters AS ENUM ('ID','NAME','CREATION DATE', 'FIRST ALBUM');
+
+CREATE TYPE sorts AS ENUM ('ASC','DESC');
+
+CREATE TABLE IF NOT EXISTS preferences (
+    id uuid NOT NULL PRIMARY KEY,
+    userId uuid NOT NULL,
+    filter filters NOT NULL DEFAULT 'ID',
+    sort sorts NOT NULL DEFAULT 'ASC',
+    version integer NOT NULL DEFAULT 1,
+    createdAt TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    updateAt TIMESTAMP WITH TIME ZONE DEFAULT now(),
+
+    CONSTRAINT fk_user FOREIGN KEY (userId) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+COMMIT;

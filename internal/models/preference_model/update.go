@@ -1,9 +1,8 @@
-package favoritemodel
+package preferencemodel
 
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/dositadi/groupie-tracker/internal/data"
@@ -12,49 +11,56 @@ import (
 )
 
 const (
-	sourceInsert = "Insert f(n) under favoritemodel"
+	sourceUpdate = "Update f(n) under preferencemodel pkg"
 )
 
-var CONFLICT_ERR = fmt.Errorf("Favorite exists already")
-
-func (f *FavoriteModel) Insert(favorite data.Favorite) error {
+func (p *PreferenceModel) Update(preference data.PreferenceUpdate) error {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Second)
 	defer cancel()
 
-	tx, err := f.db.BeginTx(ctx, pgx.TxOptions{})
-	defer tx.Rollback(ctx)
+	tx, err := p.db.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
 		var e error
 		switch {
 		case errors.Is(err, context.Canceled):
-			e = helper.WrapError("Query execution error: context canceled", err)
+			e = helper.WrapError("Transaction begin error: context canceled", err)
 		case errors.Is(err, context.DeadlineExceeded):
-			e = helper.WrapError("Query execution error: deadline exceeded", err)
+			e = helper.WrapError("Transaction begin error: deadline exceeded", err)
 		case errors.Is(err, pgx.ErrTxClosed):
-			e = helper.WrapError("Query execution error: transaction closed", err)
+			e = helper.WrapError("Transaction begin error: transaction closed", err)
 		default:
-			e = helper.WrapError("Query execution error", err)
+			e = helper.WrapError("Transaction begin error", err)
 		}
-		f.logger.PrintError(e.Error(), map[string]string{
-			"Source": sourceInsert,
+		p.logger.PrintError(e.Error(), map[string]string{
+			"Source": sourceUpdate,
 		})
 		return e
 	}
 
-	exists, err := f.Exists(favorite.ArtistId)
+	defer tx.Rollback(ctx)
+
+	data, err := p.Get(preference.UserId)
 	if err != nil {
 		return err
 	}
-	if exists {
-		f.logger.PrintError(CONFLICT_ERR.Error(), map[string]string{
-			"Source": sourceInsert,
-		})
-		return CONFLICT_ERR
+
+	var filter, sort string
+	if preference.Filter != nil {
+		filter = *preference.Filter
+	}
+	if preference.Sort != nil {
+		sort = *preference.Sort
 	}
 
-	query := "INSERT INTO favorites (id, userId, artistId, status) VALUES ($1, $2,$3,$4)"
+	/*
+			filter filters NOT NULL DEFAULT 'ID',
+		    sort sorts NOT NULL DEFAULT 'ASC',
+		    version integer NOT NULL DEFAULT 1,
+	*/
 
-	_, err = tx.Exec(ctx, query, favorite.Id, favorite.UserId, favorite.ArtistId, favorite.Status)
+	query := "UPDATE preferences SET filter = $1, sort = $2 version = version + 1, updated_at = now() WHERE userId = $3 AND version = $4"
+
+	_, err = tx.Exec(ctx, query, filter, sort, preference.UserId, data.Version)
 	if err != nil {
 		var e error
 		switch {
@@ -67,8 +73,8 @@ func (f *FavoriteModel) Insert(favorite data.Favorite) error {
 		default:
 			e = helper.WrapError("Query execution error", err)
 		}
-		f.logger.PrintError(e.Error(), map[string]string{
-			"Source": sourceInsert,
+		p.logger.PrintError(e.Error(), map[string]string{
+			"Source": sourceUpdate,
 		})
 		return e
 	}
@@ -85,8 +91,8 @@ func (f *FavoriteModel) Insert(favorite data.Favorite) error {
 		default:
 			e = helper.WrapError("Query execution error", err)
 		}
-		f.logger.PrintError(e.Error(), map[string]string{
-			"Source": sourceInsert,
+		p.logger.PrintError(e.Error(), map[string]string{
+			"Source": sourceUpdate,
 		})
 		return e
 	}

@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS users (
     hashed_password bytea NOT NULL,
     version integer NOT NULL DEFAULT 1,
     agreed boolean NOT NULL DEFAULT false,
-    created_at TIMESTAMP NOT NULL DEFAULT now(),
-    updated_at TIMESTAMP NOT NULL DEFAULT now()
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
 
 COMMIT;
