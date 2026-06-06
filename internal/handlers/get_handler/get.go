@@ -24,9 +24,9 @@ type Get struct {
 	Pages apppages.Pages
 }
 
-func New(usermodel UserModel, favoriteModel apppages.FavoriteModel, client artistapi.ArtistInfo, logger jsonlog.Logger, embedded groupietracker.Embedded) *Get {
+func New(usermodel UserModel, favoriteModel apppages.FavoriteModel, preferenceModel apppages.PreferenceModel, client artistapi.ArtistInfo, logger jsonlog.Logger, embedded groupietracker.Embedded) *Get {
 	return &Get{
 		Auth:  *getauth.New(usermodel, client, logger, embedded),
-		Pages: *apppages.New(usermodel, client, logger, embedded, favoriteModel),
+		Pages: *apppages.New(usermodel, client, logger, embedded, favoriteModel, preferenceModel),
 	}
 }

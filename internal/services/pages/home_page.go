@@ -27,6 +27,14 @@ func (p *Pages) RenderHomePage(filterBy Filter, sortBy Sort) error {
 		return err
 	}
 
+	userPreferences, err := p.getUserPreference()
+	if err != nil {
+		p.logger.PrintError(err.Error(), map[string]string{
+			"Source": sourceRHome,
+		})
+		return err
+	}
+
 	temp, err := template.New("home_page.html").Funcs(p.homePageFunc()).ParseFS(p.embedded.Get(), fs...)
 	if err != nil {
 		e := helper.WrapError("Error creating template", err)
@@ -66,8 +74,8 @@ func (p *Pages) RenderHomePage(filterBy Filter, sortBy Sort) error {
 	}{
 		UserFavorites:        userFavorites,
 		Artists:              artists,
-		CurrentFilter:        string(filterBy),
-		CurrentSort:          string(sortBy),
+		CurrentFilter:        userPreferences.Filter,
+		CurrentSort:          userPreferences.Sort,
 		FilterSortRoute:      utils.FILTER_SORT_ROUTE.String(),
 		FilterByName:         string(FILTER_BY_NAME),
 		FilterByCreationDate: string(FILTER_BY_CREATION_DATE),
@@ -107,6 +115,15 @@ func (p *Pages) getUserFavorites() (map[int]data.Favorite, error) {
 		favMap[favorite.ArtistId] = favorite
 	}
 	return favMap, nil
+}
+
+func (p *Pages) getUserPreference() (data.Preference, error) {
+	pref, err := p.preferenceModel.Get(p.getUserId())
+	if err != nil {
+		e := helper.WrapError("Preference fetch error", err)
+		return data.Preference{}, e
+	}
+	return pref, nil
 }
 
 /* func (p *Pages) isHTMXRequest() bool {

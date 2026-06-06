@@ -43,23 +43,32 @@ type FavoriteModel interface {
 	Update(fav data.FavoriteUpdate) error
 }
 
-type Pages struct {
-	logger         jsonlog.Logger
-	responseWriter http.ResponseWriter
-	embedded       groupietracker.Embedded
-	client         artistapi.ArtistInfo
-	request        *http.Request
-	favoriteModel  FavoriteModel
+type PreferenceModel interface {
+	Exists(userId string) (bool, error)
+	Get(userId string) (data.Preference, error)
+	Insert(preference data.Preference) error
+	Update(preference data.PreferenceUpdate) error
 }
 
-func New(logger jsonlog.Logger, responseWriter http.ResponseWriter, embedded groupietracker.Embedded, client artistapi.ArtistInfo, request *http.Request, favoriteModel FavoriteModel) *Pages {
+type Pages struct {
+	logger          jsonlog.Logger
+	responseWriter  http.ResponseWriter
+	embedded        groupietracker.Embedded
+	client          artistapi.ArtistInfo
+	request         *http.Request
+	favoriteModel   FavoriteModel
+	preferenceModel PreferenceModel
+}
+
+func New(logger jsonlog.Logger, responseWriter http.ResponseWriter, embedded groupietracker.Embedded, client artistapi.ArtistInfo, request *http.Request, favoriteModel FavoriteModel, preferenceModel PreferenceModel) *Pages {
 	return &Pages{
-		logger:         logger,
-		responseWriter: responseWriter,
-		embedded:       embedded,
-		client:         client,
-		request:        request,
-		favoriteModel:  favoriteModel,
+		logger:          logger,
+		responseWriter:  responseWriter,
+		embedded:        embedded,
+		client:          client,
+		request:         request,
+		favoriteModel:   favoriteModel,
+		preferenceModel: preferenceModel,
 	}
 }
 
@@ -90,11 +99,14 @@ func (p *Pages) homePageFunc() template.FuncMap {
 
 			return strings.Join(sl, " ")
 		},
-		"CheckFav": func(id int, favorites map[int]data.Favorite) bool {
-			if status, ok := favorites[id]; ok {
+		"CheckFav": func(artist artistapi.ArtistInfo, favorites map[int]data.Favorite) bool {
+			if favorites == nil {
+				return artist.IsFavorited
+			}
+			if status, ok := favorites[artist.Id]; ok {
 				return status.Status
 			}
-			return false
+			return artist.IsFavorited
 		},
 	}
 }

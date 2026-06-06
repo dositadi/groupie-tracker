@@ -42,7 +42,7 @@ func TestRecover(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			recorder := httptest.NewRecorder()
 			request := httptest.NewRequest(http.MethodGet, "/", nil)
-			h := handlers.New(*logger, &usermodel.UserModel{}, nil,artistapi.ArtistInfo{}, *groupietracker.New())
+			h := handlers.New(*logger, &usermodel.UserModel{}, nil, nil, artistapi.ArtistInfo{}, *groupietracker.New())
 			mid := New(*h, *logger)
 
 			mid.Recover(tt.handler).ServeHTTP(recorder, request)

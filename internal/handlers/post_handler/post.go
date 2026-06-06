@@ -28,13 +28,13 @@ type Post struct {
 	Pages     pages.Pages
 }
 
-func New(userModel UserModel, favoriteModel pages.FavoriteModel, client artistapi.ArtistInfo, logger jsonlog.Logger, embedded groupietracker.Embedded) *Post {
+func New(userModel UserModel, favoriteModel pages.FavoriteModel, preferenceModel pages.PreferenceModel, client artistapi.ArtistInfo, logger jsonlog.Logger, embedded groupietracker.Embedded) *Post {
 	return &Post{
 		userModel: userModel,
 		logger:    logger,
 		client:    client,
-		embedded: embedded,
-		Auth:      *authpost.New(logger, userModel, embedded),
-		Pages: *pages.New(logger,userModel,favoriteModel,embedded,client),
+		embedded:  embedded,
+		Auth:      *authpost.New(logger, userModel, preferenceModel,embedded),
+		Pages:     *pages.New(logger, userModel, favoriteModel, preferenceModel, embedded, client),
 	}
 }

@@ -25,7 +25,7 @@ func (a *App) initHandlers() {
 
 		// App pages
 		r.With(a.midleware.VerifyAccessToken).Get(utils.HOME.String(), a.handler.Get.Pages.HomeHandler)
-		r.With(a.midleware.VerifyAccessToken).Get(utils.FILTER_SORT_ROUTE.String(), a.handler.Get.Pages.FilterSortHandler)
+		r.With(a.midleware.VerifyAccessToken).Get(utils.FILTER_SORT_ROUTE.String(), a.handler.Post.Pages.FilterSortHandler)
 	})
 
 	// Post request routes

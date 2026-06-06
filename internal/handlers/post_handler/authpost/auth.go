@@ -16,16 +16,25 @@ type UserModel interface {
 	IDExists(id string) (bool, error)
 }
 
-type Auth struct {
-	logger    jsonlog.Logger
-	usermodel UserModel
-	embedded  groupietracker.Embedded
+type PreferenceModel interface {
+	Exists(userId string) (bool, error)
+	Get(userId string) (data.Preference, error)
+	Insert(preference data.Preference) error
+	Update(preference data.PreferenceUpdate) error
 }
 
-func New(logger jsonlog.Logger, userModel UserModel, embedded groupietracker.Embedded) *Auth {
+type Auth struct {
+	logger          jsonlog.Logger
+	usermodel       UserModel
+	preferenceModel PreferenceModel
+	embedded        groupietracker.Embedded
+}
+
+func New(logger jsonlog.Logger, userModel UserModel, preferenceModel PreferenceModel, embedded groupietracker.Embedded) *Auth {
 	return &Auth{
-		logger:    logger,
-		usermodel: userModel,
-		embedded:  embedded,
+		logger:          logger,
+		usermodel:       userModel,
+		preferenceModel: preferenceModel,
+		embedded:        embedded,
 	}
 }

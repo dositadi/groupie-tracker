@@ -6,6 +6,7 @@ import (
 	"github.com/dositadi/groupie-tracker/internal/data"
 	"github.com/dositadi/groupie-tracker/internal/helper"
 	"github.com/dositadi/groupie-tracker/internal/services/authservice"
+	"github.com/dositadi/groupie-tracker/internal/services/pages"
 	"github.com/dositadi/groupie-tracker/internal/utils"
 	"github.com/dositadi/groupie-tracker/internal/validator"
 	"github.com/google/uuid"
@@ -74,7 +75,7 @@ func (a *Auth) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		a.logger.PrintError(err.Error(), map[string]string{
 			"Source": sourceReg,
 		})
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -93,7 +94,26 @@ func (a *Auth) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		a.logger.PrintError(e.Error(), map[string]string{
 			"Source": sourceReg,
 		})
-		http.Error(w, e.Error(), http.StatusBadRequest)
+		http.Error(w, e.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	defaultPref := data.Preference{
+		Id:     uuid.NewString(),
+		UserId: user.Id,
+		Filter: string(pages.FILTER_BY_ID),
+		Sort:   string(pages.ASCENDING_ORDER),
+	}
+
+	// (id, userId, filter, sort)
+	err = a.preferenceModel.Insert(defaultPref)
+	if err != nil {
+		check = false
+		e := helper.WrapError("Pref insert error", err)
+		a.logger.PrintError(e.Error(), map[string]string{
+			"Source": sourceReg,
+		})
+		http.Error(w, e.Error(), http.StatusInternalServerError)
 		return
 	}
 

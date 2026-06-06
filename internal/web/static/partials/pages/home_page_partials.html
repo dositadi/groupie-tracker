@@ -41,8 +41,8 @@
             class="artist-card-img"
             />
             <!-- Favourite button (OUTLINE — not favourited) -->
-            <button id="fav-{{.Id}}" {{if CheckFav .Id $.UserFavorites}} hx-post="{{$.FavoriteArtistUrl}}?{{$.FavKey}}={{$.Favorited}}&{{$.ArtistIDKey}}={{.Id}}" {{else}} hx-post="{{$.FavoriteArtistUrl}}?{{$.FavKey}}={{$.NotFavorited}}&{{$.ArtistIDKey}}={{.Id}}" {{end}} hx-swap="outerHTML" hx-target="#artists"
-            {{if CheckFav .Id $.UserFavorites}}
+            <button id="fav-{{.Id}}" {{if CheckFav . $.UserFavorites}} hx-post="{{$.FavoriteArtistUrl}}?{{$.FavKey}}={{$.Favorited}}&{{$.ArtistIDKey}}={{.Id}}" {{else}} hx-post="{{$.FavoriteArtistUrl}}?{{$.FavKey}}={{$.NotFavorited}}&{{$.ArtistIDKey}}={{.Id}}" {{end}} hx-swap="outerHTML" hx-target="#artists"
+            {{if CheckFav . $.UserFavorites}}
             class="fav-btn absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center bg-rose-500 border border-rose-400 text-white hover:bg-rose-600 transition-all duration-200"
             aria-label="Remove from favourites"
             {{else}}

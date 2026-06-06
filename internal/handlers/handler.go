@@ -33,12 +33,12 @@ type Handler struct {
 	embedded  groupietracker.Embedded
 }
 
-func New(logger jsonlog.Logger, userModel UserModel, favoriteModel pages.FavoriteModel, client artistapi.ArtistInfo, embedded groupietracker.Embedded) *Handler {
+func New(logger jsonlog.Logger, userModel UserModel, favoriteModel pages.FavoriteModel, preferenceModel pages.PreferenceModel, client artistapi.ArtistInfo, embedded groupietracker.Embedded) *Handler {
 	return &Handler{
 		logger:    logger,
 		userModel: userModel,
-		Get:       *gethandler.New(userModel, favoriteModel, client, logger, embedded),
-		Post:      *posthandler.New(userModel, favoriteModel, client, logger, embedded),
+		Get:       *gethandler.New(userModel, favoriteModel, preferenceModel, client, logger, embedded),
+		Post:      *posthandler.New(userModel, favoriteModel, preferenceModel, client, logger, embedded),
 		Delete:    *deletehandler.New(userModel, client, logger),
 	}
 }

@@ -27,20 +27,29 @@ type FavoriteModel interface {
 	Update(fav data.FavoriteUpdate) error
 }
 
-type Pages struct {
-	logger        jsonlog.Logger
-	usermodel     UserModel
-	client        artistapi.ArtistInfo
-	embedded      groupietracker.Embedded
-	favoriteModel FavoriteModel
+type PreferenceModel interface {
+	Exists(userId string) (bool, error)
+	Get(userId string) (data.Preference, error)
+	Insert(preference data.Preference) error
+	Update(preference data.PreferenceUpdate) error
 }
 
-func New(usermodel UserModel, client artistapi.ArtistInfo, logger jsonlog.Logger, embedded groupietracker.Embedded, favoriteModel FavoriteModel) *Pages {
+type Pages struct {
+	logger          jsonlog.Logger
+	usermodel       UserModel
+	client          artistapi.ArtistInfo
+	embedded        groupietracker.Embedded
+	favoriteModel   FavoriteModel
+	preferencemodel PreferenceModel
+}
+
+func New(usermodel UserModel, client artistapi.ArtistInfo, logger jsonlog.Logger, embedded groupietracker.Embedded, favoriteModel FavoriteModel, preferencemodel PreferenceModel) *Pages {
 	return &Pages{
-		usermodel:     usermodel,
-		client:        client,
-		logger:        logger,
-		embedded:      embedded,
-		favoriteModel: favoriteModel,
+		usermodel:       usermodel,
+		client:          client,
+		logger:          logger,
+		embedded:        embedded,
+		favoriteModel:   favoriteModel,
+		preferencemodel: preferencemodel,
 	}
 }

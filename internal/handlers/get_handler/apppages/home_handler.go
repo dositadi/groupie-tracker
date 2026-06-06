@@ -13,7 +13,7 @@ const (
 )
 
 func (a *Pages) HomeHandler(w http.ResponseWriter, r *http.Request) {
-	page := pages.New(a.logger, w, a.embedded, a.client, r,a.favoriteModel)
+	page := pages.New(a.logger, w, a.embedded, a.client, r,a.favoriteModel,a.preferencemodel)
 
 	r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 
