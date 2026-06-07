@@ -1,6 +1,7 @@
 package pages
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/dositadi/groupie-tracker/internal/data"
@@ -16,6 +17,7 @@ const (
 func (p *Pages) FilterSortHandler(w http.ResponseWriter, r *http.Request) {
 	filter := r.FormValue(utils.FILTER_KEY)
 	sort := r.FormValue(utils.SORT_KEY)
+	fmt.Println("handler: ", filter, " ", sort)
 
 	userId := p.getUserId(r)
 

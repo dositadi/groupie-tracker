@@ -1,7 +1,10 @@
 package pages
 
 import (
+	"fmt"
 	"html/template"
+	"maps"
+	"slices"
 
 	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
 	"github.com/dositadi/groupie-tracker/internal/data"
@@ -43,18 +46,11 @@ func (p *Pages) RenderArtistsGrid() error {
 		return err
 	}
 
+	fmt.Println("Pref: ", userPreference.Filter, userPreference.Sort)
+
 	var artists []artistapi.ArtistInfo
 
-	switch Filter(userPreference.Filter) {
-	case FILTER_BY_ID:
-		artists = sortArtists(p.client.GetByIdKey(), Sort(userPreference.Sort))
-	case FILTER_BY_NAME:
-		artists = sortArtists(p.client.GetByName(), Sort(userPreference.Sort))
-	case FILTER_BY_FIRST_ALBUM:
-		artists = sortArtists(p.client.GetByFirstAlbum(), Sort(userPreference.Sort))
-	case FILTER_BY_CREATION_DATE:
-		artists = sortArtists(p.client.GetByCreationDate(), Sort(userPreference.Sort))
-	}
+	artists = sortSearchedArtist(slices.Collect(maps.Values(p.client.GetByIdKey())), Sort(userPreference.Sort), Filter(userPreference.Filter))
 
 	data := struct {
 		UserFavorites                                          map[int]data.Favorite
@@ -62,10 +58,9 @@ func (p *Pages) RenderArtistsGrid() error {
 		CurrentFilter, CurrentSort                             string
 		FilterSortRoute                                        string
 		FilterByName, FilterByCreationDate, FilterByFirstAlbum string
-		FilterKey,
-		ArtistIDKey string
-		SortKey, SortASC, SortDESC                         string
-		FavoriteArtistUrl, FavKey, Favorited, NotFavorited string
+		FilterKey, ArtistIDKey, SearchKey                      string
+		SortKey, SortASC, SortDESC                             string
+		FavoriteArtistUrl, FavKey, Favorited, NotFavorited     string
 	}{
 		UserFavorites:        userFavorites,
 		Artists:              artists,
@@ -84,6 +79,7 @@ func (p *Pages) RenderArtistsGrid() error {
 		Favorited:            string(FAVORITED),
 		NotFavorited:         string(NOT_FAVORITED),
 		ArtistIDKey:          utils.ARTIST_ID_KEY,
+		SearchKey:            utils.SEARCH_KEY,
 	}
 
 	if err = temp.ExecuteTemplate(p.responseWriter, "artist-card-main", data); err != nil {

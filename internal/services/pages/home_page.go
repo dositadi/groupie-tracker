@@ -2,6 +2,8 @@ package pages
 
 import (
 	"html/template"
+	"maps"
+	"slices"
 
 	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
 	"github.com/dositadi/groupie-tracker/internal/data"
@@ -27,7 +29,7 @@ func (p *Pages) RenderHomePage() error {
 		return err
 	}
 
-	userPreferences, err := p.getUserPreference()
+	userPreference, err := p.getUserPreference()
 	if err != nil {
 		p.logger.PrintError(err.Error(), map[string]string{
 			"Source": sourceRHome,
@@ -46,16 +48,7 @@ func (p *Pages) RenderHomePage() error {
 
 	var artists []artistapi.ArtistInfo
 
-	switch Filter(userPreferences.Filter) {
-	case FILTER_BY_ID:
-		artists = sortArtists(p.client.GetByIdKey(), Sort(userPreferences.Sort))
-	case FILTER_BY_NAME:
-		artists = sortArtists(p.client.GetByName(), Sort(userPreferences.Sort))
-	case FILTER_BY_FIRST_ALBUM:
-		artists = sortArtists(p.client.GetByFirstAlbum(), Sort(userPreferences.Sort))
-	case FILTER_BY_CREATION_DATE:
-		artists = sortArtists(p.client.GetByCreationDate(), Sort(userPreferences.Sort))
-	}
+	artists = sortSearchedArtist(slices.Collect(maps.Values(p.client.GetByIdKey())), Sort(userPreference.Sort), Filter(userPreference.Filter))
 
 	data := struct {
 		UserFavorites                                          map[int]data.Favorite
@@ -63,15 +56,15 @@ func (p *Pages) RenderHomePage() error {
 		CurrentFilter, CurrentSort                             string
 		FilterSortRoute                                        string
 		FilterByName, FilterByCreationDate, FilterByFirstAlbum string
-		FilterKey,
-		ArtistIDKey string
-		SortKey, SortASC, SortDESC                         string
-		FavoriteArtistUrl, FavKey, Favorited, NotFavorited string
+		FilterKey, ArtistIDKey, SearchKey                      string
+		SortKey, SortASC, SortDESC                             string
+		FavoriteArtistUrl, FavKey, Favorited, NotFavorited     string
+		SearchUrl                                              string
 	}{
 		UserFavorites:        userFavorites,
 		Artists:              artists,
-		CurrentFilter:        userPreferences.Filter,
-		CurrentSort:          userPreferences.Sort,
+		CurrentFilter:        userPreference.Filter,
+		CurrentSort:          userPreference.Sort,
 		FilterSortRoute:      utils.FILTER_SORT_ROUTE.String(),
 		FilterByName:         string(FILTER_BY_NAME),
 		FilterByCreationDate: string(FILTER_BY_CREATION_DATE),
@@ -85,6 +78,8 @@ func (p *Pages) RenderHomePage() error {
 		Favorited:            string(FAVORITED),
 		NotFavorited:         string(NOT_FAVORITED),
 		ArtistIDKey:          utils.ARTIST_ID_KEY,
+		SearchUrl:            utils.ARTIST_SEARCH.String(),
+		SearchKey:            utils.SEARCH_KEY,
 	}
 
 	if err = temp.Execute(p.responseWriter, data); err != nil {
@@ -96,30 +91,6 @@ func (p *Pages) RenderHomePage() error {
 	}
 
 	return nil
-}
-
-func (p *Pages) getUserFavorites() (map[int]data.Favorite, error) {
-	favorites, err := p.favoriteModel.GetAll(p.getUserId())
-	if err != nil {
-		e := helper.WrapError("Favorites fetch error", err)
-		return nil, e
-	}
-
-	favMap := make(map[int]data.Favorite)
-
-	for _, favorite := range favorites {
-		favMap[favorite.ArtistId] = favorite
-	}
-	return favMap, nil
-}
-
-func (p *Pages) getUserPreference() (data.Preference, error) {
-	pref, err := p.preferenceModel.Get(p.getUserId())
-	if err != nil {
-		e := helper.WrapError("Preference fetch error", err)
-		return data.Preference{}, e
-	}
-	return pref, nil
 }
 
 /* func (p *Pages) isHTMXRequest() bool {

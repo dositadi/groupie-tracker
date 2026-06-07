@@ -122,6 +122,44 @@
 
 </main>
 
+<div id="sort" class="sort-menu" hx-swap-oob="true">
+  <div class="px-4 py-2.5 border-b border-border-soft">
+    <p class="text-xs font-semibold text-ink-muted uppercase tracking-wider">Sort by</p>
+  </div>
+  <div class="dropdown-item active">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+    Most Popular
+  </div>
+  <a hx-post="{{.FilterSortRoute}}?{{.FilterKey}}={{.CurrentFilter}}&{{.SortKey}}={{.SortASC}}" hx-swap="outerHTML" hx-target="#artists">
+      <div class="dropdown-item">A → Z</div>
+  </a>
+  <a hx-post="{{.FilterSortRoute}}?{{.FilterKey}}={{.CurrentFilter}}&{{.SortKey}}={{.SortDESC}}" hx-swap="outerHTML" hx-target="#artists">
+      <div class="dropdown-item">Z → A</div>
+  </a>
+  <!-- <div class="dropdown-item">Recently Added</div>
+  <div class="dropdown-item">Upcoming Events</div>
+  <div class="dropdown-item">Most Followed</div> -->
+</div>
+
+<div id="filter" class="dropdown-menu" hx-swap-oob="true">
+  <div class="px-4 py-2.5 border-b border-border-soft">
+    <p class="text-xs font-semibold text-ink-muted uppercase tracking-wider">Genre</p>
+  </div>
+  <div class="dropdown-item active">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+    All Genres
+  </div>
+  <a hx-post="{{.FilterSortRoute}}?{{.FilterKey}}={{.FilterByName}}&{{.SortKey}}={{.CurrentSort}}" hx-swap="outerHTML" hx-target="#artists">
+      <div class="dropdown-item">Name</div>
+  </a>
+  <a hx-post="{{.FilterSortRoute}}?{{.FilterKey}}={{.FilterByCreationDate}}&{{.SortKey}}={{.CurrentSort}}" hx-swap="outerHTML" hx-target="#artists">
+      <div class="dropdown-item">Creation Date</div>
+  </a>
+  <a hx-post="{{.FilterSortRoute}}?{{.FilterKey}}={{.FilterByFirstAlbum}}&{{.SortKey}}={{.CurrentSort}}" hx-swap="outerHTML" hx-target="#artists">
+      <div class="dropdown-item">First Album</div>
+  </a>
+</div>
+
 {{end}}
 
 {{define "favorited-button"}}

@@ -1,7 +1,10 @@
 package pages
 
 import (
+	"fmt"
 	"html/template"
+	"maps"
+	"slices"
 	"strings"
 
 	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
@@ -19,9 +22,8 @@ func (p *Pages) RenderSearch() error {
 		"internal/web/static/partials/pages/home_page_partials.html",
 	}
 
-	filterBy := Filter(p.request.FormValue(utils.FILTER_KEY))
-	sortBy := Sort(p.request.FormValue(utils.SORT_KEY))
 	search := p.request.FormValue(utils.SEARCH_KEY)
+	fmt.Println(search)
 
 	temp, err := template.New("home_page_partials.html").Funcs(p.homePageFunc()).ParseFS(p.embedded.Get(), fs...)
 	if err != nil {
@@ -49,21 +51,31 @@ func (p *Pages) RenderSearch() error {
 		return err
 	}
 
+	userPreference, err := p.getUserPreference()
+	if err != nil {
+		p.logger.PrintError(err.Error(), map[string]string{
+			"Source": sourceAG,
+		})
+		return err
+	}
+
+	artists = sortSearchedArtist(slices.Collect(maps.Values(p.client.GetByIdKey())), Sort(userPreference.Sort), Filter(userPreference.Filter))
+
 	data := struct {
 		UserFavorites                                          map[int]data.Favorite
 		Artists                                                []artistapi.ArtistInfo
 		CurrentFilter, CurrentSort                             string
 		FilterSortRoute                                        string
 		FilterByName, FilterByCreationDate, FilterByFirstAlbum string
-		FilterKey,
-		ArtistIDKey string
-		SortKey, SortASC, SortDESC                         string
-		FavoriteArtistUrl, FavKey, Favorited, NotFavorited string
+		FilterKey, ArtistIDKey, SearchKey, FavKey              string
+		SortKey, SortASC, SortDESC                             string
+		Favorited, NotFavorited                                string
+		FavoriteArtistUrl, SearchUrl                           string
 	}{
 		UserFavorites:        userFavorites,
 		Artists:              artists,
-		CurrentFilter:        string(filterBy),
-		CurrentSort:          string(sortBy),
+		CurrentFilter:        userPreference.Filter,
+		CurrentSort:          userPreference.Sort,
 		FilterSortRoute:      utils.FILTER_SORT_ROUTE.String(),
 		FilterByName:         string(FILTER_BY_NAME),
 		FilterByCreationDate: string(FILTER_BY_CREATION_DATE),
@@ -77,6 +89,7 @@ func (p *Pages) RenderSearch() error {
 		Favorited:            string(FAVORITED),
 		NotFavorited:         string(NOT_FAVORITED),
 		ArtistIDKey:          utils.ARTIST_ID_KEY,
+		SearchKey:            utils.SEARCH_KEY,
 	}
 
 	if err = temp.ExecuteTemplate(p.responseWriter, "artist-card-main", data); err != nil {

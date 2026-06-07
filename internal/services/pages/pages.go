@@ -1,10 +1,7 @@
 package pages
 
 import (
-	"html/template"
 	"net/http"
-	"strings"
-	"unicode"
 
 	groupietracker "github.com/dositadi/groupie-tracker"
 	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
@@ -78,35 +75,4 @@ func (p *Pages) getUserId() string {
 		return userId
 	}
 	return ""
-}
-
-func (p *Pages) homePageFunc() template.FuncMap {
-	return template.FuncMap{
-		"GetLocation": func(s []string) string {
-			return s[0]
-		},
-		"CleanText": func(s string) string {
-			s = strings.ReplaceAll(s, "_", " ")
-			s = strings.ReplaceAll(s, "-", " ")
-			s = strings.ToLower(s)
-			sl := strings.Fields(s)
-
-			for i, w := range sl {
-				rn := []rune(w)
-				rn[0] = unicode.ToUpper(rn[0])
-				sl[i] = string(rn)
-			}
-
-			return strings.Join(sl, " ")
-		},
-		"CheckFav": func(artist artistapi.ArtistInfo, favorites map[int]data.Favorite) bool {
-			if favorites == nil {
-				return artist.IsFavorited
-			}
-			if status, ok := favorites[artist.Id]; ok {
-				return status.Status
-			}
-			return artist.IsFavorited
-		},
-	}
 }

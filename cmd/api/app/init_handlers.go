@@ -25,6 +25,7 @@ func (a *App) initHandlers() {
 
 		// App pages
 		r.With(a.midleware.VerifyAccessToken).Get(utils.HOME.String(), a.handler.Get.Pages.HomeHandler)
+		r.With(a.midleware.VerifyAccessToken).Get(utils.ARTIST_SEARCH.String(), a.handler.Get.Pages.SearchHandler)
 	})
 
 	// Post request routes
