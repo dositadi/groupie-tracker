@@ -118,7 +118,7 @@ func (p *Pages) RenderHomePage(partial bool) error {
 		ArtistUrl:            utils.HOME.String(),
 		PageKey:              utils.PAGE_KEY,
 		NextPage:             currentPage + 1,
-		PreviousPage:         -1,
+		PreviousPage:         currentPage - 1,
 		DisableNextbutton:    disableNextButton,
 		DisablePrevButton:    disablePrevButton,
 	}

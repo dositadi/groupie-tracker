@@ -116,7 +116,7 @@
         <button class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand hover:border-brand hover:text-white transition-all duration-200 shadow-sm">
         Previous
         </button>
-        <button {{if .DisableNextbutton}} aria-disabled="true" {{end}} hx-get="{{.ArtistUrl}}?{{.PageKey}}={{.NextPage}}" hx-target="#artists" hx-swap="outerHTML" hx-trigger="click" class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand hover:border-brand hover:text-white transition-all duration-200 shadow-sm">
+        <button {{if .DisableNextbutton}} disabled {{end}} hx-get="{{.ArtistUrl}}?{{.PageKey}}={{.NextPage}}" hx-target="#artists" hx-swap="outerHTML" hx-trigger="click" {{if .DisableNextbutton}} class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand/10 hover:border-brand/10 hover:text-ink-secondary transition-all duration-200 shadow-sm" {{else}} class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand hover:border-brand hover:text-white transition-all duration-200 shadow-sm" {{end}}>
         Next
         </button>
       </div>
