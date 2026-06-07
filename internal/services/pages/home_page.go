@@ -1,7 +1,6 @@
 package pages
 
 import (
-	"fmt"
 	"html/template"
 
 	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
@@ -116,7 +115,6 @@ func (p *Pages) getUserFavorites() (map[int]data.Favorite, error) {
 
 func (p *Pages) getUserPreference() (data.Preference, error) {
 	pref, err := p.preferenceModel.Get(p.getUserId())
-	fmt.Println(p.getUserId())
 	if err != nil {
 		e := helper.WrapError("Preference fetch error", err)
 		return data.Preference{}, e
