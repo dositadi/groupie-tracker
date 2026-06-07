@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"maps"
 	"slices"
+	"strconv"
 	"strings"
 	"unicode"
 
@@ -151,4 +152,15 @@ func (p *Pages) homePageFunc() template.FuncMap {
 			return artist.IsFavorited
 		},
 	}
+}
+
+func (p *Pages) atoi(s string) int {
+	out, err := strconv.Atoi(s)
+	if err != nil {
+		p.logger.PrintError("Atoi conversion error: Not a valid number", map[string]string{
+			"Source": sourceRHome,
+		})
+		panic("Not a valid number")
+	}
+	return out
 }

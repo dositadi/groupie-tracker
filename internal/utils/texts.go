@@ -12,4 +12,5 @@ const (
 	ARTIST_ID_KEY    = "artistId"
 	USER_ID_KEY      = "userId"
 	SEARCH_KEY       = "search"
+	PAGE_KEY         = "page"
 )

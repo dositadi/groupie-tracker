@@ -13,7 +13,9 @@ const (
 	sourceRHome = "Render Home page f(n) under pages pkg"
 )
 
-func (p *Pages) RenderHomePage() error {
+var currentPage = 1
+
+func (p *Pages) RenderHomePage(partial bool) error {
 	fs := []string{
 		"internal/web/static/pages/home_page.html",
 		"internal/web/static/partials/pages/home_page_partials.html",
@@ -48,6 +50,12 @@ func (p *Pages) RenderHomePage() error {
 
 	artists = sortArtist(mapToSlice(p.client.GetByIdKey()), Sort(userPreference.Sort), Filter(userPreference.Filter))
 
+	limit := 5
+	//totalPages := len(artists) / limit
+	offset := (currentPage - 1) * limit
+
+	paginatedArtists := artists[offset : offset+5]
+
 	data := struct {
 		UserFavorites                                          map[int]data.Favorite
 		Artists                                                []artistapi.ArtistInfo
@@ -60,7 +68,7 @@ func (p *Pages) RenderHomePage() error {
 		SearchUrl                                              string
 	}{
 		UserFavorites:        userFavorites,
-		Artists:              artists,
+		Artists:              paginatedArtists,
 		CurrentFilter:        userPreference.Filter,
 		CurrentSort:          userPreference.Sort,
 		FilterSortRoute:      utils.FILTER_SORT_ROUTE.String(),
@@ -80,12 +88,22 @@ func (p *Pages) RenderHomePage() error {
 		SearchKey:            utils.SEARCH_KEY,
 	}
 
-	if err = temp.Execute(p.responseWriter, data); err != nil {
-		e := helper.WrapError("Error executing template", err)
-		p.logger.PrintError(e.Error(), map[string]string{
-			"Source": sourceRHome,
-		})
-		return e
+	if partial {
+		if err = temp.ExecuteTemplate(p.responseWriter, "artist-card-main", data); err != nil {
+			e := helper.WrapError("Error executing template", err)
+			p.logger.PrintError(e.Error(), map[string]string{
+				"Source": sourceRHome,
+			})
+			return e
+		}
+	} else {
+		if err = temp.Execute(p.responseWriter, data); err != nil {
+			e := helper.WrapError("Error executing template", err)
+			p.logger.PrintError(e.Error(), map[string]string{
+				"Source": sourceRHome,
+			})
+			return e
+		}
 	}
 
 	return nil

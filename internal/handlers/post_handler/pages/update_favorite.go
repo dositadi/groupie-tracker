@@ -111,7 +111,7 @@ func (p *Pages) UpdateFavoriteHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	if err := page.RenderArtistsGrid(); err != nil {
+	if err := page.RenderHomePage(true); err != nil {
 		e := helper.WrapError("Render favorite button error", err)
 		p.logger.PrintError(e.Error(), map[string]string{
 			"Source": sourceUH,

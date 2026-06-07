@@ -52,7 +52,7 @@ func (p *Pages) RenderSearch() error {
 	userPreference, err := p.getUserPreference()
 	if err != nil {
 		p.logger.PrintError(err.Error(), map[string]string{
-			"Source": sourceAG,
+			"Source": sourceRS,
 		})
 		return err
 	}
