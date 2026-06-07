@@ -1,7 +1,6 @@
 package pages
 
 import (
-	"fmt"
 	"html/template"
 	"maps"
 	"slices"
@@ -18,45 +17,7 @@ func mapToSlice[T comparable, K artistapi.ArtistInfo](artists map[T]K) []K {
 	return slices.Collect(maps.Values(artists))
 }
 
-type keyType interface {
-	~int | string
-}
-
-// This function sorts an array of type ArtistsInfo
-func sortArtists[T keyType, K artistapi.ArtistInfo, L Sort](artistsMap map[T]K, order L) []K {
-	keys := slices.Collect(maps.Keys(artistsMap))
-	slices.Sort(keys)
-
-	var sorted []K
-
-	switch any(order).(Sort) {
-	case ASCENDING_ORDER:
-		for _, key := range keys {
-			artist := artistsMap[key]
-
-			sorted = append(sorted, artist)
-		}
-	case DESCENDING_ORDER:
-		slices.Reverse(keys)
-
-		for _, key := range keys {
-			artist := artistsMap[key]
-
-			sorted = append(sorted, artist)
-		}
-	default:
-		for _, key := range keys {
-			artist := artistsMap[key]
-
-			sorted = append(sorted, artist)
-		}
-	}
-	return sorted
-}
-
-func sortSearchedArtist(artists []artistapi.ArtistInfo, sort Sort, filter Filter) []artistapi.ArtistInfo {
-	fmt.Println(sort, " ", filter)
-
+func sortArtist(artists []artistapi.ArtistInfo, sort Sort, filter Filter) []artistapi.ArtistInfo {
 	switch filter {
 	case FILTER_BY_ID:
 		slices.SortStableFunc(artists, func(a, b artistapi.ArtistInfo) int {

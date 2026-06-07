@@ -1,10 +1,7 @@
 package pages
 
 import (
-	"fmt"
 	"html/template"
-	"maps"
-	"slices"
 
 	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
 	"github.com/dositadi/groupie-tracker/internal/data"
@@ -46,11 +43,9 @@ func (p *Pages) RenderArtistsGrid() error {
 		return err
 	}
 
-	fmt.Println("Pref: ", userPreference.Filter, userPreference.Sort)
-
 	var artists []artistapi.ArtistInfo
 
-	artists = sortSearchedArtist(slices.Collect(maps.Values(p.client.GetByIdKey())), Sort(userPreference.Sort), Filter(userPreference.Filter))
+	artists = sortArtist(mapToSlice(p.client.GetByIdKey()), Sort(userPreference.Sort), Filter(userPreference.Filter))
 
 	data := struct {
 		UserFavorites                                          map[int]data.Favorite

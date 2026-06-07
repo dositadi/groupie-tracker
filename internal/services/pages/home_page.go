@@ -2,8 +2,6 @@ package pages
 
 import (
 	"html/template"
-	"maps"
-	"slices"
 
 	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
 	"github.com/dositadi/groupie-tracker/internal/data"
@@ -48,7 +46,7 @@ func (p *Pages) RenderHomePage() error {
 
 	var artists []artistapi.ArtistInfo
 
-	artists = sortSearchedArtist(slices.Collect(maps.Values(p.client.GetByIdKey())), Sort(userPreference.Sort), Filter(userPreference.Filter))
+	artists = sortArtist(mapToSlice(p.client.GetByIdKey()), Sort(userPreference.Sort), Filter(userPreference.Filter))
 
 	data := struct {
 		UserFavorites                                          map[int]data.Favorite
