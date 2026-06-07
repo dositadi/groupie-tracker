@@ -6,7 +6,7 @@
       <div>
         <h2 class="text-ink text-xl font-semibold" style="font-family: var(--font-sans);">All Artists</h2>
         <p class="text-ink-muted text-sm mt-0.5">Showing 
-            {{len .Artists}} artists</p>
+            {{.Count}} artists</p>
       </div>
       <!-- View toggle -->
       <div class="flex items-center gap-1 bg-surface-alt border border-border rounded-lg p-1">
@@ -109,11 +109,11 @@
     <div class="mt-12 flex flex-col items-end gap-3">
       <div class="flex flex-col items-end gap-3 text-ink-muted text-sm">
         <span class="w-16 h-px bg-border"></span>
-        Showing 8 of 12,400 artists
+        Showing {{.Count}} of {{.Total}} artists
         <span class="w-16 h-px bg-border"></span>
       </div>
-      <div hx-get="{{.ArtistUrl}}?{{.PageKey}}={{.PreviousPage}} " hx-target="#artists" hx-swap="outerHTML" hx-trigger="click" class="flex flex-row items-end gap-3">
-        <button class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand hover:border-brand hover:text-white transition-all duration-200 shadow-sm">
+      <div class="flex flex-row items-end gap-3">
+        <button {{if .DisablePrevButton}} disabled {{end}} hx-get="{{.ArtistUrl}}?{{.PageKey}}={{.PreviousPage}} " hx-target="#artists" hx-swap="outerHTML" hx-trigger="click"  {{if .DisablePrevButton}} class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand/10 hover:border-brand/10 hover:text-ink-secondary transition-all duration-200 shadow-sm" {{else}} class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand hover:border-brand hover:text-white transition-all duration-200 shadow-sm" {{end}}>
         Previous
         </button>
         <button {{if .DisableNextbutton}} disabled {{end}} hx-get="{{.ArtistUrl}}?{{.PageKey}}={{.NextPage}}" hx-target="#artists" hx-swap="outerHTML" hx-trigger="click" {{if .DisableNextbutton}} class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand/10 hover:border-brand/10 hover:text-ink-secondary transition-all duration-200 shadow-sm" {{else}} class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand hover:border-brand hover:text-white transition-all duration-200 shadow-sm" {{end}}>

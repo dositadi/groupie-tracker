@@ -15,6 +15,7 @@ const (
 
 var currentPage = 1
 var currentIndex = 0
+var count = 0
 
 func (p *Pages) RenderHomePage(partial bool) error {
 	fs := []string{
@@ -74,17 +75,23 @@ func (p *Pages) RenderHomePage(partial bool) error {
 
 	if currentIndex < artistsLen {
 		paginatedArtists = artists[offset : offset+limit]
+		count = artistsLen - (artistsLen - (offset + limit))
 	} else {
 		if offset < artistsLen {
 			paginatedArtists = artists[offset:]
+			count = artistsLen + 1
 			disableNextButton = true
 		} else if offset == artistsLen {
 			disableNextButton = true
 		}
 	}
 
+	if currentPage == 1 {
+		disablePrevButton = true
+	}
+
 	data := struct {
-		NextPage, PreviousPage                                 int
+		NextPage, PreviousPage, Count, Total                   int
 		UserFavorites                                          map[int]data.Favorite
 		Artists                                                []artistapi.ArtistInfo
 		CurrentFilter, CurrentSort                             string
@@ -119,6 +126,8 @@ func (p *Pages) RenderHomePage(partial bool) error {
 		PageKey:              utils.PAGE_KEY,
 		NextPage:             currentPage + 1,
 		PreviousPage:         currentPage - 1,
+		Count:                count,
+		Total:                len(artists),
 		DisableNextbutton:    disableNextButton,
 		DisablePrevButton:    disablePrevButton,
 	}
