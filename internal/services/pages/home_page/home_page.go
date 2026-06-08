@@ -2,6 +2,7 @@ package pages
 
 import (
 	"html/template"
+	"net/http"
 
 	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
 	"github.com/dositadi/groupie-tracker/internal/data"
@@ -69,7 +70,6 @@ func (p *Pages) RenderHomePage(partial bool) error {
 	artistsLen := len(artists) - 1
 
 	limit := 10
-	//totalPages := len(artists) / limit
 	offset := (currentPage - 1) * limit
 	currentIndex = offset + limit
 
@@ -100,7 +100,7 @@ func (p *Pages) RenderHomePage(partial bool) error {
 		FilterKey, ArtistIDKey, SearchKey, PageKey             string
 		SortKey, SortASC, SortDESC                             string
 		FavoriteArtistUrl, FavKey, Favorited, NotFavorited     string
-		SearchUrl, Url                                         string
+		SearchUrl, Url, ArtistDetailUrl                        string
 		DisableNextbutton, DisablePrevButton, IsSearch         bool
 	}{
 		UserFavorites:        userFavorites,
@@ -131,7 +131,10 @@ func (p *Pages) RenderHomePage(partial bool) error {
 		DisableNextbutton:    disableNextButton,
 		DisablePrevButton:    disablePrevButton,
 		IsSearch:             false,
+		ArtistDetailUrl:      utils.ARTIST_DETAILS.String(),
 	}
+
+	p.responseWriter.WriteHeader(http.StatusOK)
 
 	if partial {
 		if err = temp.ExecuteTemplate(p.responseWriter, "artist-card-main", data); err != nil {

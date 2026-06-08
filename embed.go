@@ -21,11 +21,3 @@ func New() *Embedded {
 func (m *Embedded) Get() embed.FS {
 	return m.embedded
 }
-
-func (m *Embedded) GetPath(dir, fileName string) string {
-	switch dir {
-	case "auth":
-		return "internal/web/static/auth/" + fileName
-	}
-	return ""
-}

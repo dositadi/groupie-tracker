@@ -1,8 +1,8 @@
 package pages
 
 import (
-	"fmt"
 	"html/template"
+	"net/http"
 	"strings"
 
 	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
@@ -89,7 +89,6 @@ func (p *Pages) RenderSearch() error {
 	limit := 10
 	//totalPages := len(artists) / limit
 	offset := (currentPageS - 1) * limit
-	fmt.Println(offset)
 	currentIndexS = offset + limit
 
 	switch len(artists) {
@@ -126,7 +125,7 @@ func (p *Pages) RenderSearch() error {
 		FilterKey, ArtistIDKey, SearchKey, FavKey, PageKey     string
 		SortKey, SortASC, SortDESC                             string
 		Favorited, NotFavorited                                string
-		FavoriteArtistUrl, Url                                 string
+		FavoriteArtistUrl, Url, ArtistDetailUrl                string
 		DisableNextbutton, DisablePrevButton, IsSearch         bool
 	}{
 		UserFavorites:        userFavorites,
@@ -156,7 +155,10 @@ func (p *Pages) RenderSearch() error {
 		Url:                  utils.ARTIST_SEARCH.String(),
 		PageKey:              utils.PAGE_KEY,
 		IsSearch:             true,
+		ArtistDetailUrl:      utils.ARTIST_DETAILS.String(),
 	}
+
+	p.responseWriter.WriteHeader(http.StatusOK)
 
 	if err = temp.ExecuteTemplate(p.responseWriter, "artist-card-main", data); err != nil {
 		e := helper.WrapError("Error executing template", err)

@@ -93,7 +93,7 @@
             </div>
             </div>
             <!-- CTA -->
-            <a href="#" class="mt-auto flex items-center justify-center gap-1.5 w-full bg-brand-light text-brand border border-indigo-100 hover:bg-brand hover:text-white hover:border-brand text-xs font-medium py-2 rounded-lg transition-all duration-200">
+            <a hx-get="{{$.ArtistDetailUrl}}/{{.Id}}" hx-swap="outerHTML" hx-target="#body" hx-push-url="true" class="mt-auto flex items-center justify-center gap-1.5 w-full bg-brand-light text-brand border border-indigo-100 hover:bg-brand hover:text-white hover:border-brand text-xs font-medium py-2 rounded-lg transition-all duration-200">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
             </svg>

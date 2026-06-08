@@ -13,7 +13,7 @@ const (
 	sourceHH  = "Home Handler function under apppages pkg"
 )
 
-func (a *Pages) HomeHandler(w http.ResponseWriter, r *http.Request) {
+func (a *HomePage) HomeHandler(w http.ResponseWriter, r *http.Request) {
 	page := pages.New(a.logger, w, a.embedded, a.client, r, a.favoriteModel, a.preferencemodel)
 
 	r.Body = http.MaxBytesReader(w, r.Body, 1<<20)

@@ -34,7 +34,7 @@ type PreferenceModel interface {
 	Update(preference data.PreferenceUpdate) error
 }
 
-type Pages struct {
+type HomePage struct {
 	logger          jsonlog.Logger
 	usermodel       UserModel
 	client          artistapi.ArtistInfo
@@ -43,8 +43,8 @@ type Pages struct {
 	preferencemodel PreferenceModel
 }
 
-func New(usermodel UserModel, client artistapi.ArtistInfo, logger jsonlog.Logger, embedded groupietracker.Embedded, favoriteModel FavoriteModel, preferencemodel PreferenceModel) *Pages {
-	return &Pages{
+func New(usermodel UserModel, client artistapi.ArtistInfo, logger jsonlog.Logger, embedded groupietracker.Embedded, favoriteModel FavoriteModel, preferencemodel PreferenceModel) *HomePage {
+	return &HomePage{
 		usermodel:       usermodel,
 		client:          client,
 		logger:          logger,

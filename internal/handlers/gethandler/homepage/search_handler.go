@@ -10,7 +10,7 @@ const (
 	sourceSH = "Sear"
 )
 
-func (p *Pages) SearchHandler(w http.ResponseWriter, r *http.Request) {
+func (p *HomePage) SearchHandler(w http.ResponseWriter, r *http.Request) {
 	page := pages.New(p.logger, w, p.embedded, p.client, r, p.favoriteModel, p.preferencemodel)
 
 	if err := page.RenderSearch(); err != nil {

@@ -24,8 +24,9 @@ func (a *App) initHandlers() {
 		r.Get(utils.REGISTER.String(), a.handler.Get.Auth.SignupHandler)
 
 		// App pages
-		r.With(a.midleware.VerifyAccessToken).Get(utils.HOME.String(), a.handler.Get.Pages.HomeHandler)
-		r.With(a.midleware.VerifyAccessToken).Get(utils.ARTIST_SEARCH.String(), a.handler.Get.Pages.SearchHandler)
+		r.With(a.midleware.VerifyAccessToken).Get(utils.HOME.String(), a.handler.Get.HomePage.HomeHandler)
+		r.With(a.midleware.VerifyAccessToken).Get(utils.ARTIST_SEARCH.String(), a.handler.Get.HomePage.SearchHandler)
+		r.With(a.midleware.VerifyAccessToken).Get(utils.ARTIST_DETAILS.String()+"/{id}", a.handler.Get.DetailPage.DetailPageHandler)
 	})
 
 	// Post request routes

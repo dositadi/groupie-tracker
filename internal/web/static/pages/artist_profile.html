@@ -11,7 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js" integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/htmx-ext-response-targets@2.0.4" integrity="sha384-T41oglUPvXLGBVyRdZsVRxNWnOOqCynaPubjUVjxhsjFTKrFJGEMm3/0KGmNQ+Pg" crossorigin="anonymous"></script>
 </head>
-<body class="bg-surface font-sans text-ink">
+<body id="body" hx-boost="true" hx-ext="response" class="bg-surface font-sans text-ink">
 
   <!-- ─── HEADER ────────────────────────────────────────────────────────────── -->
   <header class="bg-[#1e1b4b] sticky top-0 z-50">
@@ -23,26 +23,12 @@
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
       <!-- Back button -->
-      <a href="#" class="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors duration-200 text-sm font-medium group animate-slide-left">
+      <a hx-get="{{.HomeUrl}}" hx-swap="outerHTML" hx-target="#body" hx-push-url="true" class="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors duration-200 text-sm font-medium group animate-slide-left">
         <svg class="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
         </svg>
         <span>Back</span>
       </a>
-
-      <!-- Logo -->
-      <div class="absolute left-1/2 -translate-x-1/2 animate-slide-left">
-        <a href="#" class="inline-flex items-center gap-2.5">
-          <div class="flex items-end gap-0.5" style="height:26px">
-            <div class="wbar bg-white animate-bar1" style="height:38%;opacity:.75"></div>
-            <div class="wbar bg-white animate-bar2" style="height:68%;opacity:.8"></div>
-            <div class="wbar bg-white animate-bar3" style="height:100%;opacity:.9"></div>
-            <div class="wbar bg-white animate-bar4" style="height:62%;opacity:.8"></div>
-            <div class="wbar bg-white animate-bar5" style="height:34%;opacity:.7"></div>
-          </div>
-          <span class="font-display text-white text-[1.6rem] tracking-tight">Crescendo</span>
-        </a>
-      </div>
 
       <!-- Right spacer (balanced layout) -->
       <div class="w-16"></div>
@@ -68,8 +54,8 @@
             <span class="music-note animate-note3 text-brand/40" style="left:10px;bottom:4px;">♫</span>
 
             <img
-              src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop&q=80"
-              alt="Coldplay"
+              src="{{.ArtistInfo.Image}}"
+              alt="{{.ArtistInfo.Name}}"
               class="w-40 h-40 rounded-full object-cover border-2 border-border relative z-10"
               style="box-shadow: 0 10px 30px rgba(0,0,0,.08);"
             />
@@ -104,7 +90,7 @@
           <!-- Name + verified badge -->
           <div class="opacity-start animate-fade-up-d1 mb-1">
             <div class="flex items-center gap-2.5 flex-wrap">
-              <h1 class="font-display text-4xl lg:text-5xl text-ink tracking-tight leading-tight">Coldplay</h1>
+              <h1 class="font-display text-4xl lg:text-5xl text-ink tracking-tight leading-tight">{{.ArtistInfo.Name}}</h1>
               <!-- Verified -->
               <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-brand-light text-brand border border-brand/20 mt-1">
                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
@@ -126,7 +112,7 @@
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-7 opacity-start animate-fade-up-d3">
             <div class="bg-amber-50 rounded-xl px-4 py-3.5 border border-border-soft">
               <p class="text-xs text-ink-muted mb-0.5">Formed</p>
-              <p class="text-base font-semibold text-ink">1996</p>
+              <p class="text-base font-semibold text-ink">{{.ArtistInfo.CreationDate}}</p>
             </div>
             <div class="bg-amber-50 rounded-xl px-4 py-3.5 border border-border-soft">
               <p class="text-xs text-ink-muted mb-0.5">First Album</p>
@@ -134,11 +120,11 @@
             </div>
             <div class="bg-amber-50 rounded-xl px-4 py-3.5 border border-border-soft">
               <p class="text-xs text-ink-muted mb-0.5">Band Members</p>
-              <p class="text-base font-semibold text-ink">4</p>
+              <p class="text-base font-semibold text-ink">{{len .ArtistInfo.Members}}</p>
             </div>
             <div class="bg-amber-50 rounded-xl px-4 py-3.5 border border-border-soft">
               <p class="text-xs text-ink-muted mb-0.5">Upcoming Shows</p>
-              <p class="text-base font-semibold text-brand">12</p>
+              <p class="text-base font-semibold text-brand">{{len .ArtistInfo.ConcertDates}}</p>
             </div>
           </div>
 
@@ -147,22 +133,12 @@
             <p class="text-xs font-medium text-ink-muted uppercase tracking-widest mb-3">Band Members</p>
             <div class="flex flex-wrap gap-2.5">
               <!-- Member pill with initials avatar -->
+              {{range .ArtistInfo.Members}} 
               <div class="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-surface-white border border-border hover:border-brand/30 hover:bg-brand-light/40 transition-all duration-200 cursor-default">
-                <div class="w-6 h-6 rounded-full bg-brand-light flex items-center justify-center text-[10px] font-semibold text-brand shrink-0">CM</div>
-                <span class="text-sm text-ink-secondary font-medium">Chris Martin</span>
+                <div class="w-6 h-6 rounded-full bg-brand-light flex items-center justify-center text-[10px] font-semibold text-brand shrink-0">BM</div>
+                <span class="text-sm text-ink-secondary font-medium">{{.}}</span>
               </div>
-              <div class="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-surface-white border border-border hover:border-brand/30 hover:bg-brand-light/40 transition-all duration-200 cursor-default">
-                <div class="w-6 h-6 rounded-full bg-amber-50 flex items-center justify-center text-[10px] font-semibold text-ink-secondary shrink-0">JB</div>
-                <span class="text-sm text-ink-secondary font-medium">Jonny Buckland</span>
-              </div>
-              <div class="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-surface-white border border-border hover:border-brand/30 hover:bg-brand-light/40 transition-all duration-200 cursor-default">
-                <div class="w-6 h-6 rounded-full bg-amber-50 flex items-center justify-center text-[10px] font-semibold text-ink-secondary shrink-0">GB</div>
-                <span class="text-sm text-ink-secondary font-medium">Guy Berryman</span>
-              </div>
-              <div class="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-surface-white border border-border hover:border-brand/30 hover:bg-brand-light/40 transition-all duration-200 cursor-default">
-                <div class="w-6 h-6 rounded-full bg-amber-50 flex items-center justify-center text-[10px] font-semibold text-ink-secondary shrink-0">WC</div>
-                <span class="text-sm text-ink-secondary font-medium">Will Champion</span>
-              </div>
+              {{end}}
             </div>
           </div>
         </div>
@@ -195,159 +171,54 @@
 
           <!-- Events list -->
           <div class="space-y-3">
-
-            <!-- Event card 1 — Featured / Next show -->
-            <div class="event-card relative bg-surface-white rounded-2xl border border-border overflow-hidden" style="box-shadow:0 1px 2px rgba(0,0,0,.04);">
-              <!-- Featured strip -->
-              <div class="absolute top-0 left-0 right-0 h-0.5 bg-brand"></div>
-              <div class="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
-                <!-- Date block -->
-                <div class="shrink-0 w-16 text-center bg-brand-light rounded-xl py-3 border border-brand/20">
-                  <p class="text-xs font-semibold text-brand uppercase tracking-wider">Jun</p>
-                  <p class="text-2xl font-bold text-brand leading-tight">14</p>
-                  <p class="text-xs text-brand/70">2025</p>
-                </div>
-
-                <!-- Event details -->
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-2 mb-1">
-                    <span class="text-[10px] font-semibold text-brand uppercase tracking-widest bg-brand-light px-2 py-0.5 rounded-full">Next Show</span>
-                    <span class="text-[10px] font-semibold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">On Sale</span>
+            {{range $key, $val := .ArtistInfo.DatesLocations}}
+              {{range $val}}
+              <!-- Event card 1 — Featured / Next show -->
+              <div class="event-card relative bg-surface-white rounded-2xl border border-border overflow-hidden" style="box-shadow:0 1px 2px rgba(0,0,0,.04);">
+                <!-- Featured strip -->
+                <div class="absolute top-0 left-0 right-0 h-0.5 bg-brand"></div>
+                <div class="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+                  <!-- Date block -->
+                  <div class="shrink-0 w-16 text-center bg-brand-light rounded-xl py-3 border border-brand/20">
+                    <p class="text-xs font-semibold text-brand uppercase tracking-wider">{{GetMonth .}}</p>
+                    <p class="text-2xl font-bold text-brand leading-tight">{{GetDay .}}</p>
+                    <p class="text-xs text-brand/70">{{GetYear .}}</p>
                   </div>
-                  <h3 class="font-semibold text-ink text-base leading-snug">Music of the Spheres World Tour</h3>
-                  <div class="flex items-center gap-1.5 mt-1.5">
-                    <svg class="w-3.5 h-3.5 text-ink-muted shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    </svg>
-                    <span class="text-sm text-ink-secondary truncate">Wembley Stadium · London, UK</span>
+
+                  <!-- Event details -->
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                      <!-- <span class="text-[10px] font-semibold text-brand uppercase tracking-widest bg-brand-light px-2 py-0.5 rounded-full">Next Show</span> -->
+                      <span class="text-[10px] font-semibold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">On Sale</span>
+                    </div>
+                    <h3 class="font-semibold text-ink text-base leading-snug">Music of the Spheres World Tour</h3>
+                    <div class="flex items-center gap-1.5 mt-1.5">
+                      <svg class="w-3.5 h-3.5 text-ink-muted shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      </svg>
+                      <span class="text-sm text-ink-secondary truncate">{{$key | CleanCityName}}</span>
+                    </div>
+                  </div>
+
+                  <!-- Action -->
+                  <div class="shrink-0">
+                    <button class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-brand text-white text-sm font-medium hover:bg-brand-hover active:bg-brand-active transition-colors duration-200" style="box-shadow:0 4px 14px rgba(79,70,229,.18);">
+                      Get Tickets
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                      </svg>
+                    </button>
                   </div>
                 </div>
-
-                <!-- Action -->
-                <div class="shrink-0">
-                  <button class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-brand text-white text-sm font-medium hover:bg-brand-hover active:bg-brand-active transition-colors duration-200" style="box-shadow:0 4px 14px rgba(79,70,229,.18);">
-                    Get Tickets
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                    </svg>
-                  </button>
-                </div>
               </div>
-            </div>
-
-            <!-- Event card 2 -->
-            <div class="event-card bg-surface-white rounded-2xl border border-border p-5 flex flex-col sm:flex-row sm:items-center gap-4" style="box-shadow:0 1px 2px rgba(0,0,0,.04);">
-              <div class="shrink-0 w-16 text-center bg-amber-50 rounded-xl py-3 border border-border-soft">
-                <p class="text-xs font-semibold text-ink-muted uppercase tracking-wider">Jul</p>
-                <p class="text-2xl font-bold text-ink leading-tight">02</p>
-                <p class="text-xs text-ink-muted">2025</p>
-              </div>
-              <div class="flex-1 min-w-0">
-                <span class="text-[10px] font-semibold text-ink-muted uppercase tracking-widest bg-amber-50 px-2 py-0.5 rounded-full border border-border">Selling Fast</span>
-                <h3 class="font-semibold text-ink text-base leading-snug mt-1">Music of the Spheres World Tour</h3>
-                <div class="flex items-center gap-1.5 mt-1.5">
-                  <svg class="w-3.5 h-3.5 text-ink-muted shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                  </svg>
-                  <span class="text-sm text-ink-secondary truncate">Stade de France · Paris, FR</span>
-                </div>
-              </div>
-              <div class="shrink-0">
-                <button class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-amber-50 text-ink-secondary text-sm font-medium border border-border hover:border-brand/30 hover:bg-brand-light hover:text-brand transition-all duration-200">
-                  Get Tickets
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <!-- Event card 3 -->
-            <div class="event-card bg-surface-white rounded-2xl border border-border p-5 flex flex-col sm:flex-row sm:items-center gap-4" style="box-shadow:0 1px 2px rgba(0,0,0,.04);">
-              <div class="shrink-0 w-16 text-center bg-amber-50 rounded-xl py-3 border border-border-soft">
-                <p class="text-xs font-semibold text-ink-muted uppercase tracking-wider">Aug</p>
-                <p class="text-2xl font-bold text-ink leading-tight">19</p>
-                <p class="text-xs text-ink-muted">2025</p>
-              </div>
-              <div class="flex-1 min-w-0">
-                <h3 class="font-semibold text-ink text-base leading-snug">Music of the Spheres World Tour</h3>
-                <div class="flex items-center gap-1.5 mt-1.5">
-                  <svg class="w-3.5 h-3.5 text-ink-muted shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                  </svg>
-                  <span class="text-sm text-ink-secondary truncate">Madison Square Garden · New York, US</span>
-                </div>
-              </div>
-              <div class="shrink-0">
-                <button class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-amber-50 text-ink-secondary text-sm font-medium border border-border hover:border-brand/30 hover:bg-brand-light hover:text-brand transition-all duration-200">
-                  Get Tickets
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <!-- Event card 4 -->
-            <div class="event-card bg-surface-white rounded-2xl border border-border p-5 flex flex-col sm:flex-row sm:items-center gap-4" style="box-shadow:0 1px 2px rgba(0,0,0,.04);">
-              <div class="shrink-0 w-16 text-center bg-amber-50 rounded-xl py-3 border border-border-soft">
-                <p class="text-xs font-semibold text-ink-muted uppercase tracking-wider">Sep</p>
-                <p class="text-2xl font-bold text-ink leading-tight">07</p>
-                <p class="text-xs text-ink-muted">2025</p>
-              </div>
-              <div class="flex-1 min-w-0">
-                <span class="text-[10px] font-semibold text-amber-700 uppercase tracking-widest bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100">Few Tickets Left</span>
-                <h3 class="font-semibold text-ink text-base leading-snug mt-1">Music of the Spheres World Tour</h3>
-                <div class="flex items-center gap-1.5 mt-1.5">
-                  <svg class="w-3.5 h-3.5 text-ink-muted shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                  </svg>
-                  <span class="text-sm text-ink-secondary truncate">Optus Stadium · Perth, AU</span>
-                </div>
-              </div>
-              <div class="shrink-0">
-                <button class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-amber-50 text-sm font-medium border border-amber-20 hover:bg-amber-100 text-amber-800 transition-all duration-200">
-                  Get Tickets
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <!-- Event card 5 — Sold out -->
-            <div class="event-card bg-surface-white rounded-2xl border border-border p-5 flex flex-col sm:flex-row sm:items-center gap-4 opacity-60" style="box-shadow:0 1px 2px rgba(0,0,0,.04);">
-              <div class="shrink-0 w-16 text-center bg-amber-50 rounded-xl py-3 border border-border-soft">
-                <p class="text-xs font-semibold text-ink-muted uppercase tracking-wider">Oct</p>
-                <p class="text-2xl font-bold text-ink-muted leading-tight">22</p>
-                <p class="text-xs text-ink-muted">2025</p>
-              </div>
-              <div class="flex-1 min-w-0">
-                <span class="text-[10px] font-semibold text-red-700 uppercase tracking-widest bg-red-50 px-2 py-0.5 rounded-full border border-red-100">Sold Out</span>
-                <h3 class="font-semibold text-ink-secondary text-base leading-snug mt-1">Music of the Spheres World Tour</h3>
-                <div class="flex items-center gap-1.5 mt-1.5">
-                  <svg class="w-3.5 h-3.5 text-ink-muted shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                  </svg>
-                  <span class="text-sm text-ink-muted truncate">Allianz Arena · Munich, DE</span>
-                </div>
-              </div>
-              <div class="shrink-0">
-                <button disabled class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-amber-50 text-ink-disabled text-sm font-medium border border-border cursor-not-allowed">
-                  Sold Out
-                </button>
-              </div>
-            </div>
+              {{end}}
+            {{end}}
 
             <!-- View all link -->
             <div class="pt-1 text-center">
               <button class="inline-flex items-center gap-1.5 text-sm text-brand font-medium hover:text-brand-hover transition-colors duration-200">
-                View all 12 concert dates
+                View all {{len .ArtistInfo.ConcertDates}} concert dates
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                 </svg>
@@ -531,7 +402,7 @@
         <div class="bg-surface-white rounded-2xl border border-border p-6 opacity-start animate-fade-up-d1" style="box-shadow:0 1px 2px rgba(0,0,0,.04);">
           <h3 class="text-xs font-semibold text-ink-muted uppercase tracking-widest mb-3">About</h3>
           <p class="text-sm text-ink-secondary leading-relaxed">
-            Coldplay are a British rock band formed in London, 1996. Consisting of vocalist Chris Martin, guitarist Jonny Buckland, bassist Guy Berryman, and drummer Will Champion — they rose to fame with their debut album <em class="text-ink not-italic font-medium">Parachutes</em> in 2000.
+            {{.ArtistInfo.Name}} are a British rock band formed in {{GetLocations .ArtistInfo.Locations | CleanCityName}}, {{.ArtistInfo.CreationDate}}. Consisting of vocalist, {{range .ArtistInfo.Members}} {{.,}} {{end}}
           </p>
           <div class="mt-4 pt-4 border-t border-border-soft flex items-center justify-between">
             <div>
