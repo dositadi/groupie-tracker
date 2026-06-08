@@ -100,8 +100,8 @@ func (p *Pages) RenderHomePage(partial bool) error {
 		FilterKey, ArtistIDKey, SearchKey, PageKey             string
 		SortKey, SortASC, SortDESC                             string
 		FavoriteArtistUrl, FavKey, Favorited, NotFavorited     string
-		SearchUrl, ArtistUrl                                   string
-		DisableNextbutton, DisablePrevButton                   bool
+		SearchUrl, Url                                         string
+		DisableNextbutton, DisablePrevButton, IsSearch         bool
 	}{
 		UserFavorites:        userFavorites,
 		Artists:              paginatedArtists,
@@ -122,7 +122,7 @@ func (p *Pages) RenderHomePage(partial bool) error {
 		ArtistIDKey:          utils.ARTIST_ID_KEY,
 		SearchUrl:            utils.ARTIST_SEARCH.String(),
 		SearchKey:            utils.SEARCH_KEY,
-		ArtistUrl:            utils.HOME.String(),
+		Url:                  utils.HOME.String(),
 		PageKey:              utils.PAGE_KEY,
 		NextPage:             currentPage + 1,
 		PreviousPage:         currentPage - 1,
@@ -130,6 +130,7 @@ func (p *Pages) RenderHomePage(partial bool) error {
 		Total:                len(artists),
 		DisableNextbutton:    disableNextButton,
 		DisablePrevButton:    disablePrevButton,
+		IsSearch:             false,
 	}
 
 	if partial {

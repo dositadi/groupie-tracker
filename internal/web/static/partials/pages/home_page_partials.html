@@ -83,13 +83,13 @@
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
                 <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                 </svg>
-                {{.Followers}}
+                {{RandomValues}}
             </div>
             <div class="stat-pill">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="5 3 19 12 5 21 5 3"/>
                 </svg>
-                {{.Tracks}}
+                {{RandomValues}}
             </div>
             </div>
             <!-- CTA -->
@@ -113,10 +113,10 @@
         <span class="w-16 h-px bg-border"></span>
       </div>
       <div class="flex flex-row items-end gap-3">
-        <button {{if .DisablePrevButton}} disabled {{end}} hx-get="{{.ArtistUrl}}?{{.PageKey}}={{.PreviousPage}} " hx-target="#artists" hx-swap="outerHTML" hx-trigger="click"  {{if .DisablePrevButton}} class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand/10 hover:border-brand/10 hover:text-ink-secondary transition-all duration-200 shadow-sm" {{else}} class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand hover:border-brand hover:text-white transition-all duration-200 shadow-sm" {{end}}>
+        <button {{if .DisablePrevButton}} disabled {{end}} hx-get="{{.Url}}?{{.PageKey}}={{.PreviousPage}} " hx-target="#artists" hx-swap="outerHTML" hx-trigger="click"  {{if .DisablePrevButton}} class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand/10 hover:border-brand/10 hover:text-ink-secondary transition-all duration-200 shadow-sm" {{else}} class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand hover:border-brand hover:text-white transition-all duration-200 shadow-sm" {{end}}>
         Previous
         </button>
-        <button {{if .DisableNextbutton}} disabled {{end}} hx-get="{{.ArtistUrl}}?{{.PageKey}}={{.NextPage}}" hx-target="#artists" hx-swap="outerHTML" hx-trigger="click" {{if .DisableNextbutton}} class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand/10 hover:border-brand/10 hover:text-ink-secondary transition-all duration-200 shadow-sm" {{else}} class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand hover:border-brand hover:text-white transition-all duration-200 shadow-sm" {{end}}>
+        <button {{if .DisableNextbutton}} disabled {{end}} hx-get="{{.Url}}?{{.PageKey}}={{.NextPage}}" hx-target="#artists" hx-swap="outerHTML" hx-trigger="click" {{if .IsSearch}} hx-include="[name='{{.SearchKey}}']" {{end}} {{if .DisableNextbutton}} class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand/10 hover:border-brand/10 hover:text-ink-secondary transition-all duration-200 shadow-sm" {{else}} class="inline-flex items-center gap-2 bg-surface-white border border-border text-ink-secondary text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-brand hover:border-brand hover:text-white transition-all duration-200 shadow-sm" {{end}}>
         Next
         </button>
       </div>

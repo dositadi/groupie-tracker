@@ -3,6 +3,7 @@ package pages
 import (
 	"html/template"
 	"maps"
+	"math/rand"
 	"slices"
 	"strconv"
 	"strings"
@@ -150,6 +151,9 @@ func (p *Pages) homePageFunc() template.FuncMap {
 				return status.Status
 			}
 			return artist.IsFavorited
+		},
+		"RandomValues": func() int {
+			return rand.Intn(500)
 		},
 	}
 }

@@ -15,13 +15,24 @@ const (
 	sourceRS = "Render search f(n) under pages pkg"
 )
 
+var currentPageS = 1
+var currentIndexS = 0
+var countS = 0
+var currentSearch = ""
+
 func (p *Pages) RenderSearch() error {
 	fs := []string{
 		"internal/web/static/partials/pages/home_page_partials.html",
 	}
 
 	search := p.request.FormValue(utils.SEARCH_KEY)
-	fmt.Println(search)
+
+	if currentSearch != search {
+		currentPageS = 1
+		currentIndexS = 0
+		countS = 0
+		currentSearch = search
+	}
 
 	temp, err := template.New("home_page_partials.html").Funcs(p.homePageFunc()).ParseFS(p.embedded.Get(), fs...)
 	if err != nil {
@@ -33,6 +44,7 @@ func (p *Pages) RenderSearch() error {
 	}
 
 	var artists []artistapi.ArtistInfo
+	var paginatedArtists []artistapi.ArtistInfo
 	search = strings.ToLower(search)
 
 	for _, artist := range p.client.GetByIdKey() {
@@ -59,19 +71,66 @@ func (p *Pages) RenderSearch() error {
 
 	artists = sortArtist(artists, Sort(userPreference.Sort), Filter(userPreference.Filter))
 
+	page := p.request.FormValue(utils.PAGE_KEY)
+
+	if page != "" {
+		p := p.atoi(page)
+		if p < 0 {
+			currentPageS += p
+		} else {
+			currentPageS = p
+		}
+	}
+
+	var disableNextButton bool
+	var disablePrevButton bool
+	artistsLen := len(artists) - 1
+
+	limit := 10
+	//totalPages := len(artists) / limit
+	offset := (currentPageS - 1) * limit
+	fmt.Println(offset)
+	currentIndexS = offset + limit
+
+	switch len(artists) {
+	case 1:
+		paginatedArtists = artists[:]
+		countS = 1
+		disableNextButton = true
+	default:
+		if currentIndexS < artistsLen {
+			paginatedArtists = artists[offset : offset+limit]
+			countS = artistsLen - (artistsLen - (offset + limit))
+		} else {
+			if offset < artistsLen {
+				paginatedArtists = artists[offset:]
+				countS = artistsLen + 1
+				disableNextButton = true
+			} else if offset == artistsLen {
+				disableNextButton = true
+			}
+		}
+	}
+
+	if currentPageS == 1 {
+		disablePrevButton = true
+	}
+
 	data := struct {
+		NextPage, PreviousPage, Count, Total                   int
 		UserFavorites                                          map[int]data.Favorite
 		Artists                                                []artistapi.ArtistInfo
 		CurrentFilter, CurrentSort                             string
 		FilterSortRoute                                        string
 		FilterByName, FilterByCreationDate, FilterByFirstAlbum string
-		FilterKey, ArtistIDKey, SearchKey, FavKey              string
+		FilterKey, ArtistIDKey, SearchKey, FavKey, PageKey     string
 		SortKey, SortASC, SortDESC                             string
 		Favorited, NotFavorited                                string
-		FavoriteArtistUrl, SearchUrl                           string
+		FavoriteArtistUrl, Url                                 string
+		DisableNextbutton, DisablePrevButton, IsSearch         bool
 	}{
 		UserFavorites:        userFavorites,
-		Artists:              artists,
+		Artists:              paginatedArtists,
 		CurrentFilter:        userPreference.Filter,
 		CurrentSort:          userPreference.Sort,
 		FilterSortRoute:      utils.FILTER_SORT_ROUTE.String(),
@@ -88,6 +147,15 @@ func (p *Pages) RenderSearch() error {
 		NotFavorited:         string(NOT_FAVORITED),
 		ArtistIDKey:          utils.ARTIST_ID_KEY,
 		SearchKey:            utils.SEARCH_KEY,
+		DisableNextbutton:    disableNextButton,
+		DisablePrevButton:    disablePrevButton,
+		Count:                countS,
+		NextPage:             currentPageS + 1,
+		PreviousPage:         currentPageS - 1,
+		Total:                len(artists),
+		Url:                  utils.ARTIST_SEARCH.String(),
+		PageKey:              utils.PAGE_KEY,
+		IsSearch:             true,
 	}
 
 	if err = temp.ExecuteTemplate(p.responseWriter, "artist-card-main", data); err != nil {
