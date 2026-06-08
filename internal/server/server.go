@@ -9,9 +9,10 @@ import (
 )
 
 type Server struct {
-	addr   string
-	logger *jsonlog.Logger
-	mux    *http.ServeMux
+	addr      string
+	logger    *jsonlog.Logger
+	mux       *http.ServeMux
+	templates *TemplateEngine
 }
 
 func New(addr string, logger *jsonlog.Logger, artistClient *client.ArtistInfo) *Server {
@@ -22,10 +23,15 @@ func New(addr string, logger *jsonlog.Logger, artistClient *client.ArtistInfo) *
 	mux.HandleFunc("GET /artists/{id}", artistHandlers.GetArtistByID)
 
 	return &Server{
-		addr:   addr,
-		logger: logger,
-		mux:    mux,
+		addr:      addr,
+		logger:    logger,
+		mux:       mux,
+		templates: NewTemplateEngine(),
 	}
+}
+
+func (s *Server) Templates() *TemplateEngine {
+	return s.templates
 }
 
 func (s *Server) Start() error {
