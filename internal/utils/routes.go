@@ -16,5 +16,5 @@ const (
 	EVENTS            Route = Route("/artists/concert")
 	FAVORITE          Route = Route("/artists/favorite")
 	FILTER_SORT_ROUTE Route = Route("/artists/filter-sort")
-	ALL_EVENTS_ROUTES Route = Route("/artists/all-events/")
+	ALL_EVENTS_ROUTES Route = Route("/artists/all-events")
 )

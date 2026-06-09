@@ -35,10 +35,10 @@ func (a *ArtistDetail) RenderArtistDetailPage() error {
 		ArtistInfo                                 artistapi.ArtistInfo
 		AllArtists                                 map[int]artistapi.ArtistInfo
 	}{
-		HomeUrl:         utils.HOME.String(),
-		AllEventsPageUrl:      artistInfo,
-		AllArtists:      a.client.GetByIdKey(),
-		ArtistDetailUrl: utils.ARTIST_DETAILS.String(),
+		HomeUrl:          utils.HOME.String(),
+		ArtistInfo:       artistInfo,
+		AllArtists:       a.client.GetByIdKey(),
+		ArtistDetailUrl:  utils.ARTIST_DETAILS.String(),
 		AllEventsPageUrl: utils.ALL_EVENTS_ROUTES.String(),
 	}
 

@@ -1,6 +1,7 @@
 package artistdetail
 
 import (
+	"fmt"
 	"html/template"
 
 	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
@@ -19,10 +20,11 @@ func (a *ArtistDetail) RenderAllEventsPage() error {
 	}
 
 	id := a.atoi(chi.URLParam(a.request, "id"))
+	fmt.Println(id)
 
 	artistInfo := a.client.GetByIdKey()[id]
 
-	temp, err := template.New("artist_profile.html").Funcs(a.detailPageFuncMap()).ParseFS(a.embedded.Get(), fs...)
+	temp, err := template.New("all_concerts.html").Funcs(a.detailPageFuncMap()).ParseFS(a.embedded.Get(), fs...)
 	if err != nil {
 		e := helper.WrapError("Template create error", err)
 		a.logger.PrintError(e.Error(), map[string]string{
