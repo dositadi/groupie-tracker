@@ -86,3 +86,16 @@ func fetchInfo[T InfoTypes](url string) (T, error) {
 
 	return info, nil
 }
+
+/*
+{
+ "data": [
+   {
+     "latitude": 48.8582602,
+     "longitude": 2.2944991,
+     "label": "Eiffel Tower, Paris, France",
+     "country": "France"
+   }
+ ]
+}
+*/

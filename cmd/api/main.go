@@ -1,10 +1,12 @@
 package main
 
 import (
-	"github.com/dositadi/groupie-tracker/cmd/api/app"
+	opencage "github.com/dositadi/groupie-tracker/internal/client/open_cage"
 )
 
 func main() {
-	app := &app.App{}
-	app.Run()
+	/* app := &app.App{}
+	app.Run() */
+
+	opencage.FetchGeoLocations("Recife Brazil")
 }

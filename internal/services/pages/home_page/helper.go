@@ -145,12 +145,12 @@ func (p *Pages) homePageFunc() template.FuncMap {
 		},
 		"CheckFav": func(artist artistapi.ArtistInfo, favorites map[int]data.Favorite) bool {
 			if favorites == nil {
-				return artist.IsFavorited
+				return false
 			}
 			if status, ok := favorites[artist.Id]; ok {
 				return status.Status
 			}
-			return artist.IsFavorited
+			return false
 		},
 		"RandomValues": func() int {
 			return rand.Intn(500)

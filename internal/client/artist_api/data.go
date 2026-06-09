@@ -1,5 +1,7 @@
 package artistapi
 
+import opencage "github.com/dositadi/groupie-tracker/internal/client/open_cage"
+
 type artist struct {
 	Id           int      `json:"id"`
 	Image        string   `json:"image"`
@@ -39,7 +41,5 @@ type ArtistInfo struct {
 	Locations      []string            `json:"locations"`
 	ConcertDates   []string            `json:"concert_dates"`
 	DatesLocations map[string][]string `json:"dates_locations"`
-	IsFavorited    bool
-	Followers      int
-	Tracks         int
+	GeoLocations   map[string]opencage.GeoLocation
 }

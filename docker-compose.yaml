@@ -4,6 +4,7 @@ services:
     environment:
       - POSTGRES_DB_DSN=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}?sslmode=disable
       - JWTKEY=${JWTKEY}
+      - POSITION_STACK_KEY=${POSITION_STACK_KEY}
     ports:
       - 8080:8080
     volumes:
