@@ -10,12 +10,12 @@ import (
 )
 
 const (
-	sourceR = "Render artist detail page f(n) under artistdetail pkg"
+	sourceE = "Render all events page f(n) under artistdetail pkg"
 )
 
-func (a *ArtistDetail) RenderArtistDetailPage() error {
+func (a *ArtistDetail) RenderAllEventsPage() error {
 	fs := []string{
-		"internal/web/static/pages/artist_profile.html",
+		"internal/web/static/pages/all_concerts.html",
 	}
 
 	id := a.atoi(chi.URLParam(a.request, "id"))
@@ -26,26 +26,24 @@ func (a *ArtistDetail) RenderArtistDetailPage() error {
 	if err != nil {
 		e := helper.WrapError("Template create error", err)
 		a.logger.PrintError(e.Error(), map[string]string{
-			"Status": sourceR,
+			"Status": sourceE,
 		})
 	}
 
 	data := struct {
-		HomeUrl, ArtistDetailUrl, AllEventsPageUrl string
-		ArtistInfo                                 artistapi.ArtistInfo
-		AllArtists                                 map[int]artistapi.ArtistInfo
+		ArtistDetailUrl string
+		ArtistInfo      artistapi.ArtistInfo
+		AllArtists      map[int]artistapi.ArtistInfo
 	}{
-		HomeUrl:         utils.HOME.String(),
-		AllEventsPageUrl:      artistInfo,
+		ArtistInfo:      artistInfo,
 		AllArtists:      a.client.GetByIdKey(),
 		ArtistDetailUrl: utils.ARTIST_DETAILS.String(),
-		AllEventsPageUrl: utils.ALL_EVENTS_ROUTES.String(),
 	}
 
 	if err = temp.Execute(a.responseWriter, data); err != nil {
 		e := helper.WrapError("Template execute error", err)
 		a.logger.PrintError(e.Error(), map[string]string{
-			"Status": sourceR,
+			"Status": sourceE,
 		})
 	}
 	return nil

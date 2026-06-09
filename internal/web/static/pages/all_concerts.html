@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Artist Profile — Crescendo</title>
+  <link rel="stylesheet" href="/src/output.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js" integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/htmx-ext-response-targets@2.0.4" integrity="sha384-T41oglUPvXLGBVyRdZsVRxNWnOOqCynaPubjUVjxhsjFTKrFJGEMm3/0KGmNQ+Pg" crossorigin="anonymous"></script>
+</head>
+<body id="body" hx-boost="true" hx-ext="response" class="bg-surface font-sans text-ink">
+    <!-- ─── HEADER ────────────────────────────────────────────────────────────── -->
+    <header class="bg-[#1e1b4b] sticky top-0 z-50">
+        <!-- Noise overlay -->
+        <div class="noise-overlay" style="border-radius:0;"></div>
+        <!-- Subtle radial accent -->
+        <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse at 20% 50%, rgba(99,91,255,0.18) 0%, transparent 60%);"></div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+
+        <!-- Back button -->
+        <a hx-get="{{.HomeUrl}}" hx-swap="outerHTML" hx-target="#body" hx-push-url="true" class="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors duration-200 text-sm font-medium group animate-slide-left">
+            <svg class="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+            </svg>
+            <span>Back</span>
+        </a>
+
+        <!-- Right spacer (balanced layout) -->
+        <div class="w-16"></div>
+        </div>
+    </header>
+
+    <main>
+        <!-- ── CONCERT SCHEDULE ───────────────────────────────────────────── -->
+        <section class="opacity-start animate-fade-up-d2">
+          <div class="flex items-center justify-between mb-5">
+            <div>
+              <h2 class="font-display text-2xl text-ink">Concert Schedule</h2>
+              <p class="text-sm text-ink-muted mt-0.5">Upcoming tour dates and locations</p>
+            </div>
+            <!-- Filter pills -->
+            <div class="hidden sm:flex items-center gap-2">
+              <button class="px-3.5 py-1.5 rounded-full text-xs font-medium bg-brand text-white">All</button>
+              <button class="px-3.5 py-1.5 rounded-full text-xs font-medium bg-amber-50 text-ink-secondary border border-border hover:bg-brand-light hover:text-brand hover:border-brand/20 transition-all duration-200">Europe</button>
+              <button class="px-3.5 py-1.5 rounded-full text-xs font-medium bg-amber-50 text-ink-secondary border border-border hover:bg-brand-light hover:text-brand hover:border-brand/20 transition-all duration-200">Americas</button>
+            </div>
+          </div>
+
+          <!-- Events list -->
+          <div class="space-y-3">
+            {{range $key, $val := (Artists .ArtistInfo.DatesLocations)}}
+              {{range $val}}
+              <!-- Event card 1 — Featured / Next show -->
+              <div class="event-card relative bg-surface-white rounded-2xl border border-border overflow-hidden" style="box-shadow:0 1px 2px rgba(0,0,0,.04);">
+                <!-- Featured strip -->
+                <div class="absolute top-0 left-0 right-0 h-0.5 bg-brand"></div>
+                <div class="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+                  <!-- Date block -->
+                  <div class="shrink-0 w-16 text-center bg-brand-light rounded-xl py-3 border border-brand/20">
+                    <p class="text-xs font-semibold text-brand uppercase tracking-wider">{{GetMonth .}}</p>
+                    <p class="text-2xl font-bold text-brand leading-tight">{{GetDay .}}</p>
+                    <p class="text-xs text-brand/70">{{GetYear .}}</p>
+                  </div>
+
+                  <!-- Event details -->
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                      <!-- <span class="text-[10px] font-semibold text-brand uppercase tracking-widest bg-brand-light px-2 py-0.5 rounded-full">Next Show</span> -->
+                      <span class="text-[10px] font-semibold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">On Sale</span>
+                    </div>
+                    <h3 class="font-semibold text-ink text-base leading-snug">Music of the Spheres World Tour</h3>
+                    <div class="flex items-center gap-1.5 mt-1.5">
+                      <svg class="w-3.5 h-3.5 text-ink-muted shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      </svg>
+                      <span class="text-sm text-ink-secondary truncate">{{$key | CleanCityName}}</span>
+                    </div>
+                  </div>
+
+                  <!-- Action -->
+                  <div class="shrink-0">
+                    <button class="cursor-pointer inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-brand text-white text-sm font-medium hover:bg-brand-hover active:bg-brand-active transition-colors duration-200" style="box-shadow:0 4px 14px rgba(79,70,229,.18);">
+                      Get Tickets
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              {{end}}
+            {{end}}
+          </div>
+        </section>
+    </main>    
+</body>
+</html>
