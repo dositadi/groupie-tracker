@@ -31,11 +31,14 @@ func (a *ArtistDetail) RenderArtistDetailPage() error {
 	}
 
 	data := struct {
-		HomeUrl    string
+		HomeUrl,ArtistDetailUrl    string
 		ArtistInfo artistapi.ArtistInfo
+		AllArtists map[int]artistapi.ArtistInfo
 	}{
 		HomeUrl:    utils.HOME.String(),
 		ArtistInfo: artistInfo,
+		AllArtists: a.client.GetByIdKey(),
+		ArtistDetailUrl: utils.ARTIST_DETAILS.String(),
 	}
 
 	if err = temp.Execute(a.responseWriter, data); err != nil {

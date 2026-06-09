@@ -2,9 +2,14 @@ package artistdetail
 
 import (
 	"html/template"
+	"maps"
+	"math/rand"
+	"slices"
 	"strconv"
 	"strings"
 	"unicode"
+
+	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
 )
 
 func (a *ArtistDetail) atoi(s string) int {
@@ -66,6 +71,7 @@ func (a *ArtistDetail) detailPageFuncMap() template.FuncMap {
 		},
 		"CleanCityName": func(city string) string {
 			city = strings.ReplaceAll(city, "-", " ")
+			city = strings.ReplaceAll(city, "_", "-")
 			citySlice := strings.Split(city, " ")
 
 			for i, c := range citySlice {
@@ -73,11 +79,51 @@ func (a *ArtistDetail) detailPageFuncMap() template.FuncMap {
 				citySlice[i] = string(unicode.ToUpper(v[0])) + string(v[1:])
 			}
 
-			return strings.Join(citySlice, " ")
+			return strings.Join(citySlice, ", ")
 		},
-		"GetLocations": func (locations []string) string {
+		"GetLocations": func(locations []string) string {
 			return locations[0]
 		},
-		
+		"Artists": func(relations map[string][]string) map[string][]string {
+			vals := slices.Collect(maps.Keys(relations))
+			slices.Sort(vals)
+
+			keys := vals[:3]
+
+			out := make(map[string][]string)
+
+			for _, key := range keys {
+				out[key] = relations[key]
+			}
+			return out
+		},
+		"RandomValues": func() int {
+			return rand.Intn(500)
+		},
+		"SimilarArtists": func(id int, artists map[int]artistapi.ArtistInfo) []artistapi.ArtistInfo {
+			keys := slices.Collect(maps.Keys(artists))
+			values := slices.Collect(maps.Values(artists))
+			slices.Sort(keys)
+			slices.SortStableFunc(values, func(a, b artistapi.ArtistInfo) int {
+				if a.Id < b.Id {
+					return -1
+				} else if a.Id > b.Id {
+					return 1
+				} else {
+					return 0
+				}
+			})
+
+			idx := slices.Index(keys, id)
+
+			var out []artistapi.ArtistInfo
+
+			if (len(values[:idx+1]) + 3) > len(values)-1 {
+				out = values[idx-3 : idx]
+			} else {
+				out = values[idx+1 : idx+4]
+			}
+			return out
+		},
 	}
 }
