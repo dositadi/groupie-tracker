@@ -1,12 +1,18 @@
 package main
 
 import (
-	opencage "github.com/dositadi/groupie-tracker/internal/client/open_cage"
+	"fmt"
+
+	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
 )
 
 func main() {
 	/* app := &app.App{}
 	app.Run() */
 
-	opencage.FetchGeoLocations("Recife Brazil")
+	/* opencage.FetchGeoLocations("Recife Brazil") */
+	a := artistapi.New()
+	a.Init()
+
+	fmt.Println(a.GetByIdKey())
 }

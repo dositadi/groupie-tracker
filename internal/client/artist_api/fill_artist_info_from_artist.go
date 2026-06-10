@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-func (a *ArtistInfo) fillArtistsInfoFromArtists(artists map[int]artist) chan ArtistInfo {
+func fillArtistsInfoFromArtists(artists map[int]artist) chan ArtistInfo {
 	temp := make(chan ArtistInfo, len(artists))
 
 	if artists == nil {

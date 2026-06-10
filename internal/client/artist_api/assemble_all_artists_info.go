@@ -2,6 +2,7 @@ package artistapi
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"time"
 )
@@ -15,7 +16,7 @@ var (
 
 func (a *ArtistInfo) mapArtistsInfo() {
 	// Using the pipeline routine pattern to generate the artist's info
-	arts, err := a.fetchArtists()
+	arts, err := fetchArtists()
 	if err != nil {
 		os.Exit(1)
 	}
@@ -24,10 +25,11 @@ func (a *ArtistInfo) mapArtistsInfo() {
 	defer cancel()
 	chError := make(chan error)
 
-	filledArtists := a.fillArtistsInfoFromArtists(arts)
-	chArtistInfo := a.fillArtistInfoFromLocation(ctx, filledArtists, chError, arts)
-	chArtistInfo = a.fillArtistInfoFromDate(ctx, chArtistInfo, chError, arts)
-	chArtistInfo = a.fillArtistInfoFromRelations(ctx, chArtistInfo, chError, arts)
+	filledArtists := fillArtistsInfoFromArtists(arts)
+	chArtistInfo := fillArtistInfoFromLocation(ctx, filledArtists, chError, arts)
+	chArtistInfo = fillArtistInfoFromDate(ctx, chArtistInfo, chError, arts)
+	chArtistInfo = fillArtistInfoFromRelations(ctx, chArtistInfo, chError, arts)
+	chArtistInfo = fillGeolocationsFromOpenCage(ctx, chArtistInfo, chError)
 
 	select {
 	case <-chError:
@@ -39,6 +41,7 @@ func (a *ArtistInfo) mapArtistsInfo() {
 			byCreationDate[artistInfo.CreationDate] = *artistInfo
 			byName[artistInfo.Name] = *artistInfo
 			byFirstAlbum[artistInfo.FirstAlbum] = *artistInfo
+			fmt.Println(byId)
 		}
 	}
 }

@@ -16,7 +16,7 @@ const (
 var logger = jsonlog.New(os.Stdout, jsonlog.LevelInfo)
 
 // A generic function that fetches all the artist resource.
-func (a *ArtistInfo) fetchArtists() (map[int]artist, error) {
+func fetchArtists() (map[int]artist, error) {
 	response, err := http.Get(artistUrl)
 	if err != nil {
 		e := helper.WrapError("Get error", err)
