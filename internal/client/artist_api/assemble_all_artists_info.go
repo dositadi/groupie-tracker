@@ -29,7 +29,7 @@ func (a *ArtistInfo) mapArtistsInfo() {
 	chArtistInfo := fillArtistInfoFromLocation(ctx, filledArtists, chError, arts)
 	chArtistInfo = fillArtistInfoFromDate(ctx, chArtistInfo, chError, arts)
 	chArtistInfo = fillArtistInfoFromRelations(ctx, chArtistInfo, chError, arts)
-	chArtistInfo = fillGeolocationsFromOpenCage(ctx, chArtistInfo, chError)
+	//chArtistInfo = fillGeolocationsFromOpenCage(ctx, chArtistInfo, chError)
 
 	select {
 	case <-chError:

@@ -66,5 +66,9 @@ func fillGeolocationsFromOpenCage(ctx context.Context, chArtists chan *ArtistInf
 		close(out)
 	}()
 
+	logger.PrintInfo("Geolocations fetch successful", map[string]string{
+		"Source": "Fill geolocations f(n) under artistapi package.",
+	})
+
 	return out
 }

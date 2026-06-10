@@ -3,6 +3,7 @@ package opencage
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 
@@ -60,6 +61,8 @@ func /* (p *OpenCage) */ FetchGeoLocations(query string) (GeoLocation, error) {
 		})
 		return GeoLocation{}, e
 	}
+
+	fmt.Println("Open cage: ", openCageResp)
 
 	geoLocations, err := parseGeoLocation(openCageResp)
 	if err != nil {
