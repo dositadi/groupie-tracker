@@ -9,8 +9,9 @@ import (
 var logger = jsonlog.New(os.Stdout, jsonlog.LevelInfo)
 
 type GeoLocation struct {
-	Lat float64 `json:"lat"`
-	Lng float64 `json:"lng"`
+	Name string  `json:"name"`
+	Lat  float64 `json:"lat"`
+	Lng  float64 `json:"lng"`
 }
 
 type openCageRawResponse struct {

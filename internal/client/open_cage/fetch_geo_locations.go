@@ -64,7 +64,7 @@ func /* (p *OpenCage) */ FetchGeoLocations(query string) (GeoLocation, error) {
 
 	fmt.Println("Open cage: ", openCageResp)
 
-	geoLocations, err := parseGeoLocation(openCageResp)
+	geoLocations, err := parseGeoLocation(query, openCageResp)
 	if err != nil {
 		e := helper.WrapError("Geolocation parse error", err)
 		logger.PrintFatal(e.Error(), map[string]string{
@@ -76,13 +76,14 @@ func /* (p *OpenCage) */ FetchGeoLocations(query string) (GeoLocation, error) {
 	return geoLocations, nil
 }
 
-func parseGeoLocation(raw openCageRawResponse) (GeoLocation, error) {
+func parseGeoLocation(cityName string, raw openCageRawResponse) (GeoLocation, error) {
 	if !(len(raw.Results) > 0) {
 		return GeoLocation{}, errors.New("Empty response")
 	}
 
 	return GeoLocation{
-		Lat: raw.Results[0].Geometry.Lat,
-		Lng: raw.Results[0].Geometry.Lng,
+		Name: cityName,
+		Lat:  raw.Results[0].Geometry.Lat,
+		Lng:  raw.Results[0].Geometry.Lng,
 	}, nil
 }

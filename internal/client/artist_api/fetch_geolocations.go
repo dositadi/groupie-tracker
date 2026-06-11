@@ -2,9 +2,11 @@ package artistapi
 
 import (
 	"context"
+	"html/template"
 	"sync"
 
 	opencage "github.com/dositadi/groupie-tracker/internal/client/open_cage"
+	"github.com/dositadi/groupie-tracker/internal/helper"
 )
 
 func fillGeolocationsFromOpenCage(ctx context.Context, chArtists chan *ArtistInfo, chError chan error) chan *ArtistInfo {
@@ -18,7 +20,7 @@ func fillGeolocationsFromOpenCage(ctx context.Context, chArtists chan *ArtistInf
 		go func(art ArtistInfo) {
 			defer outerWg.Done()
 			innerWg := new(sync.WaitGroup)
-			locationsGeo := make(map[string]opencage.GeoLocation)
+			var locationsGeo []opencage.GeoLocation
 			mu := new(sync.RWMutex)
 
 			for _, location := range art.Locations {
@@ -43,7 +45,7 @@ func fillGeolocationsFromOpenCage(ctx context.Context, chArtists chan *ArtistInf
 
 					// Lock the map resource to avoid race conflict
 					mu.Lock()
-					locationsGeo[city] = geoLocation
+					locationsGeo = append(locationsGeo, geoLocation)
 					mu.Unlock()
 					// Unlock after write is done.
 				}(currentLocation)
@@ -55,7 +57,10 @@ func fillGeolocationsFromOpenCage(ctx context.Context, chArtists chan *ArtistInf
 			if err := ctx.Err(); err != nil {
 				return
 			}
-			art.GeoLocations = locationsGeo
+
+			jsObject := helper.Marshal(locationsGeo)
+
+			art.GeoLocations = template.JS(jsObject)
 
 			out <- &art
 		}(*current)

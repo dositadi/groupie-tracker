@@ -2,7 +2,6 @@ package artistapi
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"time"
 )
@@ -41,7 +40,6 @@ func (a *ArtistInfo) mapArtistsInfo() {
 			byCreationDate[artistInfo.CreationDate] = *artistInfo
 			byName[artistInfo.Name] = *artistInfo
 			byFirstAlbum[artistInfo.FirstAlbum] = *artistInfo
-			fmt.Println(byId)
 		}
 	}
 }
