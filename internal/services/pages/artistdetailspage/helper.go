@@ -1,7 +1,6 @@
 package artistdetail
 
 import (
-	"fmt"
 	"html/template"
 	"maps"
 	"math/rand"
@@ -96,20 +95,24 @@ func (a *ArtistDetail) detailPageFuncMap() template.FuncMap {
 			}
 
 			keys := vals[:limit]
-			fmt.Println(keys)
+			//var sl []string
 
 			out := make(map[string][]string)
 
 			for _, key := range keys {
 				if len(relations[key]) > 3 {
-					sl := relations[key][:3]
-					out[key] = sl
+					sl := relations[key][0:3]
+					//out[key] = sl
+					if len(sl) > 3 {
+						out[key] = sl[:3]
+					} else {
+						out[key] = sl
+					}
 					break
 				} else {
 					out[key] = relations[key][:]
 				}
 			}
-			fmt.Println(out)
 			return out
 		},
 		"RandomValues": func() int {
