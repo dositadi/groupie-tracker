@@ -16,4 +16,5 @@ const (
 	PATH_KEY         = "path"
 	DATE_KEY         = "date"
 	LOCATION_KEY     = "location"
+	TICKET_TYPE_KEY  = "ticket-type"
 )

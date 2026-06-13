@@ -8,6 +8,27 @@ import (
 	"time"
 )
 
+type Ticket string
+type TicketAmount float64
+type Fee float64
+type Vat int
+
+const (
+	GENERAL  Ticket = Ticket("General Admission")
+	VIP      Ticket = Ticket("VIP")
+	RESERVED Ticket = Ticket("Reserved")
+)
+
+const (
+	GENERAL_AMT  TicketAmount = TicketAmount(49)
+	VIP_AMT      TicketAmount = TicketAmount(120)
+	RESERVED_AMT TicketAmount = TicketAmount(85)
+
+	BOOKING_FEE Fee = Fee(2.50)
+
+	VAT Vat = Vat(19)
+)
+
 var ttl = 15 * time.Minute
 
 type Booking struct {
@@ -88,6 +109,7 @@ func Increment(userId, location string, artistId int) bool {
 		return false
 	}
 	booking.Quantity++
+	booking.expiryTime.Add(ttl)
 	global.store[key] = booking
 	return ok
 }
@@ -102,6 +124,7 @@ func Decrement(userId, location string, artistId int) bool {
 		return false
 	}
 	booking.Quantity--
+	booking.expiryTime.Add(ttl)
 	global.store[key] = booking
 	return ok
 }

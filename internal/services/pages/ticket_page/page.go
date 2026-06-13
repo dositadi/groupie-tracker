@@ -7,7 +7,6 @@ import (
 	artistapi "github.com/dositadi/groupie-tracker/internal/client/artist_api"
 	"github.com/dositadi/groupie-tracker/internal/data"
 	jsonlog "github.com/dositadi/groupie-tracker/internal/json_log"
-	"github.com/dositadi/groupie-tracker/internal/utils"
 )
 
 type Filter string
@@ -48,32 +47,23 @@ type PreferenceModel interface {
 }
 
 type TicketPage struct {
-	logger          jsonlog.Logger
-	responseWriter  http.ResponseWriter
-	embedded        groupietracker.Embedded
-	client          artistapi.ArtistInfo
-	request         *http.Request/* 
-	favoriteModel   FavoriteModel
-	preferenceModel PreferenceModel */
+	logger         jsonlog.Logger
+	responseWriter http.ResponseWriter
+	embedded       groupietracker.Embedded
+	client         artistapi.ArtistInfo
+	request        *http.Request /*
+		favoriteModel   FavoriteModel
+		preferenceModel PreferenceModel */
 }
 
-func New(logger jsonlog.Logger, responseWriter http.ResponseWriter, embedded groupietracker.Embedded, client artistapi.ArtistInfo, request *http.Request, /* favoriteModel FavoriteModel, preferenceModel PreferenceModel */) *TicketPage {
+func New(logger jsonlog.Logger, responseWriter http.ResponseWriter, embedded groupietracker.Embedded, client artistapi.ArtistInfo, request *http.Request /* favoriteModel FavoriteModel, preferenceModel PreferenceModel */) *TicketPage {
 	return &TicketPage{
-		logger:          logger,
-		responseWriter:  responseWriter,
-		embedded:        embedded,
-		client:          client,
-		request:         request,/* 
-		favoriteModel:   favoriteModel,
-		preferenceModel: preferenceModel, */
+		logger:         logger,
+		responseWriter: responseWriter,
+		embedded:       embedded,
+		client:         client,
+		request:        request, /*
+			favoriteModel:   favoriteModel,
+			preferenceModel: preferenceModel, */
 	}
-}
-
-func (t *TicketPage) getUser() data.User {
-	val := t.request.Context().Value(utils.USER_ID_KEY)
-
-	if user, ok := val.(data.User); ok {
-		return user
-	}
-	return data.User{}
 }

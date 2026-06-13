@@ -2,11 +2,29 @@ package ticketpage
 
 import (
 	"html/template"
+	"math"
 	"math/rand"
 	"strconv"
 	"strings"
 	"unicode"
+
+	"github.com/dositadi/groupie-tracker/internal/data"
+	"github.com/dositadi/groupie-tracker/internal/services/ordercache"
+	"github.com/dositadi/groupie-tracker/internal/utils"
 )
+
+func (t *TicketPage) getTicketPrice(ticketType string) float64 {
+	switch ticketType {
+	case string(ordercache.GENERAL):
+		return math.Round(float64(ordercache.GENERAL_AMT)*100) / 100
+	case string(ordercache.RESERVED):
+		return math.Round(float64(ordercache.RESERVED_AMT)*100) / 100
+	case string(ordercache.VIP):
+		return math.Round(float64(ordercache.VIP_AMT)*100) / 100
+	default:
+		return 0
+	}
+}
 
 func (t *TicketPage) atoi(s string) int {
 	out, err := strconv.Atoi(s)
@@ -80,5 +98,31 @@ func (t *TicketPage) detailPageFuncMap() template.FuncMap {
 		"RandomValues": func() int {
 			return rand.Intn(500)
 		},
+		"TotalTicketAmount": func(ticketPrice float64, qty int) float64 {
+			amt := ticketPrice * float64(qty)
+			return math.Round(amt*100) / 100
+		},
+		"TotalBookingFee": func(fee float64, qty int) float64 {
+			amt := fee * float64(qty)
+			return math.Round(amt*100) / 100
+		},
+		"VatAmount": func(vatRate int, totalTicketAmount, totalBookingFee float64) float64 {
+			totalPrice := totalBookingFee + totalTicketAmount
+			vatAmount := totalPrice * (float64(vatRate) / (100 + float64(vatRate)))
+			return math.Round(vatAmount*100) / 100
+		},
+		"GrandTotal": func(totalTicketAmount, totalBookingFee, vatAmount float64) float64 {
+			total := totalBookingFee + totalTicketAmount + vatAmount
+			return math.Round(total*100) / 100
+		},
 	}
+}
+
+func (t *TicketPage) getUser() data.User {
+	val := t.request.Context().Value(utils.USER_ID_KEY)
+
+	if user, ok := val.(data.User); ok {
+		return user
+	}
+	return data.User{}
 }

@@ -208,14 +208,14 @@
         <!-- Ticket type options (CSS-only radio) -->
         <div class="flex flex-col sm:flex-row gap-3 mb-7">
 
-          <input type="radio" name="ticket-type" id="tt-general" class="ticket-type-radio" checked>
+          <input hx-post="{{.TicketTypeUrl}}" hx-swap="outerHTML" hx-target="#order-summary" hx-vals='{"{{.ArtistIdKey}}":"{{.ArtistId}}","{{.LocationKey}}":"{{.Location}}","{{.TicketTypeKey}}":"{{.GeneralTicket}}"}' hx-trigger="click delay:1s" type="radio" name="ticket-type" id="tt-general" class="ticket-type-radio" checked>
           <label for="tt-general" class="ticket-type-label">
             <span class="text-sm font-semibold text-ink pr-6">General Admission</span>
             <span class="text-xs text-ink-muted">Standing floor · Unreserved</span>
-            <span class="text-base font-bold text-brand mt-1">€49.00</span>
+            <span class="text-base font-bold text-brand mt-1">€{{.GeneralTicketPrice}}</span>
           </label>
 
-          <input type="radio" name="ticket-type" id="tt-vip" class="ticket-type-radio">
+          <input hx-post="{{.TicketTypeUrl}}" hx-swap="outerHTML" hx-target="#order-summary" hx-vals='{"{{.ArtistIdKey}}":"{{.ArtistId}}","{{.LocationKey}}":"{{.Location}}","{{.TicketTypeKey}}":"{{.VipTicket}}"}' hx-trigger="click delay:1s" type="radio" name="ticket-type" id="tt-vip" class="ticket-type-radio">
           <label for="tt-vip" class="ticket-type-label">
             <div class="flex items-center gap-1.5 pr-6">
               <span class="text-sm font-semibold text-ink">VIP Standing</span>
@@ -223,14 +223,14 @@
                            px-1.5 py-0.5 rounded-full">Popular</span>
             </div>
             <span class="text-xs text-ink-muted">Front barrier · Bar access</span>
-            <span class="text-base font-bold text-brand mt-1">€120.00</span>
+            <span class="text-base font-bold text-brand mt-1">€{{.VipTicketPrice}}</span>
           </label>
 
-          <input type="radio" name="ticket-type" id="tt-seated" class="ticket-type-radio">
+          <input hx-post="{{.TicketTypeUrl}}" hx-swap="outerHTML" hx-target="#order-summary" hx-vals='{"{{.ArtistIdKey}}":"{{.ArtistId}}","{{.LocationKey}}":"{{.Location}}","{{.TicketTypeKey}}":"{{.ReserveTicket}}"}' hx-trigger="click delay:1s" type="radio" name="ticket-type" id="tt-seated" class="ticket-type-radio">
           <label for="tt-seated" class="ticket-type-label">
             <span class="text-sm font-semibold text-ink pr-6">Reserved Seated</span>
             <span class="text-xs text-ink-muted">Numbered seat · Block B</span>
-            <span class="text-base font-bold text-brand mt-1">€85.00</span>
+            <span class="text-base font-bold text-brand mt-1">€{{.ReserveTicketPrice}}</span>
           </label>
 
         </div>
@@ -245,7 +245,7 @@
 
           <div class="flex items-center gap-3 bg-surface-alt border border-border rounded-xl px-1 py-1">
             <button class="qty-btn" aria-label="Decrease quantity">−</button>
-            <span class="text-base font-bold text-ink w-6 text-center select-none">2</span>
+            <span id="quantity" class="text-base font-bold text-ink w-6 text-center select-none">{{.Quantity}}</span>
             <button class="qty-btn" aria-label="Increase quantity">+</button>
           </div>
 
@@ -272,45 +272,43 @@
     <div class="flex flex-col gap-4">
 
       <!-- ── Order summary card ──────────────────────────────────────── -->
-      <div class="bg-white border border-border rounded-2xl px-5 py-5 shadow-sm ph1-d3">
+      <div id="order-summary" class="bg-white border border-border rounded-2xl px-5 py-5 shadow-sm ph1-d3">
 
         <h2 class="text-sm font-semibold text-ink mb-4 flex items-center gap-2">
-          <svg class="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24"
-               stroke="currentColor" stroke-width="2">
+            <svg class="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0c1.1.128 1.907 1.077 1.907 2.185Z"/>
-          </svg>
-          Order Summary
+                    d="M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0c1.1.128 1.907 1.077 1.907 2.185Z"/>
+            </svg>
+            Order Summary
         </h2>
 
         <!-- Rows -->
         <div class="divide-y divide-border-soft">
 
-          <div class="summary-row py-2">
-            <span class="text-ink-secondary">General Admission × 2</span>
-            <span class="font-medium text-ink">€98.00</span>
-          </div>
+            <div class="summary-row py-2">
+            <span class="text-ink-secondary">{{.TicketType}} × {{.Quantity}}</span>
+            <span class="font-medium text-ink">€{{TotalTicketAmount .TicketPrice .Quantity}}</span>
+            </div>
 
-          <div class="summary-row py-2">
-            <span class="text-ink-secondary">Booking fee × 2</span>
-            <span class="font-medium text-ink">€5.00</span>
-          </div>
+            <div class="summary-row py-2">
+            <span class="text-ink-secondary">Booking fee × {{.Quantity}}</span>
+            <span class="font-medium text-ink">€{{TotalBookingFee .BookingFee .Quantity}}</span>
+            </div>
 
-          <div class="summary-row py-2">
-            <span class="text-ink-secondary">VAT (19%)</span>
-            <span class="font-medium text-ink">€18.62</span>
-          </div>
+            <div class="summary-row py-2">
+            <span class="text-ink-secondary">VAT ({{.VatValue}}%)</span>
+            <span class="font-medium text-ink">€{{VatAmount .VatValue (TotalTicketAmount .TicketPrice .Quantity) (TotalBookingFee .BookingFee .Quantity)}}</span>
+            </div>
 
         </div>
 
         <!-- Total -->
         <div class="summary-row total">
-          <span>Total</span>
-          <span class="text-brand">€121.62</span>
+            <span>Total</span>
+            <span class="text-brand">€{{GrandTotal (TotalTicketAmount .TicketPrice .Quantity) (TotalBookingFee .BookingFee .Quantity) (VatAmount .VatValue (TotalTicketAmount .TicketPrice .Quantity) (TotalBookingFee .BookingFee .Quantity))}}</span>
         </div>
-
-      </div>
-
+        </div>
 
       <!-- ── Guarantee badge ─────────────────────────────────────────── -->
       <div class="guarantee-badge ph1-d4">
