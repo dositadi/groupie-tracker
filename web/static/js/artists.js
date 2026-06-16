@@ -6,16 +6,16 @@
   var total = cards.length;
   if (total === 0) return;
 
-  var searchInput = document.getElementById('search-input');
-  var eraSelect = document.getElementById('era-filter');
+  var searchInput   = document.getElementById('search-input');
+  var eraSelect     = document.getElementById('era-filter');
   var countrySelect = document.getElementById('country-filter');
-  var sortSelect = document.getElementById('sort-select');
-  var clearBtn = document.getElementById('clear-filters');
-  var resultLine = document.getElementById('result-count');
-  var noResults = document.getElementById('no-results');
+  var sortSelect    = document.getElementById('sort-select');
+  var clearBtn      = document.getElementById('clear-filters');
+  var resultLine    = document.getElementById('result-count');
+  var noResults     = document.getElementById('no-results');
 
   // Build era + country options from what's actually in the data.
-  var decades = new Set();
+  var decades   = new Set();
   var countries = new Map();
 
   cards.forEach(function (card) {
@@ -51,13 +51,13 @@
     });
 
   function applyFilters() {
-    var term = searchInput.value.trim().toLowerCase();
-    var era = eraSelect.value;
+    var term    = searchInput.value.trim().toLowerCase();
+    var era     = eraSelect.value;
     var country = countrySelect.value;
     var visible = 0;
 
     cards.forEach(function (card) {
-      var haystack = (card.dataset.name + ' ' + card.dataset.members).toLowerCase();
+      var haystack      = (card.dataset.name + ' ' + card.dataset.members).toLowerCase();
       var matchesSearch = term === '' || haystack.indexOf(term) !== -1;
 
       var matchesEra = era === '';
@@ -86,7 +86,7 @@
   }
 
   function applySort() {
-    var value = sortSelect.value;
+    var value  = sortSelect.value;
     var sorted = cards.slice();
 
     if (value === 'name-asc') {
@@ -109,10 +109,21 @@
 
   clearBtn.addEventListener('click', function () {
     searchInput.value = '';
-    eraSelect.value = '';
+    eraSelect.value   = '';
     countrySelect.value = '';
     applyFilters();
   });
+
+  // Hamburger toggle
+  var filterToggle = document.getElementById('filter-toggle');
+  var filterPanel  = document.getElementById('filter-panel');
+
+  if (filterToggle && filterPanel) {
+    filterToggle.addEventListener('click', function () {
+      var open = filterPanel.classList.toggle('is-open');
+      filterToggle.setAttribute('aria-expanded', String(open));
+    });
+  }
 
   applyFilters();
 })();

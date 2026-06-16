@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Groupie Tracker — Live Archive</title>
+<title>Groupie Tracker</title>
 <meta name="description" content="An archive of touring artists: formation years, first albums, and the cities they've played.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,28 +17,37 @@
   <div class="top-bar-inner">
     <div class="brand-row">
       <span class="brand">Groupie Tracker</span>
-      <span class="brand-tag">Live Archive · {{len .}} Acts</span>
+      <button type="button" id="filter-toggle" class="filter-toggle" aria-expanded="false" aria-controls="filter-panel">
+        <span class="burger-bar"></span>
+        <span class="burger-bar"></span>
+        <span class="burger-bar"></span>
+        <span class="sr-only">Toggle filters</span>
+      </button>
     </div>
-    <p class="tagline">Formation years, first albums, and the cities each act has toured — searchable in one page, no reloads.</p>
 
-    <div class="toolbar">
-      <label class="search-field">
-        <svg viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.2" stroke-width="1.4"/><path d="M11 11l3.5 3.5" stroke-width="1.4" stroke-linecap="round"/></svg>
-        <input type="search" id="search-input" placeholder="Search by name or member…" aria-label="Search artists">
-      </label>
-      <select id="era-filter" aria-label="Filter by decade formed">
-        <option value="">Any era</option>
-      </select>
-      <select id="country-filter" aria-label="Filter by touring country">
-        <option value="">Any country</option>
-      </select>
-      <select id="sort-select" aria-label="Sort artists">
-        <option value="name-asc">Name A–Z</option>
-        <option value="name-desc">Name Z–A</option>
-        <option value="formed-new">Formed: newest</option>
-        <option value="formed-old">Formed: oldest</option>
-      </select>
-      <button type="button" id="clear-filters" class="clear-btn">Clear filters</button>
+    <div class="filter-panel" id="filter-panel">
+      <div class="filter-panel-inner">
+        <p class="tagline">Formation years, first albums, and the cities each act has toured.</p>
+        <div class="toolbar">
+          <label class="search-field">
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.2" stroke-width="1.4"/><path d="M11 11l3.5 3.5" stroke-width="1.4" stroke-linecap="round"/></svg>
+            <input type="search" id="search-input" placeholder="Search by name or member…" aria-label="Search artists">
+          </label>
+          <select id="era-filter" aria-label="Filter by decade formed">
+            <option value="">Any era</option>
+          </select>
+          <select id="country-filter" aria-label="Filter by touring country">
+            <option value="">Any country</option>
+          </select>
+          <select id="sort-select" aria-label="Sort artists">
+            <option value="name-asc">Name A–Z</option>
+            <option value="name-desc">Name Z–A</option>
+            <option value="formed-new">Formed: newest</option>
+            <option value="formed-old">Formed: oldest</option>
+          </select>
+          <button type="button" id="clear-filters" class="clear-btn">Clear filters</button>
+        </div>
+      </div>
     </div>
 
     <p class="result-line" id="result-count">Showing {{len .}} of {{len .}} artists</p>
