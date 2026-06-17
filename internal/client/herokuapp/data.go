@@ -1,4 +1,5 @@
-package client
+package herokuapp
+
 
 type ArtistInfo struct {
 	Id           int

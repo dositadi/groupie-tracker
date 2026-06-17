@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strconv"
 
-	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/client"
+	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/client/herokuapp"
 )
 
 type Renderer interface {
@@ -15,11 +15,11 @@ type Renderer interface {
 }
 
 type ArtistHandlers struct {
-	client    *client.ArtistInfo
+	client    *herokuapp.ArtistInfo
 	templates Renderer
 }
 
-func NewArtistHandlers(client *client.ArtistInfo, templates Renderer) *ArtistHandlers {
+func NewArtistHandlers(client *herokuapp.ArtistInfo, templates Renderer) *ArtistHandlers {
 	return &ArtistHandlers{
 		client:    client,
 		templates: templates,
@@ -28,7 +28,7 @@ func NewArtistHandlers(client *client.ArtistInfo, templates Renderer) *ArtistHan
 
 func (h *ArtistHandlers) GetArtists(w http.ResponseWriter, r *http.Request) {
 	artistsByID := h.client.GetById()
-	artists := make([]client.ArtistInfo, 0, len(artistsByID))
+	artists := make([]herokuapp.ArtistInfo, 0, len(artistsByID))
 
 	for _, artist := range artistsByID {
 		artists = append(artists, artist)

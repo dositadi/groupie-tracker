@@ -1,4 +1,4 @@
-package client
+package herokuapp
 
 import (
 	"context"
@@ -8,41 +8,40 @@ import (
 )
 
 const (
-	sourcePD = "Populate artist info with data locations f(n) under client"
+	sourcePa = "Populate Artist Info Locations f(n) under client"
 )
 
-func (a *ArtistInfo) populateArtistInfoWithDateLocations(ctx context.Context, chArtistInfo chan ArtistInfo, chError chan error, artists map[int]artistMetaData) chan ArtistInfo {
+func (a *ArtistInfo) populateArtistInfoLocations(ctx context.Context, chArtistInfo chan ArtistInfo, chError chan error, artists map[int]artistMetaData) chan ArtistInfo {
 	out := make(chan ArtistInfo, len(artists))
 	wg := new(sync.WaitGroup)
 
 	for artistInfo := range chArtistInfo {
 		artist := artists[artistInfo.Id]
-
 		wg.Add(1)
 
 		go func(artInfo ArtistInfo, art artistMetaData) {
 			defer wg.Done()
 
-			concertDates, err := fetchInfo[concertDates](art.ConcertDates)
+			locations, err := fetchInfo[locations](art.Locations)
 			if err != nil {
-				e := utils.WrapError("Concert dates fetch error", err)
+				e := utils.WrapError("Location fetch err", err)
 				logger.PrintError(e.Error(), map[string]string{
-					"Source": sourcePD,
+					"Source": sourcePa,
 				})
+
 				chError <- e
 			}
 
 			if err = ctx.Err(); err != nil {
-				e := utils.WrapError("Concert dates fetch (ctx) error", err)
-
+				e := utils.WrapError("Location fetch (ctx) err", err)
 				logger.PrintError(e.Error(), map[string]string{
-					"Source": sourcePD,
+					"Source": sourcePa,
 				})
 
 				return
 			}
 
-			artInfo = populateArtistInfo(concertDates, artInfo)
+			artInfo = populateArtistInfo(locations, artInfo)
 
 			out <- artInfo
 		}(artistInfo, artist)
@@ -54,9 +53,8 @@ func (a *ArtistInfo) populateArtistInfoWithDateLocations(ctx context.Context, ch
 		close(out)
 	}()
 
-	logger.PrintInfo("Artist's info date locations updated", map[string]string{
-		"Source": sourcePD,
+	logger.PrintInfo("ArtistInfos Locations updated", map[string]string{
+		"Source": sourcePa,
 	})
-
 	return out
 }

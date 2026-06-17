@@ -3,7 +3,7 @@ package server
 import (
 	"net/http"
 
-	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/client"
+	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/client/herokuapp"
 	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/jsonlog"
 	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/server/handlers"
 )
@@ -15,7 +15,7 @@ type Server struct {
 	templates *TemplateEngine
 }
 
-func New(addr string, logger *jsonlog.Logger, artistClient *client.ArtistInfo) *Server {
+func New(addr string, logger *jsonlog.Logger, artistClient *herokuapp.ArtistInfo) *Server {
 	mux := http.NewServeMux()
 
 	// static assets
@@ -46,6 +46,8 @@ func (s *Server) Start() error {
 	s.logger.PrintInfo("api server starting", map[string]string{
 		"addr": s.addr,
 	})
+
+	//signal := make(chan os.Signal, 1)
 
 	return http.ListenAndServe(s.addr, s.mux)
 }

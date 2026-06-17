@@ -1,4 +1,4 @@
-package client
+package herokuapp
 
 import (
 	"encoding/json"

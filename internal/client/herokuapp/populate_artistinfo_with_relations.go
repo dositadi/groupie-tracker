@@ -1,4 +1,4 @@
-package client
+package herokuapp
 
 import (
 	"context"
@@ -8,40 +8,42 @@ import (
 )
 
 const (
-	sourcePa = "Populate Artist Info Locations f(n) under client"
+	sourcePR = "Populate Artist Info with relations f(n) under client pkg"
 )
 
-func (a *ArtistInfo) populateArtistInfoLocations(ctx context.Context, chArtistInfo chan ArtistInfo, chError chan error, artists map[int]artistMetaData) chan ArtistInfo {
+func (a *ArtistInfo) populateArtistInfoWithRelations(ctx context.Context, chArtistInfo chan ArtistInfo, chError chan error, artists map[int]artistMetaData) chan ArtistInfo {
 	out := make(chan ArtistInfo, len(artists))
 	wg := new(sync.WaitGroup)
 
 	for artistInfo := range chArtistInfo {
 		artist := artists[artistInfo.Id]
+
 		wg.Add(1)
 
 		go func(artInfo ArtistInfo, art artistMetaData) {
 			defer wg.Done()
 
-			locations, err := fetchInfo[locations](art.Locations)
+			relations, err := fetchInfo[relations](art.Relations)
 			if err != nil {
-				e := utils.WrapError("Location fetch err", err)
+				e := utils.WrapError("Relations fetch error", err)
 				logger.PrintError(e.Error(), map[string]string{
-					"Source": sourcePa,
+					"Source": sourcePR,
 				})
 
 				chError <- e
-			}
-
-			if err = ctx.Err(); err != nil {
-				e := utils.WrapError("Location fetch (ctx) err", err)
-				logger.PrintError(e.Error(), map[string]string{
-					"Source": sourcePa,
-				})
-
 				return
 			}
 
-			artInfo = populateArtistInfo(locations, artInfo)
+			if err = ctx.Err(); err != nil {
+				e := utils.WrapError("Relations fetch (ctx) error", err)
+
+				logger.PrintError(e.Error(), map[string]string{
+					"Source": sourcePR,
+				})
+				return
+			}
+
+			artInfo = populateArtistInfo(relations, artInfo)
 
 			out <- artInfo
 		}(artistInfo, artist)
@@ -53,8 +55,9 @@ func (a *ArtistInfo) populateArtistInfoLocations(ctx context.Context, chArtistIn
 		close(out)
 	}()
 
-	logger.PrintInfo("ArtistInfos Locations updated", map[string]string{
-		"Source": sourcePa,
+	logger.PrintInfo("Artist's info relations updated", map[string]string{
+		"Source": sourcePR,
 	})
+
 	return out
 }

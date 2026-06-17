@@ -1,8 +1,7 @@
-package client
+package herokuapp
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"time"
 
@@ -18,9 +17,6 @@ const (
 )
 
 var byId = make(map[int]ArtistInfo)
-var byName = make(map[string]ArtistInfo)
-var byCreationDate = make(map[int]ArtistInfo)
-var byFirstAlbum = make(map[string]ArtistInfo)
 
 func New() *ArtistInfo {
 	return &ArtistInfo{}
@@ -58,10 +54,6 @@ func (a *ArtistInfo) assemble() {
 	default:
 		for artistInfo := range chArtistInfo {
 			byId[artistInfo.Id] = artistInfo
-			byCreationDate[artistInfo.CreationDate] = artistInfo
-			byFirstAlbum[artistInfo.FirstAlbum] = artistInfo
-			byName[artistInfo.Name] = artistInfo
-			fmt.Println(artistInfo)
 		}
 		logger.PrintInfo("Artist Info fetched completely", map[string]string{
 			"Source": source,
@@ -71,16 +63,4 @@ func (a *ArtistInfo) assemble() {
 
 func (a *ArtistInfo) GetById() map[int]ArtistInfo {
 	return byId
-}
-
-func (a *ArtistInfo) GetByName() map[string]ArtistInfo {
-	return byName
-}
-
-func (a *ArtistInfo) GetByFirstAlbum() map[string]ArtistInfo {
-	return byFirstAlbum
-}
-
-func (a *ArtistInfo) GetByCreationDate() map[int]ArtistInfo {
-	return byCreationDate
 }

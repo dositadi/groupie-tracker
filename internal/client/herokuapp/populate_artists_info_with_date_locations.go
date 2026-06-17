@@ -1,4 +1,4 @@
-package client
+package herokuapp
 
 import (
 	"context"
@@ -8,10 +8,10 @@ import (
 )
 
 const (
-	sourcePR = "Populate Artist Info with relations f(n) under client pkg"
+	sourcePD = "Populate artist info with data locations f(n) under client"
 )
 
-func (a *ArtistInfo) populateArtistInfoWithRelations(ctx context.Context, chArtistInfo chan ArtistInfo, chError chan error, artists map[int]artistMetaData) chan ArtistInfo {
+func (a *ArtistInfo) populateArtistInfoWithDateLocations(ctx context.Context, chArtistInfo chan ArtistInfo, chError chan error, artists map[int]artistMetaData) chan ArtistInfo {
 	out := make(chan ArtistInfo, len(artists))
 	wg := new(sync.WaitGroup)
 
@@ -23,27 +23,26 @@ func (a *ArtistInfo) populateArtistInfoWithRelations(ctx context.Context, chArti
 		go func(artInfo ArtistInfo, art artistMetaData) {
 			defer wg.Done()
 
-			relations, err := fetchInfo[relations](art.Relations)
+			concertDates, err := fetchInfo[concertDates](art.ConcertDates)
 			if err != nil {
-				e := utils.WrapError("Relations fetch error", err)
+				e := utils.WrapError("Concert dates fetch error", err)
 				logger.PrintError(e.Error(), map[string]string{
-					"Source": sourcePR,
+					"Source": sourcePD,
 				})
-
 				chError <- e
-				return
 			}
 
 			if err = ctx.Err(); err != nil {
-				e := utils.WrapError("Relations fetch (ctx) error", err)
+				e := utils.WrapError("Concert dates fetch (ctx) error", err)
 
 				logger.PrintError(e.Error(), map[string]string{
-					"Source": sourcePR,
+					"Source": sourcePD,
 				})
+
 				return
 			}
 
-			artInfo = populateArtistInfo(relations, artInfo)
+			artInfo = populateArtistInfo(concertDates, artInfo)
 
 			out <- artInfo
 		}(artistInfo, artist)
@@ -55,8 +54,8 @@ func (a *ArtistInfo) populateArtistInfoWithRelations(ctx context.Context, chArti
 		close(out)
 	}()
 
-	logger.PrintInfo("Artist's info relations updated", map[string]string{
-		"Source": sourcePR,
+	logger.PrintInfo("Artist's info date locations updated", map[string]string{
+		"Source": sourcePD,
 	})
 
 	return out
