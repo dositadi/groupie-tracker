@@ -2,14 +2,16 @@ package herokuapp
 
 import (
 	"context"
+	"html/template"
 	"strings"
 	"sync"
 
-	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/client/opencage"
 	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/utils"
 )
 
-func (h *HerokuApp) populateArtistInfoWithGeolocations(ctx context.Context, chArtistInfo chan ArtistInfo, chError chan error, artists map[int]ArtistInfo) chan ArtistInfo {
+var sourceG = "herokuapp.populateArtistInfoWithGeolocations()"
+
+func (h *HerokuApp) PopulateArtistInfoWithGeolocations(ctx context.Context, chArtistInfo chan ArtistInfo, chError chan error) chan ArtistInfo {
 	out := make(chan ArtistInfo)
 	outerWg := new(sync.WaitGroup)
 
@@ -23,21 +25,45 @@ func (h *HerokuApp) populateArtistInfoWithGeolocations(ctx context.Context, chAr
 			for _, location := range artistInfo.Locations {
 				innerWg.Add(1)
 
-				go func (location string)  {
+				go func(location string) {
 					defer innerWg.Done()
 					location = cleanLocation(location)
 
 					geolocation, err := h.opencage.FetchGeolocation(location)
 					if err != nil {
-						e :=  utils.WrapError("geolocation fetch failure from worker", err)
-						
+						e := utils.WrapError("geolocation fetch failure from worker", err)
+						h.logger.PrintError(e.Error(), map[string]string{
+							"Context": sourceG,
+						})
+						chError <- e
 					}
-					
+
+					if err = ctx.Err(); err != nil {
+						return
+					}
+
+					geoByte := utils.MarshalObject(geolocation)
+
+					artistInfo.Geolocations = template.JS(geoByte)
 				}(location)
 
+				innerWg.Wait()
+
+				if err := ctx.Err(); err != nil {
+					return
+				}
+
+				out <- artistInfo
 			}
 		}(artistInfo)
 	}
+
+	go func() {
+		outerWg.Wait()
+		close(out)
+	}()
+
+	return out
 }
 
 func cleanLocation(location string) string {

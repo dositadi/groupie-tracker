@@ -2,6 +2,7 @@ package herokuapp
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"time"
 
@@ -48,6 +49,7 @@ func (a *HerokuApp) assemble() {
 	chArtistInfo = a.populateArtistInfoLocations(ctx, chArtistInfo, chError, artistMetaData)
 	chArtistInfo = a.populateArtistInfoWithRelations(ctx, chArtistInfo, chError, artistMetaData)
 	chArtistInfo = a.populateArtistInfoWithDateLocations(ctx, chArtistInfo, chError, artistMetaData)
+	//chArtistInfo = a.PopulateArtistInfoWithGeolocations(ctx, chArtistInfo, chError)
 
 	select {
 	case <-chError:
@@ -60,6 +62,7 @@ func (a *HerokuApp) assemble() {
 		for artistInfo := range chArtistInfo {
 			byId[artistInfo.Id] = artistInfo
 		}
+		fmt.Println(byId)
 		a.logger.PrintInfo("Artist Info fetched completely", map[string]string{
 			"Source": source,
 		})
