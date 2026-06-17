@@ -31,10 +31,5 @@ func (a *App) initApp() {
 func (a *App) Run() {
 	a.initApp()
 
-	err := a.server.Start()
-	if err != nil {
-		a.logger.PrintFatal(err.Error(), map[string]string{
-			"Source": "Run function under cmd/app package",
-		})
-	}
+	a.server.Start()
 }

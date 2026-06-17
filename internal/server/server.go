@@ -1,7 +1,13 @@
 package server
 
 import (
+	"context"
+	"errors"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/client/herokuapp"
 	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/jsonlog"
@@ -42,12 +48,41 @@ func (s *Server) Templates() *TemplateEngine {
 	return s.templates
 }
 
-func (s *Server) Start() error {
+func (s *Server) Start() {
 	s.logger.PrintInfo("api server starting", map[string]string{
 		"addr": s.addr,
 	})
 
-	//signal := make(chan os.Signal, 1)
+	chSignal := make(chan os.Signal, 1)
+	signal.Notify(chSignal, syscall.SIGINT, syscall.SIGTERM)
 
-	return http.ListenAndServe(s.addr, s.mux)
+	server := http.Server{
+		Addr:         s.addr,
+		Handler:      s.mux,
+		ReadTimeout:  1 * time.Minute,
+		WriteTimeout: 1 * time.Minute,
+		IdleTimeout:  1 * time.Minute,
+	}
+
+	go func() {
+		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			s.logger.PrintFatal("Server failed"+err.Error(), map[string]string{
+				"Context": "server.Start()",
+			})
+			os.Exit(1)
+		}
+	}()
+
+	<-chSignal
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err := server.Shutdown(ctx); err != nil {
+		s.logger.PrintFatal("Server Shutdown forcefully"+err.Error(), map[string]string{
+			"Context": "server.Start()",
+		})
+		os.Exit(1)
+	}
+	s.logger.PrintInfo("Server shutdown gracefully", nil)
 }
