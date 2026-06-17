@@ -25,7 +25,7 @@ func (a *App) initApp() {
 	a.client = *herokuapp.New(a.opencage, a.logger)
 	a.client.InitClient()
 
-	a.server = server.New(":8080", &a.logger, &a.client)
+	a.server = server.New(":8080", &a.logger, a.client.GetById())
 }
 
 func (a *App) Run() {

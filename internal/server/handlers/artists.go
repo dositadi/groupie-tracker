@@ -15,11 +15,11 @@ type Renderer interface {
 }
 
 type ArtistHandlers struct {
-	client    *herokuapp.HerokuApp
+	client    map[int]herokuapp.ArtistInfo
 	templates Renderer
 }
 
-func NewArtistHandlers(client *herokuapp.HerokuApp, templates Renderer) *ArtistHandlers {
+func NewArtistHandlers(client map[int]herokuapp.ArtistInfo, templates Renderer) *ArtistHandlers {
 	return &ArtistHandlers{
 		client:    client,
 		templates: templates,
@@ -27,10 +27,9 @@ func NewArtistHandlers(client *herokuapp.HerokuApp, templates Renderer) *ArtistH
 }
 
 func (h *ArtistHandlers) GetArtists(w http.ResponseWriter, r *http.Request) {
-	artistsByID := h.client.GetById()
-	artists := make([]herokuapp.ArtistInfo, 0, len(artistsByID))
+	artists := make([]herokuapp.ArtistInfo, 0, len(h.client))
 
-	for _, artist := range artistsByID {
+	for _, artist := range h.client {
 		artists = append(artists, artist)
 	}
 
@@ -51,7 +50,7 @@ func (h *ArtistHandlers) GetArtistByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	artist, ok := h.client.GetById()[id]
+	artist, ok := h.client[id]
 	if !ok {
 		writeJSON(w, http.StatusNotFound, map[string]string{"error": "artist not found"})
 		return
