@@ -26,7 +26,7 @@ func (a *HerokuApp) populateArtistInfoWithRelations(ctx context.Context, chArtis
 			relations, err := fetchInfo[relations](art.Relations)
 			if err != nil {
 				e := utils.WrapError("Relations fetch error", err)
-				logger.PrintError(e.Error(), map[string]string{
+				a.logger.PrintError(e.Error(), map[string]string{
 					"Source": sourcePR,
 				})
 
@@ -37,7 +37,7 @@ func (a *HerokuApp) populateArtistInfoWithRelations(ctx context.Context, chArtis
 			if err = ctx.Err(); err != nil {
 				e := utils.WrapError("Relations fetch (ctx) error", err)
 
-				logger.PrintError(e.Error(), map[string]string{
+				a.logger.PrintError(e.Error(), map[string]string{
 					"Source": sourcePR,
 				})
 				return
@@ -55,7 +55,7 @@ func (a *HerokuApp) populateArtistInfoWithRelations(ctx context.Context, chArtis
 		close(out)
 	}()
 
-	logger.PrintInfo("Artist's info relations updated", map[string]string{
+	a.logger.PrintInfo("Artist's info relations updated", map[string]string{
 		"Source": sourcePR,
 	})
 

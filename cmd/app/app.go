@@ -20,10 +20,10 @@ type App struct {
 func (a *App) initApp() {
 	a.config.Init()
 	a.config.Validate()
-	a.opencage = opencage.New(a.config.OpenCageApiKey, a.logger)
-	a.client = *herokuapp.New(a.opencage)
-	a.client.InitClient()
 	a.logger = *jsonlog.New(os.Stdout, jsonlog.INFO)
+	a.opencage = opencage.New(a.config.OpenCageApiKey, a.logger)
+	a.client = *herokuapp.New(a.opencage, a.logger)
+	a.client.InitClient()
 
 	a.server = server.New(":8080", &a.logger, &a.client)
 }

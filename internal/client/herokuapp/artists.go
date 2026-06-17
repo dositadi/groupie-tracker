@@ -9,10 +9,6 @@ import (
 	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/jsonlog"
 )
 
-var (
-	logger = jsonlog.New(os.Stdout, jsonlog.INFO)
-)
-
 const (
 	source = "Assemble function under client pkg"
 )
@@ -21,11 +17,13 @@ var byId = make(map[int]ArtistInfo)
 
 type HerokuApp struct {
 	opencage opencage.OpenCage
+	logger   jsonlog.Logger
 }
 
-func New(opencage opencage.OpenCage) *HerokuApp {
+func New(opencage opencage.OpenCage, logger jsonlog.Logger) *HerokuApp {
 	return &HerokuApp{
 		opencage: opencage,
+		logger:   logger,
 	}
 }
 
@@ -36,7 +34,7 @@ func (a *HerokuApp) InitClient() {
 func (a *HerokuApp) assemble() {
 	artistMetaData, err := a.fetchArtists()
 	if err != nil {
-		logger.PrintError(err.Error(), map[string]string{
+		a.logger.PrintError(err.Error(), map[string]string{
 			"Source": source,
 		})
 	}
@@ -54,7 +52,7 @@ func (a *HerokuApp) assemble() {
 	select {
 	case <-chError:
 		time.Sleep(2 * time.Second)
-		logger.PrintError("An error occured with on of the worker routines", map[string]string{
+		a.logger.PrintError("An error occured with on of the worker routines", map[string]string{
 			"Source": source,
 		})
 		os.Exit(1)
@@ -62,7 +60,7 @@ func (a *HerokuApp) assemble() {
 		for artistInfo := range chArtistInfo {
 			byId[artistInfo.Id] = artistInfo
 		}
-		logger.PrintInfo("Artist Info fetched completely", map[string]string{
+		a.logger.PrintInfo("Artist Info fetched completely", map[string]string{
 			"Source": source,
 		})
 	}

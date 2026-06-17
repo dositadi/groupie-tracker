@@ -28,7 +28,7 @@ func (a *HerokuApp) fetchArtists() (map[int]artistMetaData, error) {
 	err = json.NewDecoder(resp.Body).Decode(&artists)
 	if err != nil {
 		e := utils.WrapError("Decode error", err)
-		logger.PrintError(e.Error(), map[string]string{
+		a.logger.PrintError(e.Error(), map[string]string{
 			"Source": sourcef,
 		})
 		return nil, e
@@ -40,7 +40,7 @@ func (a *HerokuApp) fetchArtists() (map[int]artistMetaData, error) {
 		out[artist.Id] = artist
 	}
 
-	logger.PrintInfo("Artist's metadata  fetched successfully", map[string]string{
+	a.logger.PrintInfo("Artist's metadata  fetched successfully", map[string]string{
 		"Source": sourcef,
 	})
 	return out, nil
@@ -70,7 +70,7 @@ func (a *HerokuApp) populateArtistInfoWithArtistMetaData(artists map[int]artistM
 		close(chArtists)
 	}()
 
-	logger.PrintInfo("Population of artist's info with the artist metadata done successfully", map[string]string{
+	a.logger.PrintInfo("Population of artist's info with the artist metadata done successfully", map[string]string{
 		"Source": sourcep,
 	})
 

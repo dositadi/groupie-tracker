@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/client/opencage"
+	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/utils"
 )
 
 func (h *HerokuApp) populateArtistInfoWithGeolocations(ctx context.Context, chArtistInfo chan ArtistInfo, chError chan error, artists map[int]ArtistInfo) chan ArtistInfo {
@@ -26,7 +27,11 @@ func (h *HerokuApp) populateArtistInfoWithGeolocations(ctx context.Context, chAr
 					defer innerWg.Done()
 					location = cleanLocation(location)
 
-					
+					geolocation, err := h.opencage.FetchGeolocation(location)
+					if err != nil {
+						e :=  utils.WrapError("geolocation fetch failure from worker", err)
+						
+					}
 					
 				}(location)
 

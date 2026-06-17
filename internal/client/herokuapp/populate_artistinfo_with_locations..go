@@ -25,7 +25,7 @@ func (a *HerokuApp) populateArtistInfoLocations(ctx context.Context, chArtistInf
 			locations, err := fetchInfo[locations](art.Locations)
 			if err != nil {
 				e := utils.WrapError("Location fetch err", err)
-				logger.PrintError(e.Error(), map[string]string{
+				a.logger.PrintError(e.Error(), map[string]string{
 					"Source": sourcePa,
 				})
 
@@ -34,7 +34,7 @@ func (a *HerokuApp) populateArtistInfoLocations(ctx context.Context, chArtistInf
 
 			if err = ctx.Err(); err != nil {
 				e := utils.WrapError("Location fetch (ctx) err", err)
-				logger.PrintError(e.Error(), map[string]string{
+				a.logger.PrintError(e.Error(), map[string]string{
 					"Source": sourcePa,
 				})
 
@@ -53,7 +53,7 @@ func (a *HerokuApp) populateArtistInfoLocations(ctx context.Context, chArtistInf
 		close(out)
 	}()
 
-	logger.PrintInfo("ArtistInfos Locations updated", map[string]string{
+	a.logger.PrintInfo("ArtistInfos Locations updated", map[string]string{
 		"Source": sourcePa,
 	})
 	return out

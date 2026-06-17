@@ -26,7 +26,7 @@ func (a *HerokuApp) populateArtistInfoWithDateLocations(ctx context.Context, chA
 			concertDates, err := fetchInfo[concertDates](art.ConcertDates)
 			if err != nil {
 				e := utils.WrapError("Concert dates fetch error", err)
-				logger.PrintError(e.Error(), map[string]string{
+				a.logger.PrintError(e.Error(), map[string]string{
 					"Source": sourcePD,
 				})
 				chError <- e
@@ -35,7 +35,7 @@ func (a *HerokuApp) populateArtistInfoWithDateLocations(ctx context.Context, chA
 			if err = ctx.Err(); err != nil {
 				e := utils.WrapError("Concert dates fetch (ctx) error", err)
 
-				logger.PrintError(e.Error(), map[string]string{
+				a.logger.PrintError(e.Error(), map[string]string{
 					"Source": sourcePD,
 				})
 
@@ -54,7 +54,7 @@ func (a *HerokuApp) populateArtistInfoWithDateLocations(ctx context.Context, chA
 		close(out)
 	}()
 
-	logger.PrintInfo("Artist's info date locations updated", map[string]string{
+	a.logger.PrintInfo("Artist's info date locations updated", map[string]string{
 		"Source": sourcePD,
 	})
 

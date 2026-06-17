@@ -3,13 +3,17 @@ package herokuapp
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 
+	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/jsonlog"
 	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/utils"
 )
 
 const (
-	sourceI  = "Fetch info f(n) under client pkg"
+	sourceI = "Fetch info f(n) under client pkg"
 )
+
+var logger = jsonlog.New(os.Stdout, jsonlog.INFO)
 
 type infoType interface {
 	locations | artistMetaData | relations | concertDates
