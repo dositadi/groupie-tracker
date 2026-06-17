@@ -1,11 +1,23 @@
 package main
 
 import (
-	"acad.learn2earn.ng/git/dositadi/groupie-tracker/cmd/app"
+	"fmt"
+	"log"
+	"os"
+
+	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/client/opencage"
+	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/jsonlog"
 )
 
 func main() {
-	a := app.App{}
+	/* a := app.App{}
 
-	a.Run()
+	a.Run() */
+
+	openCage := opencage.New("a45e2bfd61d04e13b6504d106de3db70", *jsonlog.New(os.Stdout, jsonlog.INFO))
+	geo, err := openCage.FetchGeolocation("Frauenplan Weimar, Germany")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(geo)
 }

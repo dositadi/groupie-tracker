@@ -4,21 +4,24 @@ import (
 	"os"
 
 	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/client/herokuapp"
+	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/client/opencage"
 	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/jsonlog"
 	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/server"
 )
 
 type App struct {
-	logger jsonlog.Logger
-	client herokuapp.ArtistInfo
-	server *server.Server
-	config Config
+	logger   jsonlog.Logger
+	opencage opencage.OpenCage
+	client   herokuapp.HerokuApp
+	server   *server.Server
+	config   Config
 }
 
 func (a *App) initApp() {
 	a.config.Init()
 	a.config.Validate()
-	a.client = *herokuapp.New()
+	a.opencage = opencage.New(a.config.OpenCageApiKey, a.logger)
+	a.client = *herokuapp.New(a.opencage)
 	a.client.InitClient()
 	a.logger = *jsonlog.New(os.Stdout, jsonlog.INFO)
 

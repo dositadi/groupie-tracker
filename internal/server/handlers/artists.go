@@ -15,11 +15,11 @@ type Renderer interface {
 }
 
 type ArtistHandlers struct {
-	client    *herokuapp.ArtistInfo
+	client    *herokuapp.HerokuApp
 	templates Renderer
 }
 
-func NewArtistHandlers(client *herokuapp.ArtistInfo, templates Renderer) *ArtistHandlers {
+func NewArtistHandlers(client *herokuapp.HerokuApp, templates Renderer) *ArtistHandlers {
 	return &ArtistHandlers{
 		client:    client,
 		templates: templates,

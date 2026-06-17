@@ -15,7 +15,7 @@ type Server struct {
 	templates *TemplateEngine
 }
 
-func New(addr string, logger *jsonlog.Logger, artistClient *herokuapp.ArtistInfo) *Server {
+func New(addr string, logger *jsonlog.Logger, artistClient *herokuapp.HerokuApp) *Server {
 	mux := http.NewServeMux()
 
 	// static assets

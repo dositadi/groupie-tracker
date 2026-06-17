@@ -1,5 +1,7 @@
 package herokuapp
 
+import "html/template"
+
 
 type ArtistInfo struct {
 	Id           int
@@ -11,6 +13,7 @@ type ArtistInfo struct {
 	Locations    []string
 	ConcertDates []string
 	Relations    map[string][]string
+	Geolocations template.JS
 }
 
 type artistMetaData struct {

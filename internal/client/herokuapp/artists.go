@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/client/opencage"
 	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/jsonlog"
 )
 
@@ -18,15 +19,21 @@ const (
 
 var byId = make(map[int]ArtistInfo)
 
-func New() *ArtistInfo {
-	return &ArtistInfo{}
+type HerokuApp struct {
+	opencage opencage.OpenCage
 }
 
-func (a *ArtistInfo) InitClient() {
+func New(opencage opencage.OpenCage) *HerokuApp {
+	return &HerokuApp{
+		opencage: opencage,
+	}
+}
+
+func (a *HerokuApp) InitClient() {
 	a.assemble()
 }
 
-func (a *ArtistInfo) assemble() {
+func (a *HerokuApp) assemble() {
 	artistMetaData, err := a.fetchArtists()
 	if err != nil {
 		logger.PrintError(err.Error(), map[string]string{
@@ -61,6 +68,6 @@ func (a *ArtistInfo) assemble() {
 	}
 }
 
-func (a *ArtistInfo) GetById() map[int]ArtistInfo {
+func (a *HerokuApp) GetById() map[int]ArtistInfo {
 	return byId
 }

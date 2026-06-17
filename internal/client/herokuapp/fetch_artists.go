@@ -14,7 +14,7 @@ const (
 	sourcep = "Populate artist's info with artist metadata f(n) under client pkg"
 )
 
-func (a *ArtistInfo) fetchArtists() (map[int]artistMetaData, error) {
+func (a *HerokuApp) fetchArtists() (map[int]artistMetaData, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		e := utils.WrapError("Get error", err)
@@ -46,7 +46,7 @@ func (a *ArtistInfo) fetchArtists() (map[int]artistMetaData, error) {
 	return out, nil
 }
 
-func (a *ArtistInfo) populateArtistInfoWithArtistMetaData(artists map[int]artistMetaData) chan ArtistInfo {
+func (a *HerokuApp) populateArtistInfoWithArtistMetaData(artists map[int]artistMetaData) chan ArtistInfo {
 	chArtists := make(chan ArtistInfo, len(artists))
 	wg := new(sync.WaitGroup)
 

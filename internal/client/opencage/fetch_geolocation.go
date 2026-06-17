@@ -37,6 +37,10 @@ type raw struct {
 	} `json:"results"`
 }
 
+const (
+	
+)
+
 func (o OpenCage) FetchGeolocation(query string) (Geolocation, error) {
 	path, err := url.Parse("https://api.opencagedata.com/geocode/v1/json")
 	if err != nil {
@@ -54,7 +58,7 @@ func (o OpenCage) FetchGeolocation(query string) (Geolocation, error) {
 
 	path.RawQuery = params.Encode()
 
-	req, err := http.NewRequest(http.MethodGet, path.RequestURI(), nil)
+	req, err := http.NewRequest(http.MethodGet, path.String(), nil)
 	if err != nil {
 		e := utils.WrapError("http new request error", err)
 		o.logger.PrintError(e.Error(), map[string]string{
@@ -62,8 +66,6 @@ func (o OpenCage) FetchGeolocation(query string) (Geolocation, error) {
 		})
 		return Geolocation{}, e
 	}
-
-	defer req.Body.Close()
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {

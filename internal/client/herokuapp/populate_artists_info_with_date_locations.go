@@ -11,7 +11,7 @@ const (
 	sourcePD = "Populate artist info with data locations f(n) under client"
 )
 
-func (a *ArtistInfo) populateArtistInfoWithDateLocations(ctx context.Context, chArtistInfo chan ArtistInfo, chError chan error, artists map[int]artistMetaData) chan ArtistInfo {
+func (a *HerokuApp) populateArtistInfoWithDateLocations(ctx context.Context, chArtistInfo chan ArtistInfo, chError chan error, artists map[int]artistMetaData) chan ArtistInfo {
 	out := make(chan ArtistInfo, len(artists))
 	wg := new(sync.WaitGroup)
 

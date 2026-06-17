@@ -11,7 +11,7 @@ const (
 	sourcePR = "Populate Artist Info with relations f(n) under client pkg"
 )
 
-func (a *ArtistInfo) populateArtistInfoWithRelations(ctx context.Context, chArtistInfo chan ArtistInfo, chError chan error, artists map[int]artistMetaData) chan ArtistInfo {
+func (a *HerokuApp) populateArtistInfoWithRelations(ctx context.Context, chArtistInfo chan ArtistInfo, chError chan error, artists map[int]artistMetaData) chan ArtistInfo {
 	out := make(chan ArtistInfo, len(artists))
 	wg := new(sync.WaitGroup)
 
