@@ -18,7 +18,15 @@ type Server struct {
 func New(addr string, logger *jsonlog.Logger, artistClient *client.ArtistInfo) *Server {
 	mux := http.NewServeMux()
 
-	artistHandlers := handlers.NewArtistHandlers(artistClient)
+	// static assets
+	mux.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
+
+	templates := NewTemplateEngine()
+	if err := templates.Load("web/templates/*.html"); err != nil {
+		logger.PrintFatal(err.Error(), nil)
+	}
+
+	artistHandlers := handlers.NewArtistHandlers(artistClient, templates)
 	mux.HandleFunc("GET /artists", artistHandlers.GetArtists)
 	mux.HandleFunc("GET /artists/{id}", artistHandlers.GetArtistByID)
 
@@ -26,7 +34,7 @@ func New(addr string, logger *jsonlog.Logger, artistClient *client.ArtistInfo) *
 		addr:      addr,
 		logger:    logger,
 		mux:       mux,
-		templates: NewTemplateEngine(),
+		templates: templates,
 	}
 }
 

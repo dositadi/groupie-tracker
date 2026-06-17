@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 	"sort"
 	"strconv"
@@ -9,12 +10,20 @@ import (
 	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/client"
 )
 
-type ArtistHandlers struct {
-	client *client.ArtistInfo
+type Renderer interface {
+	Render(w io.Writer, name string, data any) error
 }
 
-func NewArtistHandlers(client *client.ArtistInfo) *ArtistHandlers {
-	return &ArtistHandlers{client: client}
+type ArtistHandlers struct {
+	client    *client.ArtistInfo
+	templates Renderer
+}
+
+func NewArtistHandlers(client *client.ArtistInfo, templates Renderer) *ArtistHandlers {
+	return &ArtistHandlers{
+		client:    client,
+		templates: templates,
+	}
 }
 
 func (h *ArtistHandlers) GetArtists(w http.ResponseWriter, r *http.Request) {
@@ -29,7 +38,10 @@ func (h *ArtistHandlers) GetArtists(w http.ResponseWriter, r *http.Request) {
 		return artists[i].Id < artists[j].Id
 	})
 
-	writeJSON(w, http.StatusOK, artists)
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	if err := h.templates.Render(w, "artists.html", artists); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func (h *ArtistHandlers) GetArtistByID(w http.ResponseWriter, r *http.Request) {
