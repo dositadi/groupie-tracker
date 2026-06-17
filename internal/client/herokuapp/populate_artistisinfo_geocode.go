@@ -6,6 +6,7 @@ import (
 	"strings"
 	"sync"
 
+	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/client/opencage"
 	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/utils"
 )
 
@@ -21,6 +22,8 @@ func (h *HerokuApp) PopulateArtistInfoWithGeolocations(ctx context.Context, chAr
 		go func(artistInfo ArtistInfo) {
 			defer outerWg.Done()
 			innerWg := new(sync.WaitGroup)
+			geoLocations := make([]opencage.Geolocation, 0, len(artistInfo.Locations))
+			mu := new(sync.Mutex)
 
 			for _, location := range artistInfo.Locations {
 				innerWg.Add(1)
@@ -35,25 +38,37 @@ func (h *HerokuApp) PopulateArtistInfoWithGeolocations(ctx context.Context, chAr
 						h.logger.PrintError(e.Error(), map[string]string{
 							"Context": sourceG,
 						})
-						chError <- e
+						select {
+						case chError <- e:
+						case <-ctx.Done():
+						default:
+						}
+						return
 					}
 
 					if err = ctx.Err(); err != nil {
 						return
 					}
 
-					geoByte := utils.MarshalObject(geolocation)
-
-					artistInfo.Geolocations = template.JS(geoByte)
+					mu.Lock()
+					geoLocations = append(geoLocations, geolocation)
+					mu.Unlock()
 				}(location)
+			}
 
-				innerWg.Wait()
+			innerWg.Wait()
 
-				if err := ctx.Err(); err != nil {
-					return
-				}
+			if err := ctx.Err(); err != nil {
+				return
+			}
 
-				out <- artistInfo
+			geoLocationsByte := utils.MarshalObject(geoLocations)
+
+			artistInfo.Geolocations = template.JS(geoLocationsByte)
+
+			select {
+			case out <- artistInfo:
+			case <-ctx.Done():
 			}
 		}(artistInfo)
 	}

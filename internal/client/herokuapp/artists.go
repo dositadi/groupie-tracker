@@ -49,7 +49,7 @@ func (a *HerokuApp) assemble() {
 	chArtistInfo = a.populateArtistInfoLocations(ctx, chArtistInfo, chError, artistMetaData)
 	chArtistInfo = a.populateArtistInfoWithRelations(ctx, chArtistInfo, chError, artistMetaData)
 	chArtistInfo = a.populateArtistInfoWithDateLocations(ctx, chArtistInfo, chError, artistMetaData)
-	//chArtistInfo = a.PopulateArtistInfoWithGeolocations(ctx, chArtistInfo, chError)
+	chArtistInfo = a.PopulateArtistInfoWithGeolocations(ctx, chArtistInfo, chError)
 
 	select {
 	case <-chError:
