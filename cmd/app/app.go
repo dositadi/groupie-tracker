@@ -12,9 +12,12 @@ type App struct {
 	logger jsonlog.Logger
 	client herokuapp.ArtistInfo
 	server *server.Server
+	config Config
 }
 
 func (a *App) initApp() {
+	a.config.Init()
+	a.config.Validate()
 	a.client = *herokuapp.New()
 	a.client.InitClient()
 	a.logger = *jsonlog.New(os.Stdout, jsonlog.INFO)
