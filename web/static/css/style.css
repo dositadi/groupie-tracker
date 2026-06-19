@@ -367,28 +367,17 @@ main.grid {
   .search-field { flex: 1 1 100%; }
 }
 
-
-/* ============================================================
-   DETAIL PAGE
-   ============================================================ */
-
-/* ---------- detail top bar ---------- */
-
 .top-bar-inner--detail {
   padding-top: 20px;
   padding-bottom: 20px;
 }
 
-/*
-  3-column grid so the brand stays truly centred
-  regardless of back-link or badge widths.
-*/
 .brand-row--detail {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 16px;
-  flex-wrap: unset;   /* override base flex-wrap */
+  flex-wrap: unset;   
 }
 
 .brand-row--detail .back-link  { justify-self: start; }
@@ -471,13 +460,12 @@ main.grid {
   margin: 0;
 }
 
-/* 2×2 grid of stat cells separated by 1px dividers */
 .artist-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1px;
   border: 1px solid var(--line);
-  background: var(--line);   /* the "gap" shows the line color */
+  background: var(--line); 
 }
 
 .artist-stat {
@@ -503,14 +491,11 @@ main.grid {
   color: var(--ink);
 }
 
-/* ---------- detail sections ---------- */
-
 .detail-section {
   padding: 44px 0;
   border-bottom: 1px solid var(--line);
 }
 
-/* "MEMBERS" / "TOUR LOCATIONS" — small uppercase eyebrow */
 .section-label {
   font-family: "Inter", sans-serif;
   font-weight: 600;
@@ -520,8 +505,6 @@ main.grid {
   color: var(--muted);
   margin: 0 0 22px;
 }
-
-/* ---------- members ---------- */
 
 .member-list {
   list-style: none;
@@ -548,7 +531,6 @@ main.grid {
   background: var(--accent-tint);
 }
 
-/* ---------- locations ---------- */
 
 .location-grid {
   list-style: none;
@@ -573,7 +555,6 @@ main.grid {
   line-height: 1.35;
 }
 
-/* Show the date list only when dates are present */
 .location-place:has(+ .date-list) {
   margin-bottom: 14px;
 }
@@ -617,8 +598,6 @@ main.grid {
   font-size: 0.9rem;
   margin: 0;
 }
-
-/* ---------- detail responsive ---------- */
 
 @media (max-width: 860px) {
   .artist-artist
