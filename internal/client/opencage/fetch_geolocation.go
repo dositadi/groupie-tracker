@@ -37,9 +37,6 @@ type raw struct {
 	} `json:"results"`
 }
 
-const (
-	
-)
 
 func (o OpenCage) FetchGeolocation(query string) (Geolocation, error) {
 	path, err := url.Parse("https://api.opencagedata.com/geocode/v1/json")
