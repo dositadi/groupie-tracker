@@ -1,0 +1,110 @@
+{{define "artistdetails.html"}}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.Name}} · Groupie Tracker</title>
+  <meta name="description" content="{{.Name}} — formed {{.CreationDate}}, first album {{.FirstAlbum}}.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner top-bar-inner--detail">
+    <div class="brand-row brand-row--detail">
+      <a href="/artists" class="back-link" aria-label="Back to all artists">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M10 3L5 8l5 5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        All artists
+      </a>
+      <span class="brand">Groupie Tracker</span>
+    </div>
+  </div>
+</div>
+
+<main class="detail-main">
+
+  <section class="artist">
+    <div class="artist-media">
+      <img src="{{.Image}}" alt="{{.Name}}">
+    </div>
+    <div class="artist-info">
+      <h1 class="artist-name">{{.Name}}</h1>
+      <div class="artist-stats">
+        <div class="artist-stat">
+          <span class="artist-stat-label">Formed</span>
+          <span class="artist-stat-value">{{.CreationDate}}</span>
+        </div>
+        <div class="artist-stat">
+          <span class="artist-stat-label">First album</span>
+          <span class="artist-stat-value">{{.FirstAlbum}}</span>
+        </div>
+        <div class="artist-stat">
+          <span class="artist-stat-label">Members</span>
+          <span class="artist-stat-value">{{len .Members}}</span>
+        </div>
+        <div class="artist-stat">
+          <span class="artist-stat-label">Cities toured</span>
+          <span class="artist-stat-value">{{len .Locations}}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="detail-section">
+    <h2 class="section-label">Members</h2>
+    <ul class="member-list">
+      {{range .Members}}
+      <li class="member-chip">{{.}}</li>
+      {{end}}
+    </ul>
+  </section>
+
+  <section class="detail-section">
+    <h2 class="section-label">Tour Locations</h2>
+    {{if .DatesLocations}}
+    <ul class="location-grid">
+      {{range $slug, $dates := .DatesLocations}}
+      <li class="location-card" data-slug="{{$slug}}">
+        <p class="location-place">
+          <span class="loc-city"></span><span class="loc-sep">, </span><span class="loc-country"></span>
+        </p>
+        <ul class="date-list">
+          {{range $dates}}
+          <li class="date-item" data-raw="{{.}}">{{.}}</li>
+          {{end}}
+        </ul>
+      </li>
+      {{end}}
+    </ul>
+    {{else if .Locations}}
+    <ul class="location-grid">
+      {{range .Locations}}
+      <li class="location-card" data-slug="{{.}}">
+        <p class="location-place">
+          <span class="loc-city"></span><span class="loc-sep">, </span><span class="loc-country"></span>
+        </p>
+      </li>
+      {{end}}
+    </ul>
+    {{else}}
+    <p class="detail-empty">No location data available.</p>
+    {{end}}
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Data sourced from the Groupie Trackers API.</p>
+</footer>
+
+<script src="/static/js/artistdetails.js"></script>
+
+</body>
+</html>
+{{end}}

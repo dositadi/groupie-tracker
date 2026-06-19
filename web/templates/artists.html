@@ -59,26 +59,28 @@
     <p class="empty">No artists found.</p>
   {{else}}
     {{range .}}
-    <article class="card"
-      data-name="{{.Name}}"
-      data-creation="{{.CreationDate}}"
-      data-members="{{range $i, $m := .Members}}{{if $i}}, {{end}}{{$m}}{{end}}"
-      data-locations="{{range .Locations}}{{.}}|{{end}}">
-      <div class="card-media">
-        <span class="catalog">{{printf "%02d" .Id}}</span>
-        <img src="{{.Image}}" alt="{{.Name}}" loading="lazy">
-      </div>
-      <div class="card-body">
-        <h2>{{.Name}}</h2>
-        <p class="members">{{range $i, $m := .Members}}{{if $i}}, {{end}}{{$m}}{{end}}</p>
-        <div class="stats">
-          <span>Formed {{.CreationDate}}</span>
-          <span>{{.FirstAlbum}}</span>
-          <span>{{len .Members}} members</span>
-          <span>{{len .Locations}} cities</span>
+    <a href="/artists/{{.Id}}" class="card-link">
+      <article class="card"
+        data-name="{{.Name}}"
+        data-creation="{{.CreationDate}}"
+        data-members="{{range $i, $m := .Members}}{{if $i}}, {{end}}{{$m}}{{end}}"
+        data-locations="{{range .Locations}}{{.}}|{{end}}">
+        <div class="card-media">
+          <span class="catalog">{{printf "%02d" .Id}}</span>
+          <img src="{{.Image}}" alt="{{.Name}}" loading="lazy">
         </div>
-      </div>
-    </article>
+        <div class="card-body">
+          <h2>{{.Name}}</h2>
+          <p class="members">{{range $i, $m := .Members}}{{if $i}}, {{end}}{{$m}}{{end}}</p>
+          <div class="stats">
+            <span>Formed {{.CreationDate}}</span>
+            <span>{{.FirstAlbum}}</span>
+            <span>{{len .Members}} members</span>
+            <span>{{len .Locations}} cities</span>
+          </div>
+        </div>
+      </article>
+    </a>
     {{end}}
     <p class="empty" id="no-results" hidden>No matches for these filters.</p>
   {{end}}

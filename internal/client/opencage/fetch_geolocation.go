@@ -50,7 +50,7 @@ func (o OpenCage) FetchGeolocation(query string) (Geolocation, error) {
 
 	params := url.Values{}
 	params.Add("q", query)
-	params.Add("key", o.key)
+	params.Add("key", "a45e2bfd61d04e13b6504d106de3db70")
 	params.Add("limit", "1")
 
 	path.RawQuery = params.Encode()
