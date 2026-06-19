@@ -18,8 +18,8 @@ type App struct {
 }
 
 func (a *App) initApp() {
-	a.config.Init()
-	a.config.Validate()
+	/* a.config.Init()
+	a.config.Validate() */
 	a.logger = *jsonlog.New(os.Stdout, jsonlog.INFO)
 	a.opencage = opencage.New(a.config.OpenCageApiKey, a.logger)
 	a.client = *herokuapp.New(a.opencage, a.logger)
