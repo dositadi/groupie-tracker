@@ -1,13 +1,14 @@
 package handlers
 
 import (
-	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"sort"
 	"strconv"
 
 	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/client/herokuapp"
+	"acad.learn2earn.ng/git/dositadi/groupie-tracker/internal/jsonlog"
 )
 
 type Renderer interface {
@@ -17,12 +18,14 @@ type Renderer interface {
 type ArtistHandlers struct {
 	client    map[int]herokuapp.ArtistInfo
 	templates Renderer
+	logger    jsonlog.Logger
 }
 
-func NewArtistHandlers(client map[int]herokuapp.ArtistInfo, templates Renderer) *ArtistHandlers {
+func NewArtistHandlers(client map[int]herokuapp.ArtistInfo, templates Renderer, logger jsonlog.Logger) *ArtistHandlers {
 	return &ArtistHandlers{
 		client:    client,
 		templates: templates,
+		logger:    logger,
 	}
 }
 
@@ -30,11 +33,6 @@ func NewArtistHandlers(client map[int]herokuapp.ArtistInfo, templates Renderer) 
 type ArtistDetail struct {
 	herokuapp.ArtistInfo
 	DatesLocations map[string][]string
-}
-
-type relation struct {
-	Id             int                 `json:"id"`
-	DatesLocations map[string][]string `json:"datesLocations"`
 }
 
 func (h *ArtistHandlers) GetArtists(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +48,11 @@ func (h *ArtistHandlers) GetArtists(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err := h.templates.Render(w, "artists.html", artists); err != nil {
+		h.logger.PrintError(err.Error(), map[string]string{
+			"Context": "handlers.GetArtists()",
+		})
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -66,43 +68,20 @@ func (h *ArtistHandlers) GetArtistByID(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
+	fmt.Println(artist)
 
-	rel, err := fetchRelations(id)
-	if err != nil {
-		http.Error(w, "could not load tour data", http.StatusBadGateway)
-		return
-	}
-
-	detail := ArtistDetail{
-		ArtistInfo:     artist,
-		DatesLocations: rel.DatesLocations,
+	data := struct {
+		ArtistInfo herokuapp.ArtistInfo
+	}{
+		ArtistInfo: artist,
 	}
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	if err := h.templates.Render(w, "artistdetails.html", detail); err != nil {
+	if err := h.templates.Render(w, "artistdetails.html", data); err != nil {
+		h.logger.PrintError(err.Error(), map[string]string{
+			"Context": "handlers.GetArtistById()",
+		})
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-}
-
-func fetchRelations(id int) (relation, error) {
-	url := "https://groupietrackers.herokuapp.com/api/relation/" + strconv.Itoa(id)
-
-	resp, err := http.Get(url)
-	if err != nil {
-		return relation{}, err
-	}
-	defer resp.Body.Close()
-
-	var rel relation
-	if err := json.NewDecoder(resp.Body).Decode(&rel); err != nil {
-		return relation{}, err
-	}
-
-	return rel, nil
-}
-
-func writeJSON(w http.ResponseWriter, status int, data any) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	_ = json.NewEncoder(w).Encode(data)
 }

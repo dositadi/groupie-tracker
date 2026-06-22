@@ -599,6 +599,10 @@ main.grid {
   margin: 0;
 }
 
+#map {
+  height: 180px;
+}
+
 @media (max-width: 860px) {
   .artist-artist
  {

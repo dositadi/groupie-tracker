@@ -37,7 +37,6 @@ type raw struct {
 	} `json:"results"`
 }
 
-
 func (o OpenCage) FetchGeolocation(query string) (Geolocation, error) {
 	path, err := url.Parse("https://api.opencagedata.com/geocode/v1/json")
 	if err != nil {
@@ -50,7 +49,7 @@ func (o OpenCage) FetchGeolocation(query string) (Geolocation, error) {
 
 	params := url.Values{}
 	params.Add("q", query)
-	params.Add("key", "a45e2bfd61d04e13b6504d106de3db70")
+	params.Add("key", "b70fe130c8d943c8bf024f805810558b")
 	params.Add("limit", "1")
 
 	path.RawQuery = params.Encode()

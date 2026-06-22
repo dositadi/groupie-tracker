@@ -4,10 +4,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{.Name}} · Groupie Tracker</title>
-  <meta name="description" content="{{.Name}} — formed {{.CreationDate}}, first album {{.FirstAlbum}}.">
+  <title>{{.ArtistInfo.Name}} · Groupie Tracker</title>
+  <meta name="description" content="{{.ArtistInfo.Name}} — formed {{.ArtistInfo.CreationDate}}, first album {{.ArtistInfo.FirstAlbum}}.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/style.css">
 </head>
@@ -31,26 +37,26 @@
 
   <section class="artist">
     <div class="artist-media">
-      <img src="{{.Image}}" alt="{{.Name}}">
+      <img src="{{.ArtistInfo.Image}}" alt="{{.ArtistInfo.Name}}">
     </div>
     <div class="artist-info">
-      <h1 class="artist-name">{{.Name}}</h1>
+      <h1 class="artist-name">{{.ArtistInfo.Name}}</h1>
       <div class="artist-stats">
         <div class="artist-stat">
           <span class="artist-stat-label">Formed</span>
-          <span class="artist-stat-value">{{.CreationDate}}</span>
+          <span class="artist-stat-value">{{.ArtistInfo.CreationDate}}</span>
         </div>
         <div class="artist-stat">
           <span class="artist-stat-label">First album</span>
-          <span class="artist-stat-value">{{.FirstAlbum}}</span>
+          <span class="artist-stat-value">{{.ArtistInfo.FirstAlbum}}</span>
         </div>
         <div class="artist-stat">
           <span class="artist-stat-label">Members</span>
-          <span class="artist-stat-value">{{len .Members}}</span>
+          <span class="artist-stat-value">{{len .ArtistInfo.Members}}</span>
         </div>
         <div class="artist-stat">
           <span class="artist-stat-label">Cities toured</span>
-          <span class="artist-stat-value">{{len .Locations}}</span>
+          <span class="artist-stat-value">{{len .ArtistInfo.Locations}}</span>
         </div>
       </div>
     </div>
@@ -59,7 +65,7 @@
   <section class="detail-section">
     <h2 class="section-label">Members</h2>
     <ul class="member-list">
-      {{range .Members}}
+      {{range .ArtistInfo.Members}}
       <li class="member-chip">{{.}}</li>
       {{end}}
     </ul>
@@ -67,9 +73,9 @@
 
   <section class="detail-section">
     <h2 class="section-label">Tour Locations</h2>
-    {{if .DatesLocations}}
+    {{if .ArtistInfo.Relations}}
     <ul class="location-grid">
-      {{range $slug, $dates := .DatesLocations}}
+      {{range $slug, $dates := .ArtistInfo.Relations}}
       <li class="location-card" data-slug="{{$slug}}">
         <p class="location-place">
           <span class="loc-city"></span><span class="loc-sep">, </span><span class="loc-country"></span>
@@ -82,9 +88,9 @@
       </li>
       {{end}}
     </ul>
-    {{else if .Locations}}
+    {{else if .ArtistInfo.Locations}}
     <ul class="location-grid">
-      {{range .Locations}}
+      {{range .ArtistInfo.Locations}}
       <li class="location-card" data-slug="{{.}}">
         <p class="location-place">
           <span class="loc-city"></span><span class="loc-sep">, </span><span class="loc-country"></span>
@@ -96,6 +102,32 @@
     <p class="detail-empty">No location data available.</p>
     {{end}}
   </section>
+
+  <div id="map" style="height: 250px;">
+
+  </div>
+
+  <script>
+    var geoLocations = JSON.parse("{{.ArtistInfo.Geolocations}}")
+    
+    var map = L.map('map');
+
+    L.tileLayer('https://api.maptiler.com/maps/streets-v4/{z}/{x}/{y}.png?key=v9NO1jzubZiUyU0OGZgA', {
+    maxZoom: 19,
+    attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
+    }).addTo(map);
+
+    var bounds = L.latLngBounds();
+
+    geoLocations.forEach(loc => {
+      L.marker([loc.Lat, loc.Lng]).addTo(map).bindPopup(loc.Name).openPopup();
+      // Extend map boundary to fit the location
+      bounds.extend([loc.Lat, loc.Lng]);
+    });
+
+    // Fit the bounds in the map
+    map.fitBounds(bounds, { padding: [40, 40] });
+  </script>
 
 </main>
 

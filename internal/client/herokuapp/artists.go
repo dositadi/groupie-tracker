@@ -2,7 +2,6 @@ package herokuapp
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"time"
 
@@ -62,7 +61,6 @@ func (a *HerokuApp) assemble() {
 		for artistInfo := range chArtistInfo {
 			byId[artistInfo.Id] = artistInfo
 		}
-		fmt.Println(byId)
 		a.logger.PrintInfo("Artist Info fetched completely", map[string]string{
 			"Source": source,
 		})

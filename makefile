@@ -3,3 +3,6 @@ docker-up:
 
 docker-down:
 	docker compose down 
+
+docker-down-v:
+	docker compose down -v

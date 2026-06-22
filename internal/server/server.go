@@ -32,7 +32,7 @@ func New(addr string, logger *jsonlog.Logger, artistClient map[int]herokuapp.Art
 		logger.PrintFatal(err.Error(), nil)
 	}
 
-	artistHandlers := handlers.NewArtistHandlers(artistClient, templates)
+	artistHandlers := handlers.NewArtistHandlers(artistClient, templates, *logger)
 	mux.HandleFunc("GET /artists", artistHandlers.GetArtists)
 	mux.HandleFunc("GET /artists/{id}", artistHandlers.GetArtistByID)
 
