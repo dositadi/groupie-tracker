@@ -7,6 +7,7 @@ import (
 func main() {
 	a := app.App{}
 
+
 	a.Run()
 
 	/* openCage := opencage.New("a45e2bfd61d04e13b6504d106de3db70", *jsonlog.New(os.Stdout, jsonlog.INFO))
