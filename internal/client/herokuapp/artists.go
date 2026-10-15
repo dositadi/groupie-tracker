@@ -42,6 +42,7 @@ func (a *HerokuApp) assemble() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+
 	chError := make(chan error)
 
 	chArtistInfo := a.populateArtistInfoWithArtistMetaData(artistMetaData)
