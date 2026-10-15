@@ -29,7 +29,6 @@ func New(opencage opencage.OpenCage, logger jsonlog.Logger) *HerokuApp {
 
 func (a *HerokuApp) InitClient() {
 	a.assemble()
-
 }
 
 func (a *HerokuApp) assemble() {
